@@ -1,0 +1,60 @@
+{
+  "name": "FetchHtmlSelect",
+  "title": "Fetch HTML Select",
+  "category": "Network",
+  "description": "Fetches a URL and selects nodes from the HTML using an XPath expression.",
+  "inputs": [
+    {
+      "name": "url",
+      "mapping": "web_fetch_node.url"
+    },
+    {
+      "name": "query",
+      "mapping": "xml_select_node.query"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "matches",
+      "mapping": "xml_select_node.matches"
+    },
+    {
+      "name": "count",
+      "mapping": "xml_select_node.count"
+    },
+    {
+      "name": "status",
+      "mapping": "web_fetch_node.status"
+    }
+  ],
+  "implementation": {
+    "nodes": [
+      {
+        "id": "web_fetch_node",
+        "type": "WebFetch",
+        "position": { "x": 0.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 220.0 },
+        "inputs": {},
+        "skipCache": false,
+        "bypassed": false
+      },
+      {
+        "id": "xml_select_node",
+        "type": "XmlSelect",
+        "position": { "x": 450.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 300.0 },
+        "inputs": {},
+        "skipCache": false,
+        "bypassed": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "web_fetch_node",
+        "sourceHandle": "content",
+        "target": "xml_select_node",
+        "targetHandle": "input"
+      }
+    ]
+  }
+}

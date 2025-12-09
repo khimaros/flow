@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "meshtasticsend_4584ff58",
+      "type": "MeshtasticSend",
+      "position": {
+        "x": 870.0,
+        "y": 210.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 480.0
+      },
+      "inputs": {
+        "target_device": "/dev/ttyACM0",
+        "userid": "!9ef8fcb2",
+        "channel": 0,
+        "message": "hello, mesh!",
+        "connection_type": "serial"
+      },
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [],
+  "forceRun": false,
+  "targetNodeId": null
+}

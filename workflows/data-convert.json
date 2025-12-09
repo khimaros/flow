@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": "listtojson_c8ecae41",
+      "type": "ListToJson",
+      "position": {
+        "x": 30.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayjson_0e105bf2",
+      "type": "DisplayJson",
+      "position": {
+        "x": 315.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 270.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "split_82faed61",
+      "type": "Split",
+      "position": {
+        "x": -540.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {
+        "separator": ":",
+        "text": "hello:world"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "list_e498eec7",
+      "type": "List",
+      "position": {
+        "x": -255.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "join_fbd53ea1",
+      "type": "Join",
+      "position": {
+        "x": -255.0,
+        "y": 540.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 420.0
+      },
+      "inputs": {
+        "separator": "\\n"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_61d895c6",
+      "type": "Echo",
+      "position": {
+        "x": 30.0,
+        "y": 540.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 420.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "templatize_04fcfc72",
+      "type": "Templatize",
+      "position": {
+        "x": 315.0,
+        "y": 540.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 420.0
+      },
+      "inputs": {
+        "template": "{{ values | join(sep=', ') }}!"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_858a2936",
+      "type": "Echo",
+      "position": {
+        "x": 630.0,
+        "y": 540.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 420.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-listtojson_c8ecae41-output-displayjson_0e105bf2-json",
+      "source": "listtojson_c8ecae41",
+      "sourceHandle": "output",
+      "target": "displayjson_0e105bf2",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-split_82faed61-output-list_e498eec7-list",
+      "source": "split_82faed61",
+      "sourceHandle": "output",
+      "target": "list_e498eec7",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-list_e498eec7-list-listtojson_c8ecae41-list",
+      "source": "list_e498eec7",
+      "sourceHandle": "list",
+      "target": "listtojson_c8ecae41",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-list_e498eec7-list-join_fbd53ea1-list",
+      "source": "list_e498eec7",
+      "sourceHandle": "list",
+      "target": "join_fbd53ea1",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-join_fbd53ea1-output-echo_61d895c6-message",
+      "source": "join_fbd53ea1",
+      "sourceHandle": "output",
+      "target": "echo_61d895c6",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-listtojson_c8ecae41-output-templatize_04fcfc72-context",
+      "source": "listtojson_c8ecae41",
+      "sourceHandle": "output",
+      "target": "templatize_04fcfc72",
+      "targetHandle": "context"
+    },
+    {
+      "id": "e-templatize_04fcfc72-output-echo_858a2936-message",
+      "source": "templatize_04fcfc72",
+      "sourceHandle": "output",
+      "target": "echo_858a2936",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

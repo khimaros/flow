@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "shellcommand_b9124e3f",
+      "type": "ShellCommand",
+      "position": {
+        "x": 180.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 465.0
+      },
+      "inputs": {
+        "command": "cat",
+        "stdin": ""
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "echo_1a210a74",
+      "type": "Echo",
+      "position": {
+        "x": 495.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 465.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "read_ee077ef5",
+      "type": "Read",
+      "position": {
+        "x": -105.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 105.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-shellcommand_b9124e3f-stdout-echo_1a210a74-message",
+      "source": "shellcommand_b9124e3f",
+      "sourceHandle": "stdout",
+      "target": "echo_1a210a74",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-read_ee077ef5-output-shellcommand_b9124e3f-args",
+      "source": "read_ee077ef5",
+      "sourceHandle": "output",
+      "target": "shellcommand_b9124e3f",
+      "targetHandle": "args"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

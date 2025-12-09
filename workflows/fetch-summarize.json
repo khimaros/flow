@@ -1,0 +1,237 @@
+{
+  "nodes": [
+    {
+      "id": "websearch_7b112bd8",
+      "type": "WebSearch",
+      "position": {
+        "x": 45.0,
+        "y": -90.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 240.0
+      },
+      "inputs": {
+        "max_results": null,
+        "query": "github khimaros"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "jsonquery_c43921ed",
+      "type": "JsonQuery",
+      "position": {
+        "x": 450.0,
+        "y": -345.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 285.0
+      },
+      "inputs": {
+        "path": "/results/0/url"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "webfetch_452f4ea8",
+      "type": "WebFetch",
+      "position": {
+        "x": 450.0,
+        "y": -45.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 195.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_4a5954d2",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 810.0,
+        "y": 165.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "system_prompt": "summarize the page",
+        "temperature": null,
+        "model": "",
+        "api_key": "",
+        "api_base": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_5ddad5d5",
+      "type": "Echo",
+      "position": {
+        "x": 810.0,
+        "y": -405.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 210.0
+      },
+      "inputs": {
+        "message": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"username\": {\n      \"type\": \"string\"\n    },\n    \"bio\": {\n      \"type\": \"string\"\n    },\n    \"followers\": {\n      \"type\": \"integer\"\n    },\n    \"following\": {\n      \"type\": \"integer\"\n    },\n    \"stars_received\": {\n      \"type\": \"integer\"\n    },\n    \"external_links\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"achievements\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"repositories\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"repository\": {\n            \"type\": \"string\"\n          },\n          \"language\": {\n            \"type\": \"string\"\n          },\n          \"description\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"repository\",\n          \"language\",\n          \"description\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"username\",\n    \"bio\",\n    \"followers\",\n    \"following\",\n    \"stars_received\",\n    \"external_links\",\n    \"repositories\"\n  ]\n}"
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "displayjson_0bfe6a38",
+      "type": "DisplayJson",
+      "position": {
+        "x": 1215.0,
+        "y": 165.0
+      },
+      "size": {
+        "width": 495.0,
+        "height": 870.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "htmltomarkdown_fe59d1fc",
+      "type": "HtmlToMarkdown",
+      "position": {
+        "x": 450.0,
+        "y": 165.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 345.0
+      },
+      "inputs": {
+        "readability": false,
+        "max_length": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displaymarkdown_089585cd",
+      "type": "DisplayMarkdown",
+      "position": {
+        "x": 450.0,
+        "y": 465.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 570.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayjson_8e0145e9",
+      "type": "DisplayJson",
+      "position": {
+        "x": 810.0,
+        "y": -180.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 330.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayjson_b5d39959",
+      "type": "DisplayJson",
+      "position": {
+        "x": 45.0,
+        "y": 165.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 435.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-echo_5ddad5d5-output-openai_4a5954d2-json_schema",
+      "source": "echo_5ddad5d5",
+      "sourceHandle": "output",
+      "target": "openai_4a5954d2",
+      "targetHandle": "json_schema"
+    },
+    {
+      "id": "e-openai_4a5954d2-text-displayjson_0bfe6a38-json",
+      "source": "openai_4a5954d2",
+      "sourceHandle": "text",
+      "target": "displayjson_0bfe6a38",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-webfetch_452f4ea8-content-htmltomarkdown_fe59d1fc-html",
+      "source": "webfetch_452f4ea8",
+      "sourceHandle": "content",
+      "target": "htmltomarkdown_fe59d1fc",
+      "targetHandle": "html"
+    },
+    {
+      "id": "e-htmltomarkdown_fe59d1fc-markdown-displaymarkdown_089585cd-markdown",
+      "source": "htmltomarkdown_fe59d1fc",
+      "sourceHandle": "markdown",
+      "target": "displaymarkdown_089585cd",
+      "targetHandle": "markdown"
+    },
+    {
+      "id": "e-htmltomarkdown_fe59d1fc-markdown-openai_4a5954d2-prompt",
+      "source": "htmltomarkdown_fe59d1fc",
+      "sourceHandle": "markdown",
+      "target": "openai_4a5954d2",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-echo_5ddad5d5-output-displayjson_8e0145e9-json",
+      "source": "echo_5ddad5d5",
+      "sourceHandle": "output",
+      "target": "displayjson_8e0145e9",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-websearch_7b112bd8-json-displayjson_b5d39959-json",
+      "source": "websearch_7b112bd8",
+      "sourceHandle": "json",
+      "target": "displayjson_b5d39959",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-websearch_7b112bd8-json-jsonquery_c43921ed-json",
+      "source": "websearch_7b112bd8",
+      "sourceHandle": "json",
+      "target": "jsonquery_c43921ed",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-jsonquery_c43921ed-result-webfetch_452f4ea8-url",
+      "source": "jsonquery_c43921ed",
+      "sourceHandle": "result",
+      "target": "webfetch_452f4ea8",
+      "targetHandle": "url"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

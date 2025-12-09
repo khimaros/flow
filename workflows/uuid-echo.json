@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {
+      "id": "echo_3fb69f92",
+      "type": "Echo",
+      "position": {
+        "x": 570.0,
+        "y": 330.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "uuid_2f99f484",
+      "type": "UUID",
+      "position": {
+        "x": 255.0,
+        "y": 330.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 105.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-uuid_2f99f484-uuid-echo_3fb69f92-message",
+      "source": "uuid_2f99f484",
+      "sourceHandle": "uuid",
+      "target": "echo_3fb69f92",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

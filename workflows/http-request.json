@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "id": "httprequest_20e0cd74",
+      "type": "HttpRequest",
+      "position": {
+        "x": 165.0,
+        "y": 270.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 255.0
+      },
+      "inputs": {
+        "url": "https://dummyjson.com/test",
+        "method": "GET"
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "echo_4e188477",
+      "type": "Echo",
+      "position": {
+        "x": 165.0,
+        "y": 540.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "jsonquery_c56d0aeb",
+      "type": "JsonQuery",
+      "position": {
+        "x": 450.0,
+        "y": 540.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 270.0
+      },
+      "inputs": {
+        "path": "/status"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_e0cd450b",
+      "type": "Echo",
+      "position": {
+        "x": 450.0,
+        "y": 825.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-httprequest_20e0cd74-status-echo_4e188477-message",
+      "source": "httprequest_20e0cd74",
+      "sourceHandle": "status",
+      "target": "echo_4e188477",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-httprequest_20e0cd74-body-jsonquery_c56d0aeb-json",
+      "source": "httprequest_20e0cd74",
+      "sourceHandle": "body",
+      "target": "jsonquery_c56d0aeb",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-jsonquery_c56d0aeb-result-echo_e0cd450b-message",
+      "source": "jsonquery_c56d0aeb",
+      "sourceHandle": "result",
+      "target": "echo_e0cd450b",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

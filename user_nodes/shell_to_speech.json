@@ -1,0 +1,96 @@
+{
+  "name": "ShellToSpeech",
+  "title": "Shell to Speech",
+  "category": "Generative",
+  "description": "Runs a shell command, summarizes output with LLM, and speaks it.",
+  "inputs": [
+    {
+      "name": "api_base",
+      "mapping": [ "openai_llm_node.api_base", "openai_tts_node.api_base" ]
+    },
+    {
+      "name": "api_key",
+      "mapping": [ "openai_llm_node.api_key", "openai_tts_node.api_key" ]
+    },
+    {
+      "name": "llm_model",
+      "mapping": "openai_llm_node.model"
+    },
+    {
+      "name": "tts_model",
+      "mapping": "openai_tts_node.model"
+    },
+    {
+      "name": "tts_voice",
+      "mapping": "openai_tts_node.voice"
+    },
+    {
+      "name": "system_prompt",
+      "mapping": "openai_llm_node.system_prompt"
+    },
+    {
+      "name": "args",
+      "mapping": "shell_command_node.args"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "text",
+      "mapping": "openai_llm_node.text"
+    },
+    {
+      "name": "audio",
+      "mapping": "openai_tts_node.audio"
+    }
+  ],
+  "implementation": {
+    "nodes": [
+      {
+        "id": "shell_command_node",
+        "type": "ShellCommand",
+        "position": { "x": 0.0, "y": 0.0 },
+        "size": { "width": 300.0, "height": 300.0 },
+        "inputs": {
+          "stdin": ""
+        },
+        "skipCache": true,
+        "bypassed": false
+      },
+      {
+        "id": "openai_llm_node",
+        "type": "OpenAI_LLM",
+        "position": { "x": 350.0, "y": 0.0 },
+        "size": { "width": 300.0, "height": 300.0 },
+        "inputs": {},
+        "skipCache": false,
+        "bypassed": false
+      },
+      {
+        "id": "openai_tts_node",
+        "type": "OpenAI_TTS",
+        "position": { "x": 700.0, "y": 0.0 },
+        "size": { "width": 300.0, "height": 300.0 },
+        "inputs": {
+          "response_format": "wav",
+          "speed": 1
+        },
+        "skipCache": false,
+        "bypassed": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "shell_command_node",
+        "sourceHandle": "stdout",
+        "target": "openai_llm_node",
+        "targetHandle": "prompt"
+      },
+      {
+        "source": "openai_llm_node",
+        "sourceHandle": "text",
+        "target": "openai_tts_node",
+        "targetHandle": "input"
+      }
+    ]
+  }
+}

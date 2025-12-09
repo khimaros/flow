@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "shellcommand_b9124e3f",
+      "type": "ShellCommand",
+      "position": {
+        "x": 330.0,
+        "y": 180.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 465.0
+      },
+      "inputs": {
+        "args": [
+          "2"
+        ],
+        "stdin": "",
+        "command": "sleep"
+      },
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [],
+  "forceRun": false,
+  "targetNodeId": null
+}

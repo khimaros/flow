@@ -1,0 +1,64 @@
+{
+  "name": "FetchArticle",
+  "title": "Fetch Article",
+  "category": "Network",
+  "description": "Fetches a URL and converts the HTML response to markdown.",
+  "inputs": [
+    {
+      "name": "url",
+      "mapping": "web_fetch_node.url"
+    },
+    {
+      "name": "readability",
+      "mapping": "html_to_markdown_node.readability"
+    },
+    {
+      "name": "max_length",
+      "mapping": "html_to_markdown_node.max_length"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "markdown",
+      "mapping": "html_to_markdown_node.markdown"
+    },
+    {
+      "name": "title",
+      "mapping": "html_to_markdown_node.title"
+    },
+    {
+      "name": "status",
+      "mapping": "web_fetch_node.status"
+    }
+  ],
+  "implementation": {
+    "nodes": [
+      {
+        "id": "web_fetch_node",
+        "type": "WebFetch",
+        "position": { "x": 0.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 220.0 },
+        "inputs": {},
+        "skipCache": false,
+        "bypassed": false
+      },
+      {
+        "id": "html_to_markdown_node",
+        "type": "HtmlToMarkdown",
+        "position": { "x": 450.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 300.0 },
+        "inputs": {},
+        "skipCache": false,
+        "bypassed": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "web_fetch_node",
+        "sourceHandle": "content",
+        "target": "html_to_markdown_node",
+        "targetHandle": "html"
+      }
+    ]
+  }
+}

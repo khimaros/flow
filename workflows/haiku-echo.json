@@ -1,0 +1,148 @@
+{
+  "nodes": [
+    {
+      "id": "randominteger_1aeda6ed",
+      "type": "RandomInteger",
+      "position": {
+        "x": 180.0,
+        "y": 30.0
+      },
+      "size": {
+        "width": 315.0,
+        "height": 240.0
+      },
+      "inputs": {
+        "min": 10000000,
+        "max": 99999999
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "openai_488c510c",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 480.0,
+        "y": 30.0
+      },
+      "size": {
+        "width": 390.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "prompt": "the rust programming language",
+        "json_schema": "",
+        "reasoning_budget": 64,
+        "api_base": "",
+        "api_key": "",
+        "system_prompt": "provide a haiku based on the content of the prompt. answer only with the haiku.",
+        "temperature": null,
+        "model": "",
+        "thinking_budget_tokens": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_ea94350d",
+      "type": "Echo",
+      "position": {
+        "x": 855.0,
+        "y": 555.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 345.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "jsonquery_40bdcf37",
+      "type": "JsonQuery",
+      "position": {
+        "x": 1215.0,
+        "y": 330.0
+      },
+      "size": {
+        "width": 345.0,
+        "height": 345.0
+      },
+      "inputs": {
+        "path": "/completion_tokens"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_43c2867b",
+      "type": "Echo",
+      "position": {
+        "x": 1215.0,
+        "y": 690.0
+      },
+      "size": {
+        "width": 345.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "echo_f0264d1b",
+      "type": "Echo",
+      "position": {
+        "x": 855.0,
+        "y": 30.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 510.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-randominteger_1aeda6ed-output-openai_488c510c-seed",
+      "source": "randominteger_1aeda6ed",
+      "sourceHandle": "output",
+      "target": "openai_488c510c",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-openai_488c510c-text-echo_ea94350d-message",
+      "source": "openai_488c510c",
+      "sourceHandle": "text",
+      "target": "echo_ea94350d",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-openai_488c510c-usage-jsonquery_40bdcf37-json",
+      "source": "openai_488c510c",
+      "sourceHandle": "usage",
+      "target": "jsonquery_40bdcf37",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-jsonquery_40bdcf37-result-echo_43c2867b-message",
+      "source": "jsonquery_40bdcf37",
+      "sourceHandle": "result",
+      "target": "echo_43c2867b",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-openai_488c510c-thinking-echo_f0264d1b-message",
+      "source": "openai_488c510c",
+      "sourceHandle": "thinking",
+      "target": "echo_f0264d1b",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

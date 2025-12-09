@@ -1,0 +1,155 @@
+{
+  "nodes": [
+    {
+      "id": "audioinput_9600af03",
+      "type": "AudioInput",
+      "position": {
+        "x": 315.0,
+        "y": -150.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 225.0
+      },
+      "inputs": {
+        "audio_data": "/api/assets/audio_input_74538f5c-ed19-42e6-9ab2-51387e935cb1.wav"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_tti_d01dc7a6",
+      "type": "OpenAI_TTI",
+      "position": {
+        "x": 1365.0,
+        "y": -150.0
+      },
+      "size": {
+        "width": 405.0,
+        "height": 930.0
+      },
+      "inputs": {
+        "api_base": "",
+        "cfg_scale": null,
+        "height": null,
+        "model": "",
+        "negative_prompt": "",
+        "seed": null,
+        "steps": null,
+        "width": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_stt_65f29732",
+      "type": "OpenAI_STT",
+      "position": {
+        "x": 600.0,
+        "y": -150.0
+      },
+      "size": {
+        "width": 405.0,
+        "height": 645.0
+      },
+      "inputs": {
+        "api_base": "",
+        "language": "",
+        "model": "",
+        "prompt": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_llm_9b69d6d8",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 990.0,
+        "y": -150.0
+      },
+      "size": {
+        "width": 390.0,
+        "height": 930.0
+      },
+      "inputs": {
+        "api_base": "",
+        "api_key": "",
+        "model": "",
+        "system_prompt": "Generate a detailed prompt for use with diffusion based text to image generators such as Stable Diffusion, Z-Image Turbo, or Qwen Image. Elaborate creatively on aspects that are ambiguous. Output ONLY the enhanced prompt.",
+        "temperature": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayimage_5f031771",
+      "type": "DisplayImage",
+      "position": {
+        "x": 1755.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 630.0,
+        "height": 705.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_242802d4",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 315.0,
+        "y": 90.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-audioinput_9600af03-audio-openai_stt_65f29732-audio",
+      "source": "audioinput_9600af03",
+      "sourceHandle": "audio",
+      "target": "openai_stt_65f29732",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-openai_llm_9b69d6d8-text-openai_tti_d01dc7a6-prompt",
+      "source": "openai_llm_9b69d6d8",
+      "sourceHandle": "text",
+      "target": "openai_tti_d01dc7a6",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-openai_tti_d01dc7a6-image-displayimage_5f031771-image",
+      "source": "openai_tti_d01dc7a6",
+      "sourceHandle": "image",
+      "target": "displayimage_5f031771",
+      "targetHandle": "image"
+    },
+    {
+      "id": "e-openai_stt_65f29732-text-openai_llm_9b69d6d8-prompt",
+      "source": "openai_stt_65f29732",
+      "sourceHandle": "text",
+      "target": "openai_llm_9b69d6d8",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-audioinput_9600af03-audio-displayaudio_242802d4-audio",
+      "source": "audioinput_9600af03",
+      "sourceHandle": "audio",
+      "target": "displayaudio_242802d4",
+      "targetHandle": "audio"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

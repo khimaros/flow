@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {
+      "id": "read_node",
+      "type": "Read",
+      "position": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 105.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_node",
+      "type": "Echo",
+      "position": {
+        "x": 285.0,
+        "y": 0.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-read_node-output-echo_node-message",
+      "source": "read_node",
+      "sourceHandle": "output",
+      "target": "echo_node",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

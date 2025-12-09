@@ -1,0 +1,105 @@
+{
+  "nodes": [
+    {
+      "id": "openai_tts_30675f8f",
+      "type": "OpenAI_TTS",
+      "position": {
+        "x": 870.0,
+        "y": -300.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 885.0
+      },
+      "inputs": {
+        "api_base": "",
+        "api_key": "",
+        "model": "fish-s2-pro:Q8_0",
+        "response_format": "wav",
+        "speed": null,
+        "temperature": null,
+        "voice": "uncle_fu"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_f2ea665e",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 1275.0,
+        "y": 285.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_696e2f95",
+      "type": "Echo",
+      "position": {
+        "x": 150.0,
+        "y": -300.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 210.0
+      },
+      "inputs": {
+        "message": "the purpose of the kykeon elixir in the Eleusinian Mysteries"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_91ae2493",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 465.0,
+        "y": -300.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 885.0
+      },
+      "inputs": {
+        "api_base": "",
+        "api_key": "",
+        "model": "",
+        "system_prompt": "Generate a brief podcast introduction about the provided topic. Avoid any non-verbal cues such as markdown formatting. The introduction will be sent to a text-to-speech system.",
+        "temperature": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-openai_tts_30675f8f-audio-displayaudio_f2ea665e-audio",
+      "source": "openai_tts_30675f8f",
+      "sourceHandle": "audio",
+      "target": "displayaudio_f2ea665e",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-echo_696e2f95-output-openai_91ae2493-prompt",
+      "source": "echo_696e2f95",
+      "sourceHandle": "output",
+      "target": "openai_91ae2493",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-openai_91ae2493-text-openai_tts_30675f8f-input",
+      "source": "openai_91ae2493",
+      "sourceHandle": "text",
+      "target": "openai_tts_30675f8f",
+      "targetHandle": "input"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

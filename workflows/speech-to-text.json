@@ -1,0 +1,141 @@
+{
+  "nodes": [
+    {
+      "id": "audioinput_f5e55f8f",
+      "type": "AudioInput",
+      "position": {
+        "x": 555.0,
+        "y": -75.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 225.0
+      },
+      "inputs": {
+        "audio_data": "/api/assets/audio_input_74538f5c-ed19-42e6-9ab2-51387e935cb1.wav"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_stt_ebf9c7f1",
+      "type": "OpenAI_STT",
+      "position": {
+        "x": 870.0,
+        "y": -180.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 645.0
+      },
+      "inputs": {
+        "api_base": "",
+        "api_key": "",
+        "language": "",
+        "model": "",
+        "prompt": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_d819cce1",
+      "type": "Echo",
+      "position": {
+        "x": 1515.0,
+        "y": 180.0
+      },
+      "size": {
+        "width": 345.0,
+        "height": 285.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_fd7c7206",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 555.0,
+        "y": 165.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_08096aa0",
+      "type": "Echo",
+      "position": {
+        "x": 1515.0,
+        "y": -45.0
+      },
+      "size": {
+        "width": 345.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "displayjson_1225afe5",
+      "type": "DisplayJson",
+      "position": {
+        "x": 1185.0,
+        "y": -180.0
+      },
+      "size": {
+        "width": 345.0,
+        "height": 645.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-audioinput_f5e55f8f-audio-openai_stt_ebf9c7f1-audio",
+      "source": "audioinput_f5e55f8f",
+      "sourceHandle": "audio",
+      "target": "openai_stt_ebf9c7f1",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-openai_stt_ebf9c7f1-text-echo_d819cce1-message",
+      "source": "openai_stt_ebf9c7f1",
+      "sourceHandle": "text",
+      "target": "echo_d819cce1",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-audioinput_f5e55f8f-audio-displayaudio_fd7c7206-audio",
+      "source": "audioinput_f5e55f8f",
+      "sourceHandle": "audio",
+      "target": "displayaudio_fd7c7206",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-openai_stt_ebf9c7f1-language-echo_08096aa0-message",
+      "source": "openai_stt_ebf9c7f1",
+      "sourceHandle": "language",
+      "target": "echo_08096aa0",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-openai_stt_ebf9c7f1-json-displayjson_1225afe5-json",
+      "source": "openai_stt_ebf9c7f1",
+      "sourceHandle": "json",
+      "target": "displayjson_1225afe5",
+      "targetHandle": "json"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

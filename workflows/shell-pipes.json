@@ -1,0 +1,205 @@
+{
+  "nodes": [
+    {
+      "id": "shellcommand_22f908b2",
+      "type": "ShellCommand",
+      "position": {
+        "x": 90.0,
+        "y": 195.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 690.0
+      },
+      "inputs": {
+        "stdin": "",
+        "command": "du"
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "shellcommand_c6c4ed98",
+      "type": "ShellCommand",
+      "position": {
+        "x": 375.0,
+        "y": 195.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 690.0
+      },
+      "inputs": {
+        "args": "[\"-nbr\"]",
+        "command": "sort"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "templatize_b8a6abab",
+      "type": "Templatize",
+      "position": {
+        "x": -225.0,
+        "y": 480.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 405.0
+      },
+      "inputs": {
+        "template": "[\n  \"-s\"{% for path in values %},\n  \"{{ path }}/*\"{% endfor %}\n]"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "listtojson_f1234567",
+      "type": "ListToJson",
+      "position": {
+        "x": -225.0,
+        "y": 195.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 270.0
+      },
+      "inputs": {
+        "list": [
+          "/var/lib/dpkg",
+          "/lib/modules"
+        ]
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "split_1f068586",
+      "type": "Split",
+      "position": {
+        "x": 945.0,
+        "y": 195.0
+      },
+      "size": {
+        "width": 435.0,
+        "height": 690.0
+      },
+      "inputs": {
+        "separator": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "list_73edaa65",
+      "type": "List",
+      "position": {
+        "x": 1365.0,
+        "y": 195.0
+      },
+      "size": {
+        "width": 465.0,
+        "height": 690.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "shellcommand_25fee9ba",
+      "type": "ShellCommand",
+      "position": {
+        "x": 660.0,
+        "y": 195.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 690.0
+      },
+      "inputs": {
+        "args": [
+          "-n",
+          "1000"
+        ],
+        "command": "head"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_adb3c6b5",
+      "type": "Echo",
+      "position": {
+        "x": 90.0,
+        "y": -75.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 255.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-shellcommand_22f908b2-stdout-shellcommand_c6c4ed98-stdin",
+      "source": "shellcommand_22f908b2",
+      "sourceHandle": "stdout",
+      "target": "shellcommand_c6c4ed98",
+      "targetHandle": "stdin"
+    },
+    {
+      "id": "e-listtojson_f1234567-output-templatize_b8a6abab-context",
+      "source": "listtojson_f1234567",
+      "sourceHandle": "output",
+      "target": "templatize_b8a6abab",
+      "targetHandle": "context"
+    },
+    {
+      "id": "e-split_1f068586-output-displaylist_0c4a72c6-list",
+      "source": "split_1f068586",
+      "sourceHandle": "output",
+      "target": "displaylist_0c4a72c6",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-split_1f068586-output-list_73edaa65-list",
+      "source": "split_1f068586",
+      "sourceHandle": "output",
+      "target": "list_73edaa65",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-shellcommand_c6c4ed98-stdout-shellcommand_25fee9ba-stdin",
+      "source": "shellcommand_c6c4ed98",
+      "sourceHandle": "stdout",
+      "target": "shellcommand_25fee9ba",
+      "targetHandle": "stdin"
+    },
+    {
+      "id": "e-shellcommand_25fee9ba-stdout-split_1f068586-text",
+      "source": "shellcommand_25fee9ba",
+      "sourceHandle": "stdout",
+      "target": "split_1f068586",
+      "targetHandle": "text"
+    },
+    {
+      "id": "e-templatize_b8a6abab-output-shellcommand_22f908b2-args",
+      "source": "templatize_b8a6abab",
+      "sourceHandle": "output",
+      "target": "shellcommand_22f908b2",
+      "targetHandle": "args"
+    },
+    {
+      "id": "e-templatize_b8a6abab-output-echo_adb3c6b5-message",
+      "source": "templatize_b8a6abab",
+      "sourceHandle": "output",
+      "target": "echo_adb3c6b5",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

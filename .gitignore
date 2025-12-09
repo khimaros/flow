@@ -1,0 +1,17 @@
+/target/
+**/*.rs.bk
+.env
+.flow_cache.json
+*.log
+/ui/node_modules/
+/ui/dist/
+__pycache__/
+/workflows/.temp_*.json
+/workflows/.state/
+/ui/playwright-report/
+/ui/test-results/
+# BEGIN generated_assets allowlist
+/generated_assets/*
+!/generated_assets/audio_input_74538f5c-ed19-42e6-9ab2-51387e935cb1.wav
+!/generated_assets/upload_066c0dfb-1094-4116-a2fe-2d6cf212428d.wav
+# END generated_assets allowlist

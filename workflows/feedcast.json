@@ -1,0 +1,244 @@
+{
+  "nodes": [
+    {
+      "id": "fetchrss_f8a871f9",
+      "type": "FetchRSS",
+      "position": {
+        "x": 405.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 405.0,
+        "height": 405.0
+      },
+      "inputs": {
+        "url": "https://news.ycombinator.com/rss",
+        "from_date": "1 day ago",
+        "timeout": null
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "loop_4c4aff12",
+      "type": "Loop",
+      "position": {
+        "x": 795.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "item_input": "url",
+        "item_output": "markdown",
+        "node_type": "FetchArticle",
+        "extra_inputs": "{\"max_length\": 50000}",
+        "include_item": true,
+        "item_path": "/link",
+        "on_failure": "null",
+        "delay": 20,
+        "limit": 5
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "templatize_a1b2c3d4",
+      "type": "Templatize",
+      "position": {
+        "x": 1230.0,
+        "y": 705.0
+      },
+      "size": {
+        "width": 465.0,
+        "height": 300.0
+      },
+      "inputs": {
+        "template": "{% for entry in input %}\n## {{ entry.a.item.title }}\n\n{{ entry.a.output }}\n{% if entry.b %}\n\n### Discussion\n{% for comment in entry.b | slice(end=10) %}\n- {{ comment | truncate(length=500) }}\n{% endfor %}\n{% endif %}\n\n{% endfor %}"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_llm_b2c3d4e5",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 1680.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 465.0,
+        "height": 1155.0
+      },
+      "inputs": {
+        "system_prompt": "Turn the articles and discussions into a natural, 2-3 minute information dense update. Highlight connections and common themes. Do NOT enumerate \"first story, second story\". Do NOT use markdown, sound effects, or any other formatting -- ONLY THE SPOKEN WORD SUMMARY.",
+        "model": "",
+        "api_base": "",
+        "temperature": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_tts_c3d4e5f6",
+      "type": "OpenAI_TTS",
+      "position": {
+        "x": 2130.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 840.0
+      },
+      "inputs": {
+        "temperature": null,
+        "response_format": "wav",
+        "voice": "",
+        "api_base": "",
+        "speed": null,
+        "model": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_d4e5f6a7",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 2130.0,
+        "y": 1110.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displaymarkdown_9eba301e",
+      "type": "DisplayMarkdown",
+      "position": {
+        "x": 1230.0,
+        "y": 1020.0
+      },
+      "size": {
+        "width": 465.0,
+        "height": 735.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "loop_comments",
+      "type": "Loop",
+      "position": {
+        "x": 795.0,
+        "y": 1140.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "on_failure": "null",
+        "delay": 150,
+        "item_input": "url",
+        "item_path": "/comments",
+        "limit": 5,
+        "node_type": "FetchHtmlSelect",
+        "item_output": "matches",
+        "include_item": false,
+        "extra_inputs": "{\"query\": \"//div[@class=\\\"comment\\\"]\"}"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "zip_articles_comments",
+      "type": "Zip",
+      "position": {
+        "x": 1230.0,
+        "y": 255.0
+      },
+      "size": {
+        "width": 465.0,
+        "height": 435.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-fetchrss_f8a871f9-items-loop_4c4aff12-items",
+      "source": "fetchrss_f8a871f9",
+      "sourceHandle": "items",
+      "target": "loop_4c4aff12",
+      "targetHandle": "items"
+    },
+    {
+      "id": "e-templatize_a1b2c3d4-output-openai_llm_b2c3d4e5-prompt",
+      "source": "templatize_a1b2c3d4",
+      "sourceHandle": "output",
+      "target": "openai_llm_b2c3d4e5",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-openai_llm_b2c3d4e5-text-openai_tts_c3d4e5f6-input",
+      "source": "openai_llm_b2c3d4e5",
+      "sourceHandle": "text",
+      "target": "openai_tts_c3d4e5f6",
+      "targetHandle": "input"
+    },
+    {
+      "id": "e-openai_tts_c3d4e5f6-audio-displayaudio_d4e5f6a7-audio",
+      "source": "openai_tts_c3d4e5f6",
+      "sourceHandle": "audio",
+      "target": "displayaudio_d4e5f6a7",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-templatize_a1b2c3d4-output-displaymarkdown_9eba301e-markdown",
+      "source": "templatize_a1b2c3d4",
+      "sourceHandle": "output",
+      "target": "displaymarkdown_9eba301e",
+      "targetHandle": "markdown"
+    },
+    {
+      "id": "e-fetchrss_f8a871f9-items-loop_comments-items",
+      "source": "fetchrss_f8a871f9",
+      "sourceHandle": "items",
+      "target": "loop_comments",
+      "targetHandle": "items"
+    },
+    {
+      "id": "e-loop_4c4aff12-results-zip_articles_comments-a",
+      "source": "loop_4c4aff12",
+      "sourceHandle": "results",
+      "target": "zip_articles_comments",
+      "targetHandle": "a"
+    },
+    {
+      "id": "e-loop_comments-results-zip_articles_comments-b",
+      "source": "loop_comments",
+      "sourceHandle": "results",
+      "target": "zip_articles_comments",
+      "targetHandle": "b"
+    },
+    {
+      "id": "e-zip_articles_comments-output-templatize_a1b2c3d4-context",
+      "source": "zip_articles_comments",
+      "sourceHandle": "output",
+      "target": "templatize_a1b2c3d4",
+      "targetHandle": "context"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

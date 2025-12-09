@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {
+      "id": "shell_node",
+      "type": "ShellCommand",
+      "position": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 465.0
+      },
+      "inputs": {
+        "args": "",
+        "command": "cat",
+        "stdin": "hello, world!"
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "echo_node",
+      "type": "Echo",
+      "position": {
+        "x": 285.0,
+        "y": 0.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-shell_node-stdout-echo_node-message",
+      "source": "shell_node",
+      "sourceHandle": "stdout",
+      "target": "echo_node",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

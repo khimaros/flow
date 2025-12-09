@@ -1,0 +1,138 @@
+{
+  "nodes": [
+    {
+      "id": "stable_diffusion_835b2b79",
+      "type": "OpenAI_TTI",
+      "position": {
+        "x": 480.0,
+        "y": 240.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "negative_prompt": "",
+        "cfg_scale": null,
+        "api_base": "",
+        "width": null,
+        "steps": null,
+        "height": null,
+        "api_key": "",
+        "model": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "display_image_e2785813",
+      "type": "DisplayImage",
+      "position": {
+        "x": 885.0,
+        "y": 240.0
+      },
+      "size": {
+        "width": 750.0,
+        "height": 870.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_759600ba",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 45.0,
+        "y": 240.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "system_prompt": "Generate a detailed prompt for use with diffusion based text to image generators such as Stable Diffusion, Z-Image Turbo, or Qwen Image. Elaborate creatively on aspects that are ambiguous. Output ONLY the enhanced prompt.",
+        "temperature": null,
+        "api_key": "",
+        "model": "",
+        "api_base": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_d80e7d92",
+      "type": "Echo",
+      "position": {
+        "x": -375.0,
+        "y": 240.0
+      },
+      "size": {
+        "width": 435.0,
+        "height": 330.0
+      },
+      "inputs": {
+        "message": "a cyberpunk monk"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "randominteger_68cd0b58",
+      "type": "RandomInteger",
+      "position": {
+        "x": 45.0,
+        "y": -15.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 240.0
+      },
+      "inputs": {
+        "min": 10000000,
+        "max": 99999999
+      },
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-stable_diffusion_835b2b79-image-display_image_e2785813-image",
+      "source": "stable_diffusion_835b2b79",
+      "sourceHandle": "image",
+      "target": "display_image_e2785813",
+      "targetHandle": "image"
+    },
+    {
+      "id": "e-openai_759600ba-text-stable_diffusion_835b2b79-prompt",
+      "source": "openai_759600ba",
+      "sourceHandle": "text",
+      "target": "stable_diffusion_835b2b79",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-randominteger_68cd0b58-output-openai_759600ba-seed",
+      "source": "randominteger_68cd0b58",
+      "sourceHandle": "output",
+      "target": "openai_759600ba",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-randominteger_68cd0b58-output-stable_diffusion_835b2b79-seed",
+      "source": "randominteger_68cd0b58",
+      "sourceHandle": "output",
+      "target": "stable_diffusion_835b2b79",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-echo_d80e7d92-output-openai_759600ba-prompt",
+      "source": "echo_d80e7d92",
+      "sourceHandle": "output",
+      "target": "openai_759600ba",
+      "targetHandle": "prompt"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

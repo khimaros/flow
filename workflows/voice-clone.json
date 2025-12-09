@@ -1,0 +1,369 @@
+{
+  "nodes": [
+    {
+      "id": "openai_tts_17680ccf",
+      "type": "OpenAI_TTS",
+      "position": {
+        "x": 390.0,
+        "y": -525.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 795.0
+      },
+      "inputs": {
+        "api_base": "",
+        "input": "The past is just a story we tell ourselves.",
+        "instructions": "",
+        "model": "",
+        "response_format": "wav",
+        "speed": null,
+        "temperature": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_a32432d1",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 795.0,
+        "y": -30.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_voice_design_5981aca2",
+      "type": "OpenAI_Voice_Design",
+      "position": {
+        "x": -15.0,
+        "y": -525.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 795.0
+      },
+      "inputs": {
+        "model": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "audioinput_5ccc8215",
+      "type": "AudioInput",
+      "position": {
+        "x": -645.0,
+        "y": -270.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 225.0
+      },
+      "inputs": {
+        "audio_data": "/api/assets/upload_066c0dfb-1094-4116-a2fe-2d6cf212428d.wav"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_866561e0",
+      "type": "DisplayAudio",
+      "position": {
+        "x": -645.0,
+        "y": -30.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_stt_2c006e81",
+      "type": "OpenAI_STT",
+      "position": {
+        "x": -360.0,
+        "y": -525.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 795.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "randominteger_7ce2d782",
+      "type": "RandomInteger",
+      "position": {
+        "x": -645.0,
+        "y": -525.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 240.0
+      },
+      "inputs": {
+        "max": 90000000,
+        "min": 10000000
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_dcd1c9b5",
+      "type": "Echo",
+      "position": {
+        "x": -645.0,
+        "y": 570.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {
+        "message": "an 80 year old man with a gravelly southern drawl"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_tts_de6ebae8",
+      "type": "OpenAI_TTS",
+      "position": {
+        "x": -360.0,
+        "y": 345.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 795.0
+      },
+      "inputs": {
+        "model": "qwen3-tts-1.7b-voicedesign:Q8_0",
+        "response_format": "wav"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_5928b65d",
+      "type": "DisplayAudio",
+      "position": {
+        "x": -360.0,
+        "y": 1155.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_fe68bc0e",
+      "type": "Echo",
+      "position": {
+        "x": -645.0,
+        "y": 345.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {
+        "message": "It's so hot out here these days. And what happened to all of the horses?"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_voice_design_58dd83a3",
+      "type": "OpenAI_Voice_Design",
+      "position": {
+        "x": -15.0,
+        "y": 345.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 795.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_tts_98253aaf",
+      "type": "OpenAI_TTS",
+      "position": {
+        "x": 390.0,
+        "y": 345.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 795.0
+      },
+      "inputs": {
+        "input": "I just love spending time on the farm.",
+        "response_format": "wav"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_5bae681b",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 795.0,
+        "y": 840.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-openai_tts_17680ccf-audio-displayaudio_a32432d1-audio",
+      "source": "openai_tts_17680ccf",
+      "sourceHandle": "audio",
+      "target": "displayaudio_a32432d1",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-audioinput_5ccc8215-audio-openai_voice_design_5981aca2-audio_sample",
+      "source": "audioinput_5ccc8215",
+      "sourceHandle": "audio",
+      "target": "openai_voice_design_5981aca2",
+      "targetHandle": "audio_sample"
+    },
+    {
+      "id": "e-openai_voice_design_5981aca2-voice_id-openai_tts_17680ccf-voice",
+      "source": "openai_voice_design_5981aca2",
+      "sourceHandle": "voice_id",
+      "target": "openai_tts_17680ccf",
+      "targetHandle": "voice"
+    },
+    {
+      "id": "e-audioinput_5ccc8215-audio-displayaudio_866561e0-audio",
+      "source": "audioinput_5ccc8215",
+      "sourceHandle": "audio",
+      "target": "displayaudio_866561e0",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-audioinput_5ccc8215-audio-openai_stt_2c006e81-audio",
+      "source": "audioinput_5ccc8215",
+      "sourceHandle": "audio",
+      "target": "openai_stt_2c006e81",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-openai_stt_2c006e81-text-openai_voice_design_5981aca2-ref_text",
+      "source": "openai_stt_2c006e81",
+      "sourceHandle": "text",
+      "target": "openai_voice_design_5981aca2",
+      "targetHandle": "ref_text"
+    },
+    {
+      "id": "e-randominteger_7ce2d782-output-openai_stt_2c006e81-seed",
+      "source": "randominteger_7ce2d782",
+      "sourceHandle": "output",
+      "target": "openai_stt_2c006e81",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-randominteger_7ce2d782-output-openai_voice_design_5981aca2-seed",
+      "source": "randominteger_7ce2d782",
+      "sourceHandle": "output",
+      "target": "openai_voice_design_5981aca2",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-randominteger_7ce2d782-output-openai_tts_17680ccf-seed",
+      "source": "randominteger_7ce2d782",
+      "sourceHandle": "output",
+      "target": "openai_tts_17680ccf",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-echo_dcd1c9b5-output-openai_tts_de6ebae8-instructions",
+      "source": "echo_dcd1c9b5",
+      "sourceHandle": "output",
+      "target": "openai_tts_de6ebae8",
+      "targetHandle": "instructions"
+    },
+    {
+      "id": "e-openai_tts_de6ebae8-audio-displayaudio_5928b65d-audio",
+      "source": "openai_tts_de6ebae8",
+      "sourceHandle": "audio",
+      "target": "displayaudio_5928b65d",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-echo_fe68bc0e-output-openai_tts_de6ebae8-input",
+      "source": "echo_fe68bc0e",
+      "sourceHandle": "output",
+      "target": "openai_tts_de6ebae8",
+      "targetHandle": "input"
+    },
+    {
+      "id": "e-openai_tts_de6ebae8-audio-openai_voice_design_58dd83a3-audio_sample",
+      "source": "openai_tts_de6ebae8",
+      "sourceHandle": "audio",
+      "target": "openai_voice_design_58dd83a3",
+      "targetHandle": "audio_sample"
+    },
+    {
+      "id": "e-randominteger_7ce2d782-output-openai_tts_de6ebae8-seed",
+      "source": "randominteger_7ce2d782",
+      "sourceHandle": "output",
+      "target": "openai_tts_de6ebae8",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-randominteger_7ce2d782-output-openai_voice_design_58dd83a3-seed",
+      "source": "randominteger_7ce2d782",
+      "sourceHandle": "output",
+      "target": "openai_voice_design_58dd83a3",
+      "targetHandle": "seed"
+    },
+    {
+      "id": "e-echo_fe68bc0e-output-openai_voice_design_58dd83a3-ref_text",
+      "source": "echo_fe68bc0e",
+      "sourceHandle": "output",
+      "target": "openai_voice_design_58dd83a3",
+      "targetHandle": "ref_text"
+    },
+    {
+      "id": "e-openai_voice_design_58dd83a3-voice_id-openai_tts_98253aaf-voice",
+      "source": "openai_voice_design_58dd83a3",
+      "sourceHandle": "voice_id",
+      "target": "openai_tts_98253aaf",
+      "targetHandle": "voice"
+    },
+    {
+      "id": "e-openai_tts_98253aaf-audio-displayaudio_5bae681b-audio",
+      "source": "openai_tts_98253aaf",
+      "sourceHandle": "audio",
+      "target": "displayaudio_5bae681b",
+      "targetHandle": "audio"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

@@ -1,0 +1,154 @@
+{
+  "nodes": [
+    {
+      "id": "shelltospeech_7f80b27c",
+      "type": "ShellToSpeech",
+      "position": {
+        "x": 465.0,
+        "y": 270.0
+      },
+      "size": {
+        "width": 405.0,
+        "height": 750.0
+      },
+      "inputs": {
+        "llm_model": "",
+        "api_base": "",
+        "tts_voice": "",
+        "command": "",
+        "tts_model": "",
+        "api_key": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_ebfed5da",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 1260.0,
+        "y": 270.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_09bf69d7",
+      "type": "Echo",
+      "position": {
+        "x": 855.0,
+        "y": 270.0
+      },
+      "size": {
+        "width": 420.0,
+        "height": 750.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "templatize_90ed0bbf",
+      "type": "Templatize",
+      "position": {
+        "x": 180.0,
+        "y": 270.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 585.0
+      },
+      "inputs": {
+        "template": "Generate a summary in paragraph form about this command's output: `{{ values | join(sep=' ') }}`. Do not use markdown. Prefer high level descriptions over specific paths or version numbers."
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "list_9aac413a",
+      "type": "List",
+      "position": {
+        "x": -105.0,
+        "y": 270.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {
+        "list": [
+          "ldd",
+          "/usr/bin/apt"
+        ]
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "listtojson_95dc055a",
+      "type": "ListToJson",
+      "position": {
+        "x": -105.0,
+        "y": 585.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-shelltospeech_7f80b27c-audio-displayaudio_ebfed5da-audio",
+      "source": "shelltospeech_7f80b27c",
+      "sourceHandle": "audio",
+      "target": "displayaudio_ebfed5da",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-shelltospeech_7f80b27c-text-echo_09bf69d7-message",
+      "source": "shelltospeech_7f80b27c",
+      "sourceHandle": "text",
+      "target": "echo_09bf69d7",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-templatize_90ed0bbf-output-shelltospeech_7f80b27c-system_prompt",
+      "source": "templatize_90ed0bbf",
+      "sourceHandle": "output",
+      "target": "shelltospeech_7f80b27c",
+      "targetHandle": "system_prompt"
+    },
+    {
+      "id": "e-list_9aac413a-list-shelltospeech_7f80b27c-args",
+      "source": "list_9aac413a",
+      "sourceHandle": "list",
+      "target": "shelltospeech_7f80b27c",
+      "targetHandle": "args"
+    },
+    {
+      "id": "e-list_9aac413a-list-listtojson_95dc055a-list",
+      "source": "list_9aac413a",
+      "sourceHandle": "list",
+      "target": "listtojson_95dc055a",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-listtojson_95dc055a-output-templatize_90ed0bbf-context",
+      "source": "listtojson_95dc055a",
+      "sourceHandle": "output",
+      "target": "templatize_90ed0bbf",
+      "targetHandle": "context"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

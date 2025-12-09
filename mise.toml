@@ -1,0 +1,5 @@
+[tools]
+node = "22.21.1"
+npm = "latest"
+#python = "3.13.9"
+rust = "1.90.0"

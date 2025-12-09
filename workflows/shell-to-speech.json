@@ -1,0 +1,228 @@
+{
+  "nodes": [
+    {
+      "id": "shellcommand_b9124e3f",
+      "type": "ShellCommand",
+      "position": {
+        "x": 180.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 465.0
+      },
+      "inputs": {
+        "command": "",
+        "stdin": ""
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "echo_ca25ba07",
+      "type": "Echo",
+      "position": {
+        "x": 465.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 945.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "openai_llm_00c1382a",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 900.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 375.0,
+        "height": 945.0
+      },
+      "inputs": {
+        "model": "",
+        "api_base": "",
+        "temperature": null,
+        "json_schema": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_tts_2e2017a6",
+      "type": "OpenAI_TTS",
+      "position": {
+        "x": 1260.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 630.0
+      },
+      "inputs": {
+        "api_base": "",
+        "response_format": "wav",
+        "speed": null,
+        "model": "",
+        "temperature": null,
+        "voice": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayaudio_1d8e6d4e",
+      "type": "DisplayAudio",
+      "position": {
+        "x": 1260.0,
+        "y": 720.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 300.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "list_da0efa5b",
+      "type": "List",
+      "position": {
+        "x": -105.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {
+        "list": [
+          "ldd",
+          "/usr/bin/apt"
+        ]
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "listtojson_e106a506",
+      "type": "ListToJson",
+      "position": {
+        "x": -105.0,
+        "y": 360.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 270.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "templatize_d94adcc0",
+      "type": "Templatize",
+      "position": {
+        "x": 180.0,
+        "y": 555.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 465.0
+      },
+      "inputs": {
+        "template": "Generate a summary in paragraph form about this command's output: `{{ values | join(sep=' ') }}`. Do not use markdown. Prefer high level descriptions over specific paths or version numbers."
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_1b96d8a9",
+      "type": "Echo",
+      "position": {
+        "x": 1545.0,
+        "y": 75.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 630.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-shellcommand_b9124e3f-stdout-echo_ca25ba07-message",
+      "source": "shellcommand_b9124e3f",
+      "sourceHandle": "stdout",
+      "target": "echo_ca25ba07",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-shellcommand_b9124e3f-stdout-openai_llm_00c1382a-prompt",
+      "source": "shellcommand_b9124e3f",
+      "sourceHandle": "stdout",
+      "target": "openai_llm_00c1382a",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-openai_llm_00c1382a-text-openai_tts_2e2017a6-input",
+      "source": "openai_llm_00c1382a",
+      "sourceHandle": "text",
+      "target": "openai_tts_2e2017a6",
+      "targetHandle": "input"
+    },
+    {
+      "id": "e-openai_tts_2e2017a6-audio-displayaudio_1d8e6d4e-audio",
+      "source": "openai_tts_2e2017a6",
+      "sourceHandle": "audio",
+      "target": "displayaudio_1d8e6d4e",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-list_da0efa5b-list-shellcommand_b9124e3f-args",
+      "source": "list_da0efa5b",
+      "sourceHandle": "list",
+      "target": "shellcommand_b9124e3f",
+      "targetHandle": "args"
+    },
+    {
+      "id": "e-list_da0efa5b-list-listtojson_e106a506-list",
+      "source": "list_da0efa5b",
+      "sourceHandle": "list",
+      "target": "listtojson_e106a506",
+      "targetHandle": "list"
+    },
+    {
+      "id": "e-listtojson_e106a506-output-templatize_d94adcc0-context",
+      "source": "listtojson_e106a506",
+      "sourceHandle": "output",
+      "target": "templatize_d94adcc0",
+      "targetHandle": "context"
+    },
+    {
+      "id": "e-templatize_d94adcc0-output-openai_llm_00c1382a-system_prompt",
+      "source": "templatize_d94adcc0",
+      "sourceHandle": "output",
+      "target": "openai_llm_00c1382a",
+      "targetHandle": "system_prompt"
+    },
+    {
+      "id": "e-openai_llm_00c1382a-text-echo_1b96d8a9-message",
+      "source": "openai_llm_00c1382a",
+      "sourceHandle": "text",
+      "target": "echo_1b96d8a9",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

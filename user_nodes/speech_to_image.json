@@ -1,0 +1,101 @@
+{
+  "name": "SpeechToImage",
+  "title": "Speech to Image",
+  "category": "Generative",
+  "description": "Transcribes speech, enhances the prompt with an LLM, and generates an image.",
+  "inputs": [
+    {
+      "name": "audio",
+      "mapping": "openai_stt_node.audio"
+    },
+    {
+      "name": "api_base",
+      "mapping": [ "openai_stt_node.api_base", "openai_llm_node.api_base", "openai_tti_node.api_base" ]
+    },
+    {
+      "name": "api_key",
+      "mapping": [ "openai_stt_node.api_key", "openai_llm_node.api_key", "openai_tti_node.api_key" ]
+    },
+    {
+      "name": "stt_model",
+      "mapping": "openai_stt_node.model"
+    },
+    {
+      "name": "llm_model",
+      "mapping": "openai_llm_node.model"
+    },
+    {
+      "name": "tti_model",
+      "mapping": "openai_tti_node.model"
+    },
+    {
+      "name": "language",
+      "mapping": "openai_stt_node.language"
+    },
+    {
+      "name": "steps",
+      "mapping": "openai_tti_node.steps"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "image",
+      "mapping": "openai_tti_node.image"
+    }
+  ],
+  "implementation": {
+    "nodes": [
+      {
+        "id": "openai_stt_node",
+        "type": "OpenAI_STT",
+        "position": { "x": 0.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 300.0 },
+        "inputs": {
+          "prompt": ""
+        },
+        "skipCache": false,
+        "bypassed": false
+      },
+      {
+        "id": "openai_llm_node",
+        "type": "OpenAI_LLM",
+        "position": { "x": 450.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 300.0 },
+        "inputs": {
+          "system_prompt": "Generate a detailed prompt for use with diffusion based text to image generators such as Stable Diffusion, Z-Image Turbo, or Qwen Image. Elaborate creatively on aspects that are ambiguous. Output ONLY the enhanced prompt."
+        },
+        "skipCache": false,
+        "bypassed": false
+      },
+      {
+        "id": "openai_tti_node",
+        "type": "OpenAI_TTI",
+        "position": { "x": 900.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 300.0 },
+        "inputs": {
+          "seed": -1,
+          "width": 512,
+          "height": 512,
+          "cfg_scale": 1,
+          "negative_prompt": ""
+        },
+        "skipCache": false,
+        "bypassed": false
+      }
+    ],
+    "edges": [
+      {
+        "source": "openai_stt_node",
+        "sourceHandle": "text",
+        "target": "openai_llm_node",
+        "targetHandle": "prompt"
+      },
+      {
+        "source": "openai_llm_node",
+        "sourceHandle": "text",
+        "target": "openai_tti_node",
+        "targetHandle": "prompt"
+      }
+    ]
+  }
+}

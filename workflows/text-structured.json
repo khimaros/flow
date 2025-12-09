@@ -1,0 +1,169 @@
+{
+  "nodes": [
+    {
+      "id": "echo_27656711",
+      "type": "Echo",
+      "position": {
+        "x": 285.0,
+        "y": 405.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 240.0
+      },
+      "inputs": {
+        "message": "barack obama"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "openai_8af36d5b",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 630.0,
+        "y": 405.0
+      },
+      "size": {
+        "width": 390.0,
+        "height": 870.0
+      },
+      "inputs": {
+        "api_base": "",
+        "max_tokens": null,
+        "api_key": "",
+        "model": "",
+        "seed": null,
+        "system_prompt": "provide details about the subject",
+        "temperature": null
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "jsonquery_d2b8deac",
+      "type": "JsonQuery",
+      "position": {
+        "x": 1320.0,
+        "y": 690.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 360.0
+      },
+      "inputs": {
+        "path": "/height_cm"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_62f5460e",
+      "type": "Echo",
+      "position": {
+        "x": 285.0,
+        "y": 660.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 615.0
+      },
+      "inputs": {
+        "message": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"birth_date\": {\n      \"type\": \"string\",\n      \"format\": \"date\"\n    },\n    \"height_cm\": {\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": [\n    \"name\",\n    \"birth_date\",\n    \"height_cm\"\n  ]\n}"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_9b2047c1",
+      "type": "Echo",
+      "position": {
+        "x": 1320.0,
+        "y": 1065.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "echo_d88eb324",
+      "type": "Echo",
+      "position": {
+        "x": 1005.0,
+        "y": 405.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 495.0
+      },
+      "inputs": {},
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "displayjson_71783ca5",
+      "type": "DisplayJson",
+      "position": {
+        "x": 1005.0,
+        "y": 915.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 360.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-echo_27656711-output-openai_8af36d5b-prompt",
+      "source": "echo_27656711",
+      "sourceHandle": "output",
+      "target": "openai_8af36d5b",
+      "targetHandle": "prompt"
+    },
+    {
+      "id": "e-echo_62f5460e-output-openai_8af36d5b-json_schema",
+      "source": "echo_62f5460e",
+      "sourceHandle": "output",
+      "target": "openai_8af36d5b",
+      "targetHandle": "json_schema"
+    },
+    {
+      "id": "e-openai_8af36d5b-text-jsonquery_d2b8deac-json",
+      "source": "openai_8af36d5b",
+      "sourceHandle": "text",
+      "target": "jsonquery_d2b8deac",
+      "targetHandle": "json"
+    },
+    {
+      "id": "e-jsonquery_d2b8deac-result-echo_9b2047c1-message",
+      "source": "jsonquery_d2b8deac",
+      "sourceHandle": "result",
+      "target": "echo_9b2047c1",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-openai_8af36d5b-thinking-echo_d88eb324-message",
+      "source": "openai_8af36d5b",
+      "sourceHandle": "thinking",
+      "target": "echo_d88eb324",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-openai_8af36d5b-text-displayjson_71783ca5-json",
+      "source": "openai_8af36d5b",
+      "sourceHandle": "text",
+      "target": "displayjson_71783ca5",
+      "targetHandle": "json"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "id": "speechtoimage_f3dbc898",
+      "type": "SpeechToImage",
+      "position": {
+        "x": 615.0,
+        "y": 180.0
+      },
+      "size": {
+        "width": 330.0,
+        "height": 600.0
+      },
+      "inputs": {
+        "steps": null,
+        "stt_model": "",
+        "tti_model": "",
+        "language": "",
+        "api_base": "",
+        "api_key": "",
+        "llm_model": ""
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "audioinput_93af4506",
+      "type": "AudioInput",
+      "position": {
+        "x": 330.0,
+        "y": 180.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 225.0
+      },
+      "inputs": {
+        "audio_data": "/api/assets/audio_input_74538f5c-ed19-42e6-9ab2-51387e935cb1.wav"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "displayimage_e3868072",
+      "type": "DisplayImage",
+      "position": {
+        "x": 930.0,
+        "y": 180.0
+      },
+      "size": {
+        "width": 510.0,
+        "height": 600.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-audioinput_93af4506-audio-speechtoimage_f3dbc898-audio",
+      "source": "audioinput_93af4506",
+      "sourceHandle": "audio",
+      "target": "speechtoimage_f3dbc898",
+      "targetHandle": "audio"
+    },
+    {
+      "id": "e-speechtoimage_f3dbc898-image-displayimage_e3868072-image",
+      "source": "speechtoimage_f3dbc898",
+      "sourceHandle": "image",
+      "target": "displayimage_e3868072",
+      "targetHandle": "image"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}
