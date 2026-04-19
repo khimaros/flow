@@ -31,9 +31,12 @@
 [~] create a UIComponent::Auto which renders the right thing based on the Value type
 [~] automagic command line tool node (flags as inputs)
 
+[x] consistency pass on node/input/output descriptions
+[x] flow-cli --env-example flag emitting .env-style output with per-var descriptions
 [x] fix: shift-click force-run clears in-progress blue border on node from prior queued job
 [x] bundling script to produce release tarball (flow-<version>-<arch>-<python>.tgz)
 [x] add seed input to openai_stt, openai_tts, and openai_tts_voice nodes
+[x] add language input to openai_tts and openai_voice_design nodes
 [x] openai_llm/openai_tts: temperature defaults to unset, not sent unless explicitly set
 [x] fix: node creation should not set input values to defaults (should show as placeholders)
 [x] fix: shift-click force run should only skip cache for the target node, not dependents

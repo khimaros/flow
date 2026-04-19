@@ -3,13 +3,13 @@ fn spec() {
         name: "OpenAI_TTS",
         title: "OpenAI Text to Speech",
         category: "Generative",
-        description: "Convert text to speech using an OpenAI-compatible TTS endpoint.",
+        description: "Convert text to speech using an OpenAI-compatible TTS endpoint",
         inputs: [
             #{
                 name: "api_base",
                 "type": "string",
                 "default": "https://api.openai.com/v1",
-                description: "API Base URL (overridden by OPENAI_API_BASE env var)",
+                description: "API base URL",
                 env_var: "OPENAI_API_BASE"
             },
             #{
@@ -17,7 +17,7 @@ fn spec() {
                 "type": "string",
                 ui: "password",
                 required: false,
-                description: "API Key (optional for local servers, overridden by OPENAI_API_KEY env var)",
+                description: "API key (optional for local servers)",
                 env_var: "OPENAI_API_KEY"
             },
             #{
@@ -25,7 +25,7 @@ fn spec() {
                 "type": "string",
                 ui: "dynamic_select",
                 "default": "kokoro-v1",
-                description: "TTS Model ID",
+                description: "TTS model ID",
                 depends_on: ["api_base", "api_key"]
             },
             #{
@@ -33,7 +33,7 @@ fn spec() {
                 "type": "string",
                 ui: "dynamic_select",
                 "default": "am_adam",
-                description: "Voice ID",
+                description: "voice ID",
                 depends_on: ["api_base", "api_key", "model"]
             },
             #{
@@ -41,14 +41,20 @@ fn spec() {
                 "type": "string",
                 ui: "textarea",
                 required: true,
-                description: "Text to convert to speech"
+                description: "text to convert to speech"
+            },
+            #{
+                name: "language",
+                "type": "string",
+                "default": "",
+                description: "language code (e.g., 'en', 'es', 'fr') - leave empty for auto-detect"
             },
             #{
                 name: "response_format",
                 "type": "string",
                 ui: "select",
                 "default": "wav",
-                description: "Audio output format",
+                description: "audio output format",
                 options: [
                     #{ value: "wav", label: "WAV" },
                     #{ value: "mp3", label: "MP3" },
@@ -59,29 +65,29 @@ fn spec() {
             #{
                 name: "temperature",
                 "type": "float",
-                description: "Sampling temperature (optional)"
+                description: "sampling temperature"
             },
             #{
                 name: "speed",
                 "type": "float",
                 "default": 1.0,
-                description: "Speech speed (0.25 to 4.0)"
+                description: "speech speed (0.25 to 4.0)"
             },
             #{
                 name: "instructions",
                 "type": "string",
                 ui: "textarea",
                 required: false,
-                description: "Optional instructions to guide speech style and tone"
+                description: "instructions to guide speech style and tone"
             },
             #{
                 name: "seed",
                 "type": "integer",
-                description: "Random seed (optional)"
+                description: "random seed"
             }
         ],
         outputs: [
-            #{ name: "audio", "type": "file", description: "Generated audio file" }
+            #{ name: "audio", "type": "file", description: "generated audio file" }
         ]
     };
 }
@@ -114,6 +120,10 @@ fn execute(inputs) {
 
     if inputs.instructions != () && inputs.instructions != "" {
         body.instructions = inputs.instructions;
+    }
+
+    if inputs.language != () && inputs.language != "" {
+        body.language = inputs.language;
     }
 
     if inputs.seed != () {

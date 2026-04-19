@@ -24,7 +24,7 @@ impl Node for ShellCommandNode {
     }
 
     fn description(&self) -> &str {
-        "Executes a shell command."
+        "Execute a shell command"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -36,7 +36,7 @@ impl Node for ShellCommandNode {
                 default: None,
                 required: false,
                 description: Some(
-                    "the command to execute (e.g., 'echo'). Optional if args provided.".to_string(),
+                    "command to execute (e.g., 'echo')".to_string(),
                 ),
                 ..Default::default()
             },
@@ -47,7 +47,7 @@ impl Node for ShellCommandNode {
                 default: Some(Value::String("".to_string())),
                 required: false,
                 description: Some(
-                    "Arguments for the command. If command is empty, first arg is command."
+                    "arguments for the command (first arg used as command if command is empty)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -58,7 +58,7 @@ impl Node for ShellCommandNode {
                 ui_component: UIComponent::TextArea {},
                 default: Some(Value::String("".to_string())),
                 required: false,
-                description: Some("input to pipe to the command's stdin.".to_string()),
+                description: Some("input to pipe to the command's stdin".to_string()),
                 ..Default::default()
             },
         ]
@@ -69,17 +69,17 @@ impl Node for ShellCommandNode {
             OutputSpec {
                 name: "stdout".to_string(),
                 r#type: DataType::String,
-                description: Some("Standard output.".to_string()),
+                description: Some("standard output".to_string()),
             },
             OutputSpec {
                 name: "stderr".to_string(),
                 r#type: DataType::String,
-                description: Some("Standard error.".to_string()),
+                description: Some("standard error".to_string()),
             },
             OutputSpec {
                 name: "exit_code".to_string(),
                 r#type: DataType::Integer,
-                description: Some("Exit code.".to_string()),
+                description: Some("exit code".to_string()),
             },
         ]
     }

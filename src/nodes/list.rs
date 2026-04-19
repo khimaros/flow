@@ -21,7 +21,7 @@ impl Node for FlattenNode {
     }
 
     fn description(&self) -> &str {
-        "Concatenates a list of lists into a single flat list (one level deep)."
+        "Concatenate a list of lists into a single flat list (one level deep)"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -30,7 +30,7 @@ impl Node for FlattenNode {
             r#type: DataType::List,
             ui_component: UIComponent::Auto {},
             required: true,
-            description: Some("A list of lists to flatten one level.".to_string()),
+            description: Some("list of lists to flatten one level".to_string()),
             ..Default::default()
         }]
     }
@@ -40,12 +40,12 @@ impl Node for FlattenNode {
             OutputSpec {
                 name: "output".to_string(),
                 r#type: DataType::List,
-                description: Some("The flattened list.".to_string()),
+                description: Some("flattened list".to_string()),
             },
             OutputSpec {
                 name: "count".to_string(),
                 r#type: DataType::Integer,
-                description: Some("Total number of items after flattening.".to_string()),
+                description: Some("total number of items after flattening".to_string()),
             },
         ]
     }
@@ -100,7 +100,7 @@ impl Node for ZipNode {
     }
 
     fn description(&self) -> &str {
-        "Pairs elements from two lists by index into {a, b} objects."
+        "Pair elements from two lists by index into {a, b} objects"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -110,7 +110,7 @@ impl Node for ZipNode {
                 r#type: DataType::List,
                 ui_component: UIComponent::Auto {},
                 required: true,
-                description: Some("first list.".to_string()),
+                description: Some("first list".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -118,7 +118,7 @@ impl Node for ZipNode {
                 r#type: DataType::List,
                 ui_component: UIComponent::Auto {},
                 required: true,
-                description: Some("second list.".to_string()),
+                description: Some("second list".to_string()),
                 ..Default::default()
             },
         ]
@@ -129,12 +129,12 @@ impl Node for ZipNode {
             OutputSpec {
                 name: "output".to_string(),
                 r#type: DataType::List,
-                description: Some("list of {a, b} pairs.".to_string()),
+                description: Some("list of {a, b} pairs".to_string()),
             },
             OutputSpec {
                 name: "count".to_string(),
                 r#type: DataType::Integer,
-                description: Some("number of pairs (length of shorter list).".to_string()),
+                description: Some("number of pairs (length of shorter list)".to_string()),
             },
         ]
     }

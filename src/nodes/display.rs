@@ -32,7 +32,7 @@ impl Node for AudioInputNode {
             ui_component: UIComponent::AudioRecorder {},
             default: None,
             required: false,
-            description: Some("Audio data (base64 or URL)".to_string()),
+            description: Some("audio data (base64 or URL)".to_string()),
             ..Default::default()
         }]
     }
@@ -41,7 +41,7 @@ impl Node for AudioInputNode {
         vec![OutputSpec {
             name: "audio".to_string(),
             r#type: DataType::File,
-            description: Some("the audio file".to_string()),
+            description: Some("audio file".to_string()),
         }]
     }
 
@@ -157,7 +157,7 @@ impl Node for DisplayImageNode {
     }
 
     fn description(&self) -> &str {
-        "Display an image from a file output"
+        "Display an image"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -167,7 +167,7 @@ impl Node for DisplayImageNode {
             ui_component: UIComponent::Auto {},
             default: None,
             required: true,
-            description: Some("the image file to display".to_string()),
+            description: Some("image file to display".to_string()),
             ..Default::default()
         }]
     }
@@ -218,7 +218,7 @@ impl Node for DisplayMarkdownNode {
             ui_component: UIComponent::Auto {},
             default: None,
             required: true,
-            description: Some("the markdown to display".to_string()),
+            description: Some("markdown to display".to_string()),
             ..Default::default()
         }]
     }
@@ -259,7 +259,7 @@ impl Node for DisplayAudioNode {
     }
 
     fn description(&self) -> &str {
-        "Display an audio player from a file output"
+        "Display an audio player"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -269,7 +269,7 @@ impl Node for DisplayAudioNode {
             ui_component: UIComponent::Auto {},
             default: None,
             required: true,
-            description: Some("the audio file to play".to_string()),
+            description: Some("audio file to play".to_string()),
             ..Default::default()
         }]
     }
@@ -310,7 +310,7 @@ impl Node for DisplayJsonNode {
     }
 
     fn description(&self) -> &str {
-        "Display JSON content with collapsible/expandable objects."
+        "Display JSON content with collapsible/expandable objects"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -320,7 +320,7 @@ impl Node for DisplayJsonNode {
             ui_component: UIComponent::Text {},
             default: None,
             required: true,
-            description: Some("the JSON object to display.".to_string()),
+            description: Some("JSON object to display".to_string()),
             ..Default::default()
         }]
     }
@@ -367,7 +367,7 @@ impl Node for DisplayListNode {
             ui_component: UIComponent::Auto {},
             default: None,
             required: true,
-            description: Some("the list to display".to_string()),
+            description: Some("list to display".to_string()),
             ..Default::default()
         }]
     }
@@ -376,7 +376,7 @@ impl Node for DisplayListNode {
         vec![OutputSpec {
             name: "list".to_string(),
             r#type: DataType::List,
-            description: Some("the list (pass-through)".to_string()),
+            description: Some("list (pass-through)".to_string()),
         }]
     }
 

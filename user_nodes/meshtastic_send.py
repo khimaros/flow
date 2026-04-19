@@ -3,7 +3,7 @@ def spec():
         "name": "MeshtasticSend",
         "title": "Meshtastic Send Message",
         "category": "Network",
-        "description": "Sends a message via Meshtastic.",
+        "description": "Send a message via Meshtastic",
         "inputs": [
             {
                 "name": "connection_type",
@@ -15,44 +15,44 @@ def spec():
                     {"label": "TCP", "value": "tcp"},
                 ],
                 "required": True,
-                "description": "Type of connection to Meshtastic device (serial, ble, tcp).",
+                "description": "type of connection to Meshtastic device (serial, ble, tcp)",
             },
             {
                 "name": "target_device",
                 "type": "string",
                 "required": True,
-                "description": "Target device identifier (e.g., /dev/ttyUSB0 for serial, MAC address for BLE, IP:Port for TCP).",
+                "description": "target device identifier (e.g., /dev/ttyUSB0, MAC address, or IP:Port)",
             },
             {
                 "name": "channel",
                 "type": "integer",
                 "required": True,
-                "description": "Channel number to send the message on.",
+                "description": "channel number to send the message on",
             },
             {
                 "name": "userid",
                 "type": "string",
                 "required": False,
-                "description": "User ID to send the message to (optional, sends to all if not specified).",
+                "description": "user ID to send to (sends to all if empty)",
             },
             {
                 "name": "message",
                 "type": "string",
                 "ui": "textarea",
                 "required": True,
-                "description": "The message content to send.",
+                "description": "message content to send",
             },
         ],
         "outputs": [
             {
                 "name": "status",
                 "type": "string",
-                "description": "Status of the message send operation.",
+                "description": "status of the message send operation",
             },
             {
                 "name": "error",
                 "type": "string",
-                "description": "Error message if the operation failed.",
+                "description": "error message if the operation failed",
             },
         ],
     }

@@ -21,7 +21,7 @@ impl Node for RandomIntegerNode {
     }
 
     fn description(&self) -> &str {
-        "Generates a random number."
+        "Generate a random number"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -32,7 +32,7 @@ impl Node for RandomIntegerNode {
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::Integer(0)),
                 required: false,
-                description: Some("Minimum value (inclusive, default 0)".to_string()),
+                description: Some("minimum value (inclusive)".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -41,7 +41,7 @@ impl Node for RandomIntegerNode {
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::Integer(100)),
                 required: false,
-                description: Some("Maximum value (inclusive, default 100)".to_string()),
+                description: Some("maximum value (inclusive)".to_string()),
                 ..Default::default()
             },
         ]
@@ -51,7 +51,7 @@ impl Node for RandomIntegerNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::Integer,
-            description: Some("the generated random number".to_string()),
+            description: Some("generated random number".to_string()),
         }]
     }
 

@@ -2,7 +2,7 @@
   "name": "SpeechToImage",
   "title": "Speech to Image",
   "category": "Generative",
-  "description": "Transcribes speech, enhances the prompt with an LLM, and generates an image.",
+  "description": "Transcribe speech, enhance the prompt with an LLM, and generate an image",
   "inputs": [
     {
       "name": "audio",

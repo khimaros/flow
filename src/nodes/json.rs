@@ -21,7 +21,7 @@ impl Node for JsonQueryNode {
     }
 
     fn description(&self) -> &str {
-        "Queries a JSON object using RFC 6901 JSON Pointer syntax."
+        "Query a JSON object using RFC 6901 JSON Pointer syntax"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -32,7 +32,7 @@ impl Node for JsonQueryNode {
                 ui_component: UIComponent::TextArea {},
                 default: None,
                 required: true,
-                description: Some("the JSON object to query.".to_string()),
+                description: Some("JSON object to query".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -41,7 +41,7 @@ impl Node for JsonQueryNode {
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::String("/status".to_string())),
                 required: true,
-                description: Some("the JSON pointer path (e.g., /key/0/subkey).".to_string()),
+                description: Some("JSON pointer path (e.g., /key/0/subkey)".to_string()),
                 ..Default::default()
             },
         ]
@@ -51,7 +51,7 @@ impl Node for JsonQueryNode {
         vec![OutputSpec {
             name: "result".to_string(),
             r#type: DataType::Any,
-            description: Some("the query result.".to_string()),
+            description: Some("query result".to_string()),
         }]
     }
 

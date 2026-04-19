@@ -3,20 +3,20 @@ fn spec() {
         name: "OpenAI_LLM",
         title: "OpenAI Text Generation",
         category: "Generative",
-        description: "Query an OpenAI-compatible LLM endpoint.",
+        description: "Query an OpenAI-compatible LLM endpoint",
         inputs: [
             #{
                 name: "api_base",
                 "type": "string",
                 "default": "https://api.openai.com/v1",
-                description: "API Base URL (overridden by OPENAI_API_BASE env var)",
+                description: "API base URL",
                 env_var: "OPENAI_API_BASE"
             },
             #{
                 name: "api_key",
                 "type": "string",
                 ui: "password",
-                description: "API Key (overridden by OPENAI_API_KEY env var)",
+                description: "API key",
                 env_var: "OPENAI_API_KEY"
             },
             #{
@@ -24,7 +24,7 @@ fn spec() {
                 "type": "string",
                 ui: "dynamic_select",
                 "default": "gpt-3.5-turbo",
-                description: "Model ID",
+                description: "model ID",
                 depends_on: ["api_base", "api_key"]
             },
             #{
@@ -32,46 +32,46 @@ fn spec() {
                 "type": "string",
                 ui: "textarea",
                 "default": "You are a helpful assistant.",
-                description: "System instruction"
+                description: "system instruction"
             },
             #{
                 name: "prompt",
                 "type": "string",
                 ui: "textarea",
                 required: true,
-                description: "User prompt"
+                description: "user prompt"
             },
             #{
                 name: "temperature",
                 "type": "float",
-                description: "Sampling temperature (optional)"
+                description: "sampling temperature"
             },
             #{
                 name: "seed",
                 "type": "integer",
-                description: "Random seed (optional)"
+                description: "random seed"
             },
             #{
                 name: "max_tokens",
                 "type": "integer",
-                description: "Maximum tokens to generate (optional)"
+                description: "maximum tokens to generate"
             },
             #{
                 name: "thinking_budget_tokens",
                 "type": "integer",
-                description: "Max thinking tokens for reasoning models (optional)"
+                description: "max thinking tokens for reasoning models"
             },
             #{
                 name: "json_schema",
                 "type": "object",
                 ui: "textarea",
-                description: "JSON Schema for structured output (llama.cpp compatible). Leave empty for free-form text."
+                description: "JSON schema for structured output (llama.cpp compatible, leave empty for free-form text)"
             }
         ],
         outputs: [
-            #{ name: "text", "type": "string", description: "Generated response text" },
-            #{ name: "thinking", "type": "string", description: "Thinking content (if supported)" },
-            #{ name: "usage", "type": "object", description: "Token usage statistics" }
+            #{ name: "text", "type": "string", description: "generated response text" },
+            #{ name: "thinking", "type": "string", description: "thinking content (if supported)" },
+            #{ name: "usage", "type": "object", description: "token usage statistics" }
         ]
     };
 }

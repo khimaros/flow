@@ -2,7 +2,7 @@
   "name": "ShellToSpeech",
   "title": "Shell to Speech",
   "category": "Generative",
-  "description": "Runs a shell command, summarizes output with LLM, and speaks it.",
+  "description": "Run a shell command, summarize output with LLM, and speak it",
   "inputs": [
     {
       "name": "api_base",

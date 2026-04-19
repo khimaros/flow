@@ -22,7 +22,7 @@ impl Node for EchoNode {
     }
 
     fn description(&self) -> &str {
-        "Prints a message to the server logs and passes it to the output."
+        "Print a message to the server logs and pass it to the output"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -32,7 +32,7 @@ impl Node for EchoNode {
             ui_component: UIComponent::TextArea {},
             default: Some(Value::String("Hello, world!".to_string())),
             required: false,
-            description: Some("the value to echo.".to_string()),
+            description: Some("value to echo".to_string()),
             ..Default::default()
         }]
     }
@@ -41,7 +41,7 @@ impl Node for EchoNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::String,
-            description: Some("the echoed value.".to_string()),
+            description: Some("echoed value".to_string()),
         }]
     }
 
@@ -79,7 +79,7 @@ impl Node for ReadNode {
     }
 
     fn description(&self) -> &str {
-        "Reads input from the environment (e.g. CLI stdin or webui prompt)."
+        "Read input from the environment (e.g. CLI stdin or webui prompt)"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -90,7 +90,7 @@ impl Node for ReadNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::String,
-            description: Some("the content from stdin or user input.".to_string()),
+            description: Some("content from stdin or user input".to_string()),
         }]
     }
 

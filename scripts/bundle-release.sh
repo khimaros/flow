@@ -74,8 +74,19 @@ mkdir -p "$DEST"
 install -m 0755 "${BIN_DIR}/flow-server" "${DEST}/flow-server"
 install -m 0755 "${BIN_DIR}/flow-cli"    "${DEST}/flow-cli"
 
-cp -a workflows  "${DEST}/workflows"
-cp -a user_nodes "${DEST}/user_nodes"
+echo "==> generating .env.example from flow-cli --env-example"
+"${DEST}/flow-cli" --env-example > "${DEST}/.env.example"
+
+# copy only tracked + non-ignored files, so .state/ and other gitignored
+# artifacts don't leak into the tarball
+copy_clean() {
+    local dir="$1"
+    git ls-files -co --exclude-standard -- "$dir" | while IFS= read -r f; do
+        install -D -m 0644 "$f" "${DEST}/${f}"
+    done
+}
+copy_clean workflows
+copy_clean user_nodes
 
 mkdir -p "$OUT_DIR"
 TARBALL="${OUT_DIR}/${NAME}.tgz"

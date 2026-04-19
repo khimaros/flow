@@ -30,42 +30,42 @@ def spec():
         "name": "FetchRSS",
         "title": "Fetch RSS Feed",
         "category": "Network",
-        "description": "Fetches an RSS/Atom feed, optionally filters by date, and returns items plus a markdown digest.",
+        "description": "Fetch an RSS/Atom feed, optionally filter by date, return items and markdown digest",
         "inputs": [
             {
                 "name": "url",
                 "type": "string",
                 "required": True,
-                "description": "RSS/Atom feed URL. Use a List + Loop to fetch multiple feeds.",
+                "description": "RSS/Atom feed URL (use List + Loop to fetch multiple)",
             },
             {
                 "name": "from_date",
                 "type": "string",
                 "required": False,
-                "description": "Only return items newer than this. Accepts ISO-8601 (e.g. 2026-04-01) or relative (e.g. '2 days ago'). Items with no date are skipped when set.",
+                "description": "only return items newer than this (ISO-8601 or relative like '2 days ago'; items with no date are skipped when set)",
             },
             {
                 "name": "timeout",
                 "type": "integer",
                 "default": DEFAULT_TIMEOUT,
-                "description": "HTTP timeout in seconds.",
+                "description": "HTTP timeout in seconds",
             },
         ],
         "outputs": [
             {
                 "name": "items",
                 "type": "list",
-                "description": "List of {title, link, published, author, summary, feed} objects.",
+                "description": "feed items",
             },
             {
                 "name": "count",
                 "type": "integer",
-                "description": "Number of items returned after filtering.",
+                "description": "number of items returned after filtering",
             },
             {
                 "name": "markdown",
                 "type": "string",
-                "description": "Markdown digest suitable for piping into an LLM.",
+                "description": "markdown digest suitable for piping into an LLM",
             },
         ],
     }

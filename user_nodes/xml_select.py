@@ -6,39 +6,39 @@ def spec():
         "name": "XmlSelect",
         "title": "XML Select",
         "category": "Data",
-        "description": "Selects nodes from XML or HTML content using an XPath expression.",
+        "description": "Select nodes from XML or HTML content using an XPath expression",
         "inputs": [
             {
                 "name": "input",
                 "type": "string",
                 "ui": "textarea",
                 "required": True,
-                "description": "XML or HTML content to query.",
+                "description": "XML or HTML content to query",
             },
             {
                 "name": "query",
                 "type": "string",
                 "required": True,
-                "description": "XPath expression (e.g. '//div[@class=\"comment\"]').",
+                "description": "XPath expression (e.g. '//div[@class=\"comment\"]')",
             },
             {
                 "name": "strict",
                 "type": "boolean",
                 "ui": "checkbox",
                 "default": False,
-                "description": "Strict XML parsing. When off, uses lenient HTML parsing.",
+                "description": "strict XML parsing (when off, uses lenient HTML parsing)",
             },
         ],
         "outputs": [
             {
                 "name": "matches",
                 "type": "list",
-                "description": "List of text content from matching nodes.",
+                "description": "list of text content from matching nodes",
             },
             {
                 "name": "count",
                 "type": "integer",
-                "description": "Number of matches found.",
+                "description": "number of matches found",
             },
         ],
     }

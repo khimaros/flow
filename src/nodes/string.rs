@@ -23,7 +23,7 @@ impl Node for TemplatizeNode {
     }
 
     fn description(&self) -> &str {
-        "Renders a Jinja2/Tera template with the provided context values."
+        "Render a Jinja2/Tera template with the provided context values"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -35,7 +35,7 @@ impl Node for TemplatizeNode {
                 default: Some(Value::String("Hello, {{ name }}!".to_string())),
                 required: true,
                 description: Some(
-                    "Jinja2/Tera template with {{ key }} placeholders, loops, conditionals."
+                    "Jinja2/Tera template with {{ key }} placeholders, loops, conditionals"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -46,7 +46,7 @@ impl Node for TemplatizeNode {
                 ui_component: UIComponent::TextArea {},
                 default: Some(Value::String("{\"name\": \"world\"}".to_string())),
                 required: true,
-                description: Some("Object with keys available in the template.".to_string()),
+                description: Some("object with keys available in the template".to_string()),
                 ..Default::default()
             },
         ]
@@ -56,7 +56,7 @@ impl Node for TemplatizeNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::String,
-            description: Some("the rendered template.".to_string()),
+            description: Some("rendered template".to_string()),
         }]
     }
 
@@ -171,7 +171,7 @@ impl Node for JoinNode {
     }
 
     fn description(&self) -> &str {
-        "Joins a list of values into a string with a separator."
+        "Join a list of values into a string with a separator"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -182,7 +182,7 @@ impl Node for JoinNode {
                 ui_component: UIComponent::ListEditor {},
                 default: None,
                 required: true,
-                description: Some("the list of values to join.".to_string()),
+                description: Some("list of values to join".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -192,7 +192,7 @@ impl Node for JoinNode {
                 default: Some(Value::String("\\n".to_string())),
                 required: false,
                 description: Some(
-                    "the separator between elements (supports \\n, \\t, \\r).".to_string(),
+                    "separator between elements (supports \\n, \\t, \\r)".to_string(),
                 ),
                 ..Default::default()
             },
@@ -203,7 +203,7 @@ impl Node for JoinNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::String,
-            description: Some("the joined string.".to_string()),
+            description: Some("joined string".to_string()),
         }]
     }
 
@@ -265,7 +265,7 @@ impl Node for SplitNode {
     }
 
     fn description(&self) -> &str {
-        "Splits a string into a list using a separator."
+        "Split a string into a list using a separator"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -276,7 +276,7 @@ impl Node for SplitNode {
                 ui_component: UIComponent::TextArea {},
                 default: None,
                 required: true,
-                description: Some("the string to split.".to_string()),
+                description: Some("string to split".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -286,7 +286,7 @@ impl Node for SplitNode {
                 default: Some(Value::String("\\n".to_string())),
                 required: false,
                 description: Some(
-                    "the separator to split on (supports \\n, \\t, \\r).".to_string(),
+                    "separator to split on (supports \\n, \\t, \\r)".to_string(),
                 ),
                 ..Default::default()
             },
@@ -297,7 +297,7 @@ impl Node for SplitNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::List,
-            description: Some("List of split parts.".to_string()),
+            description: Some("list of split parts".to_string()),
         }]
     }
 
@@ -351,7 +351,7 @@ impl Node for ListToJsonNode {
     }
 
     fn description(&self) -> &str {
-        "Converts a list to a JSON object with 'values' key for template iteration."
+        "Convert a list to a JSON object with 'values' key for template iteration"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -361,7 +361,7 @@ impl Node for ListToJsonNode {
             ui_component: UIComponent::ListEditor {},
             default: None,
             required: true,
-            description: Some("the list to convert.".to_string()),
+            description: Some("list to convert".to_string()),
             ..Default::default()
         }]
     }
@@ -370,7 +370,7 @@ impl Node for ListToJsonNode {
         vec![OutputSpec {
             name: "output".to_string(),
             r#type: DataType::Object,
-            description: Some("JSON object with 'values' array.".to_string()),
+            description: Some("JSON object with 'values' array".to_string()),
         }]
     }
 
@@ -420,7 +420,7 @@ impl Node for RegexpExtractNode {
     }
 
     fn description(&self) -> &str {
-        "Extracts matches, capture groups, and named groups from text using regular expressions."
+        "Extract matches, capture groups, and named groups from text using regular expressions"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -431,7 +431,7 @@ impl Node for RegexpExtractNode {
                 ui_component: UIComponent::TextArea {},
                 default: None,
                 required: true,
-                description: Some("the text to search.".to_string()),
+                description: Some("text to search".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -441,7 +441,7 @@ impl Node for RegexpExtractNode {
                 default: Some(Value::String(r"\w+@\w+\.\w+".to_string())),
                 required: true,
                 description: Some(
-                    "Regular expression pattern with optional named groups (?P<name>...)."
+                    "regular expression pattern with optional named groups (?P<name>...)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -453,7 +453,7 @@ impl Node for RegexpExtractNode {
                 default: Some(Value::Boolean(true)),
                 required: false,
                 description: Some(
-                    "Make the regex case sensitive. When false, matches are case insensitive."
+                    "make the regex case sensitive (when false, matches are case insensitive)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -466,18 +466,18 @@ impl Node for RegexpExtractNode {
             OutputSpec {
                 name: "matches".to_string(),
                 r#type: DataType::List,
-                description: Some("List of all matching strings.".to_string()),
+                description: Some("list of all matching strings".to_string()),
             },
             OutputSpec {
                 name: "groups".to_string(),
                 r#type: DataType::List,
-                description: Some("List of capture groups for each match.".to_string()),
+                description: Some("list of capture groups for each match".to_string()),
             },
             OutputSpec {
                 name: "named".to_string(),
                 r#type: DataType::Object,
                 description: Some(
-                    "Object mapping named group names to their matched values.".to_string(),
+                    "object mapping named group names to their matched values".to_string(),
                 ),
             },
         ]

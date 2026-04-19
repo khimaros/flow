@@ -51,7 +51,7 @@ impl Node for LoopNode {
     }
 
     fn description(&self) -> &str {
-        "Iterates over a list, invoking a target node once per item."
+        "Iterate over a list, invoking a target node once per item"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -61,7 +61,7 @@ impl Node for LoopNode {
                 r#type: DataType::List,
                 ui_component: UIComponent::Auto {},
                 required: true,
-                description: Some("List of items to iterate over.".to_string()),
+                description: Some("list of items to iterate over".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -71,7 +71,7 @@ impl Node for LoopNode {
                     depends_on: vec![],
                 },
                 required: true,
-                description: Some("The node type to invoke once per item.".to_string()),
+                description: Some("node type to invoke once per item".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -82,7 +82,7 @@ impl Node for LoopNode {
                 },
                 required: true,
                 description: Some(
-                    "Inner-node input that receives each item from the list.".to_string(),
+                    "inner-node input that receives each item from the list".to_string(),
                 ),
                 ..Default::default()
             },
@@ -94,7 +94,7 @@ impl Node for LoopNode {
                 },
                 required: false,
                 description: Some(
-                    "Inner-node output to collect. If omitted, the full output map is collected."
+                    "inner-node output to collect (collects full output map if empty)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -105,7 +105,7 @@ impl Node for LoopNode {
                 ui_component: UIComponent::Auto {},
                 required: false,
                 description: Some(
-                    "Optional JSON pointer (e.g. '/link') to extract a field from each item before passing to the inner node. If empty, the whole item is passed."
+                    "JSON pointer (e.g. '/link') to extract a field from each item (passes whole item if empty)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -117,7 +117,7 @@ impl Node for LoopNode {
                 default: Some(Value::Integer(0)),
                 required: false,
                 description: Some(
-                    "Maximum number of items to process (0 = no limit).".to_string(),
+                    "maximum number of items to process (0 = no limit)".to_string(),
                 ),
                 ..Default::default()
             },
@@ -128,7 +128,7 @@ impl Node for LoopNode {
                 default: Some(Value::Integer(0)),
                 required: false,
                 description: Some(
-                    "Delay in milliseconds between iterations for rate limiting (0 = no delay)."
+                    "delay in milliseconds between iterations for rate limiting (0 = no delay)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -139,7 +139,7 @@ impl Node for LoopNode {
                 ui_component: UIComponent::TextArea {},
                 required: false,
                 description: Some(
-                    "Additional inputs (JSON object) passed to every inner-node invocation."
+                    "additional inputs (JSON object) passed to every inner-node invocation"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -151,7 +151,7 @@ impl Node for LoopNode {
                 default: Some(Value::Boolean(false)),
                 required: false,
                 description: Some(
-                    "If true, each result is wrapped as {item, output} so the source item is preserved alongside the inner-node output."
+                    "if true, wrap each result as {item, output} to preserve source item alongside inner-node output"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -177,7 +177,7 @@ impl Node for LoopNode {
                 },
                 default: Some(Value::String(ON_FAILURE_FAIL.to_string())),
                 required: false,
-                description: Some("How to handle inner-node failures.".to_string()),
+                description: Some("how to handle inner-node failures".to_string()),
                 ..Default::default()
             },
         ]
@@ -188,12 +188,12 @@ impl Node for LoopNode {
             OutputSpec {
                 name: "results".to_string(),
                 r#type: DataType::List,
-                description: Some("List of results, one per surviving item.".to_string()),
+                description: Some("list of results, one per surviving item".to_string()),
             },
             OutputSpec {
                 name: "count".to_string(),
                 r#type: DataType::Integer,
-                description: Some("Number of results produced.".to_string()),
+                description: Some("number of results produced".to_string()),
             },
         ]
     }

@@ -2,7 +2,7 @@
   "name": "FetchArticle",
   "title": "Fetch Article",
   "category": "Network",
-  "description": "Fetches a URL and converts the HTML response to markdown.",
+  "description": "Fetch a URL and convert the HTML response to markdown",
   "inputs": [
     {
       "name": "url",

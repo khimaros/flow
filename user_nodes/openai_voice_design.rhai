@@ -3,13 +3,13 @@ fn spec() {
         name: "OpenAI_Voice_Design",
         title: "OpenAI Voice Design",
         category: "Generative",
-        description: "Create a custom voice on an OpenAI-compatible TTS server (e.g. qwen3-tts) from a reference audio sample. Returns a voice ID usable with OpenAI_TTS.",
+        description: "Create a custom voice from a reference audio sample via OpenAI-compatible TTS server",
         inputs: [
             #{
                 name: "api_base",
                 "type": "string",
                 "default": "https://api.openai.com/v1",
-                description: "API Base URL (overridden by OPENAI_API_BASE env var)",
+                description: "API base URL",
                 env_var: "OPENAI_API_BASE"
             },
             #{
@@ -17,7 +17,7 @@ fn spec() {
                 "type": "string",
                 ui: "password",
                 required: false,
-                description: "API Key (optional for local servers, overridden by OPENAI_API_KEY env var)",
+                description: "API key (optional for local servers)",
                 env_var: "OPENAI_API_KEY"
             },
             #{
@@ -25,7 +25,7 @@ fn spec() {
                 "type": "string",
                 ui: "dynamic_select",
                 "default": "qwen3-tts",
-                description: "TTS Model ID",
+                description: "TTS model ID",
                 depends_on: ["api_base", "api_key"],
                 env_var: "FLOW_OPENAI_TTS_MODEL"
             },
@@ -33,32 +33,38 @@ fn spec() {
                 name: "name",
                 "type": "string",
                 "default": "custom",
-                description: "Display name for the new voice"
+                description: "display name for the new voice"
             },
             #{
                 name: "audio_sample",
                 "type": "file",
                 required: true,
-                description: "Reference audio file (WAV, 24kHz preferred) to clone"
+                description: "reference audio file (WAV, 24kHz preferred) to clone"
             },
             #{
                 name: "ref_text",
                 "type": "string",
                 ui: "textarea",
                 required: false,
-                description: "Transcript of the reference audio (enables ICL voice cloning mode)"
+                description: "transcript of the reference audio (enables ICL voice cloning mode)"
+            },
+            #{
+                name: "language",
+                "type": "string",
+                "default": "",
+                description: "language code (e.g., 'en', 'es', 'fr') - leave empty for auto-detect"
             },
             #{
                 name: "seed",
                 "type": "integer",
-                description: "Random seed (optional)"
+                description: "random seed"
             }
         ],
         outputs: [
             #{ name: "voice_id", "type": "string", description: "ID of the created voice (use as 'voice' input to OpenAI_TTS)" },
-            #{ name: "name", "type": "string", description: "Display name of the created voice" },
-            #{ name: "mode", "type": "string", description: "Voice cloning mode: 'icl' if ref_text was given, otherwise 'embedding'" },
-            #{ name: "ref_frames", "type": "integer", description: "Number of encoded reference frames (ICL mode only)" }
+            #{ name: "name", "type": "string", description: "display name of the created voice" },
+            #{ name: "mode", "type": "string", description: "voice cloning mode ('icl' if ref_text was given, otherwise 'embedding')" },
+            #{ name: "ref_frames", "type": "integer", description: "number of encoded reference frames (ICL mode only)" }
         ]
     };
 }
@@ -123,6 +129,10 @@ fn execute(inputs) {
 
     if inputs.ref_text != () && inputs.ref_text != "" {
         fields.ref_text = inputs.ref_text;
+    }
+
+    if inputs.language != () && inputs.language != "" {
+        fields.language = inputs.language;
     }
 
     if inputs.seed != () {

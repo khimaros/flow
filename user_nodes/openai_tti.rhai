@@ -3,13 +3,13 @@ fn spec() {
         name: "OpenAI_TTI",
         title: "OpenAI Image Generation",
         category: "Generative",
-        description: "Generate images using an OpenAI-compatible image generation endpoint.",
+        description: "Generate images using an OpenAI-compatible image generation endpoint",
         inputs: [
             #{
                 name: "api_base",
                 "type": "string",
                 "default": "https://api.openai.com/v1",
-                description: "API Base URL (overridden by OPENAI_API_BASE env var)",
+                description: "API base URL",
                 env_var: "OPENAI_API_BASE"
             },
             #{
@@ -17,7 +17,7 @@ fn spec() {
                 "type": "string",
                 ui: "password",
                 required: false,
-                description: "API Key (optional for local servers, overridden by OPENAI_API_KEY env var)",
+                description: "API key (optional for local servers)",
                 env_var: "OPENAI_API_KEY"
             },
             #{
@@ -25,7 +25,7 @@ fn spec() {
                 "type": "string",
                 ui: "dynamic_select",
                 "default": "dall-e-3",
-                description: "Image Model ID",
+                description: "image model ID",
                 depends_on: ["api_base", "api_key"]
             },
             #{
@@ -33,48 +33,48 @@ fn spec() {
                 "type": "string",
                 ui: "textarea",
                 required: true,
-                description: "Image prompt"
+                description: "image prompt"
             },
             #{
                 name: "negative_prompt",
                 "type": "string",
                 ui: "textarea",
                 "default": "",
-                description: "Negative prompt"
+                description: "negative prompt"
             },
             #{
                 name: "steps",
                 "type": "integer",
                 "default": 10,
-                description: "Sampling steps"
+                description: "sampling steps"
             },
             #{
                 name: "cfg_scale",
                 "type": "float",
                 "default": 1.0,
-                description: "CFG Scale"
+                description: "CFG scale"
             },
             #{
                 name: "width",
                 "type": "integer",
                 "default": 512,
-                description: "Image width"
+                description: "image width"
             },
             #{
                 name: "height",
                 "type": "integer",
                 "default": 512,
-                description: "Image height"
+                description: "image height"
             },
             #{
                 name: "seed",
                 "type": "integer",
                 "default": -1,
-                description: "Random seed (-1 for random)"
+                description: "random seed (-1 for random)"
             }
         ],
         outputs: [
-            #{ name: "image", "type": "file", description: "Generated image" }
+            #{ name: "image", "type": "file", description: "generated image" }
         ]
     };
 }

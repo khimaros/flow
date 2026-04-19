@@ -24,7 +24,7 @@ impl Node for WebFetchNode {
     }
 
     fn description(&self) -> &str {
-        "Fetches a URL and returns the raw HTML content."
+        "Fetch a URL and return the raw HTML content"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -34,7 +34,7 @@ impl Node for WebFetchNode {
             ui_component: UIComponent::Auto {},
             default: None,
             required: true,
-            description: Some("the URL to fetch.".to_string()),
+            description: Some("URL to fetch".to_string()),
             ..Default::default()
         }]
     }
@@ -44,12 +44,12 @@ impl Node for WebFetchNode {
             OutputSpec {
                 name: "content".to_string(),
                 r#type: DataType::String,
-                description: Some("the raw response content.".to_string()),
+                description: Some("raw response content".to_string()),
             },
             OutputSpec {
                 name: "status".to_string(),
                 r#type: DataType::Integer,
-                description: Some("the HTTP status code.".to_string()),
+                description: Some("HTTP status code".to_string()),
             },
         ]
     }
@@ -105,7 +105,7 @@ impl Node for HtmlToMarkdownNode {
     }
 
     fn description(&self) -> &str {
-        "Converts HTML content to Markdown format."
+        "Convert HTML to Markdown"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -116,7 +116,7 @@ impl Node for HtmlToMarkdownNode {
                 ui_component: UIComponent::TextArea {},
                 default: None,
                 required: true,
-                description: Some("the HTML content to convert.".to_string()),
+                description: Some("HTML content to convert".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -126,7 +126,7 @@ impl Node for HtmlToMarkdownNode {
                 default: Some(Value::Integer(0)),
                 required: false,
                 description: Some(
-                    "truncate markdown output to this many characters (0 = unlimited)."
+                    "truncate markdown output to this many characters (0 = unlimited)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -138,7 +138,7 @@ impl Node for HtmlToMarkdownNode {
                 default: Some(Value::Boolean(true)),
                 required: false,
                 description: Some(
-                    "extract article content using readability. disable for comment threads or full-page conversion."
+                    "extract article content using readability (disable for comment threads or full-page conversion)"
                         .to_string(),
                 ),
                 ..Default::default()
@@ -151,12 +151,12 @@ impl Node for HtmlToMarkdownNode {
             OutputSpec {
                 name: "markdown".to_string(),
                 r#type: DataType::String,
-                description: Some("the converted Markdown content.".to_string()),
+                description: Some("converted Markdown content".to_string()),
             },
             OutputSpec {
                 name: "title".to_string(),
                 r#type: DataType::String,
-                description: Some("the page title extracted from HTML.".to_string()),
+                description: Some("page title extracted from HTML".to_string()),
             },
         ]
     }
@@ -242,7 +242,7 @@ impl Node for WebSearchNode {
     }
 
     fn description(&self) -> &str {
-        "Performs a web search using DuckDuckGo."
+        "Perform a web search using DuckDuckGo"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -253,7 +253,7 @@ impl Node for WebSearchNode {
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::String("".to_string())),
                 required: true,
-                description: Some("the search query.".to_string()),
+                description: Some("search query".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -262,7 +262,7 @@ impl Node for WebSearchNode {
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::Integer(10)),
                 required: false,
-                description: Some("Maximum number of results to return.".to_string()),
+                description: Some("maximum number of results to return".to_string()),
                 ..Default::default()
             },
         ]
@@ -273,7 +273,7 @@ impl Node for WebSearchNode {
             name: "json".to_string(),
             r#type: DataType::Object,
             description: Some(
-                "JSON object with results array (title, url, snippet) and count.".to_string(),
+                "JSON object with results array (title, url, snippet) and count".to_string(),
             ),
         }]
     }

@@ -2,7 +2,7 @@
   "name": "FetchHtmlSelect",
   "title": "Fetch HTML Select",
   "category": "Network",
-  "description": "Fetches a URL and selects nodes from the HTML using an XPath expression.",
+  "description": "Fetch a URL and select nodes from the HTML using an XPath expression",
   "inputs": [
     {
       "name": "url",

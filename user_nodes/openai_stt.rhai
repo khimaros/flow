@@ -3,13 +3,13 @@ fn spec() {
         name: "OpenAI_STT",
         title: "OpenAI Speech to Text",
         category: "Generative",
-        description: "Convert speech to text using an OpenAI-compatible Whisper endpoint.",
+        description: "Convert speech to text using an OpenAI-compatible Whisper endpoint",
         inputs: [
             #{
                 name: "api_base",
                 "type": "string",
                 "default": "https://api.openai.com/v1",
-                description: "API Base URL (overridden by OPENAI_API_BASE env var)",
+                description: "API base URL",
                 env_var: "OPENAI_API_BASE"
             },
             #{
@@ -17,7 +17,7 @@ fn spec() {
                 "type": "string",
                 ui: "password",
                 required: false,
-                description: "API Key (optional for local servers, overridden by OPENAI_API_KEY env var)",
+                description: "API key (optional for local servers)",
                 env_var: "OPENAI_API_KEY"
             },
             #{
@@ -25,39 +25,39 @@ fn spec() {
                 "type": "string",
                 ui: "dynamic_select",
                 "default": "whisper-large-v3-turbo",
-                description: "Whisper Model ID",
+                description: "Whisper model ID",
                 depends_on: ["api_base", "api_key"]
             },
             #{
                 name: "audio",
                 "type": "file",
                 required: true,
-                description: "Audio file to transcribe (from AudioInput or other node)"
+                description: "audio file to transcribe"
             },
             #{
                 name: "language",
                 "type": "string",
                 "default": "",
-                description: "Language code (e.g., 'en', 'es', 'fr') - leave empty for auto-detect"
+                description: "language code (e.g., 'en', 'es', 'fr') - leave empty for auto-detect"
             },
             #{
                 name: "prompt",
                 "type": "string",
                 ui: "textarea",
                 "default": "",
-                description: "Optional prompt to guide transcription style"
+                description: "prompt to guide transcription style"
             },
             #{
                 name: "seed",
                 "type": "integer",
-                description: "Random seed (optional)"
+                description: "random seed"
             }
         ],
         outputs: [
-            #{ name: "text", "type": "string", description: "Transcribed text" },
-            #{ name: "language", "type": "string", description: "Detected language" },
-            #{ name: "duration", "type": "float", description: "Audio duration in seconds" },
-            #{ name: "json", "type": "object", description: "Full API response with segments and timing" }
+            #{ name: "text", "type": "string", description: "transcribed text" },
+            #{ name: "language", "type": "string", description: "detected language" },
+            #{ name: "duration", "type": "float", description: "audio duration in seconds" },
+            #{ name: "json", "type": "object", description: "full API response with segments and timing" }
         ]
     };
 }

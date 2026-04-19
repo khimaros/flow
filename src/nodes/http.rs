@@ -21,7 +21,7 @@ impl Node for HttpRequestNode {
     }
 
     fn description(&self) -> &str {
-        "Performs an HTTP request."
+        "Perform an HTTP request"
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -51,7 +51,7 @@ impl Node for HttpRequestNode {
                 },
                 default: Some(Value::String("GET".to_string())),
                 required: true,
-                description: Some("the HTTP method.".to_string()),
+                description: Some("HTTP method".to_string()),
                 ..Default::default()
             },
             InputSpec {
@@ -60,7 +60,7 @@ impl Node for HttpRequestNode {
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::String("https://dummyjson.com/test".to_string())),
                 required: true,
-                description: Some("the target URL.".to_string()),
+                description: Some("target URL".to_string()),
                 ..Default::default()
             },
         ]
@@ -71,12 +71,12 @@ impl Node for HttpRequestNode {
             OutputSpec {
                 name: "status".to_string(),
                 r#type: DataType::Integer,
-                description: Some("the HTTP status code.".to_string()),
+                description: Some("HTTP status code".to_string()),
             },
             OutputSpec {
                 name: "body".to_string(),
                 r#type: DataType::Object,
-                description: Some("the response body.".to_string()),
+                description: Some("response body".to_string()),
             },
         ]
     }
