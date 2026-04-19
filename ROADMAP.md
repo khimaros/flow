@@ -27,12 +27,12 @@
 [ ] consider richer data types (secret, audio, etc.) to reduce ui_component overrides
 [ ] flow-remote: cli that executes workflows on a running flow-server
 
-[x] fix: shift-click force-run clears in-progress blue border on node from prior queued job
-
 [~] tauri app for linux
 [~] create a UIComponent::Auto which renders the right thing based on the Value type
 [~] automagic command line tool node (flags as inputs)
 
+[x] fix: shift-click force-run clears in-progress blue border on node from prior queued job
+[x] bundling script to produce release tarball (flow-<version>-<arch>-<python>.tgz)
 [x] add seed input to openai_stt, openai_tts, and openai_tts_voice nodes
 [x] openai_llm/openai_tts: temperature defaults to unset, not sent unless explicitly set
 [x] fix: node creation should not set input values to defaults (should show as placeholders)

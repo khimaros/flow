@@ -5,6 +5,7 @@
 *.log
 /ui/node_modules/
 /ui/dist/
+/dist/
 __pycache__/
 /workflows/.temp_*.json
 /workflows/.state/

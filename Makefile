@@ -45,6 +45,10 @@ update-gitignore:
 	./scripts/update-gitignore-assets.sh
 .PHONY: update-gitignore
 
+bundle:
+	./scripts/bundle-release.sh $(BUNDLE_ARGS)
+.PHONY: bundle
+
 format:
 	cd ui && npm run format
 	cargo fmt
