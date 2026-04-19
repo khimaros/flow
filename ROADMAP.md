@@ -31,6 +31,7 @@
 [~] create a UIComponent::Auto which renders the right thing based on the Value type
 [~] automagic command line tool node (flags as inputs)
 
+[x] github actions workflow to build macos release tarballs (arm64 + intel)
 [x] consistency pass on node/input/output descriptions
 [x] flow-cli --env-example flag emitting .env-style output with per-var descriptions
 [x] fix: shift-click force-run clears in-progress blue border on node from prior queued job

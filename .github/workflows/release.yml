@@ -1,0 +1,96 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-macos:
+    name: build macos (${{ matrix.arch }}, ${{ matrix.variant }})
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x86_64]
+        variant: [python, nopy]
+        include:
+          - arch: arm64
+            runner: macos-latest
+          - arch: x86_64
+            runner: macos-13
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - uses: actions/setup-python@v5
+        if: matrix.variant == 'python'
+        with:
+          python-version: '3.12'
+
+      - name: install ui deps
+        run: cd ui && npm ci
+
+      - name: bundle
+        run: |
+          args="--platform darwin --arch ${{ matrix.arch }}"
+          [ "${{ matrix.variant }}" = "nopy" ] && args="$args --no-python"
+          ./scripts/bundle-release.sh $args
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flow-macos-${{ matrix.arch }}-${{ matrix.variant }}
+          path: dist/*.tgz
+
+  build-linux:
+    name: build linux (${{ matrix.arch }}, ${{ matrix.variant }})
+    runs-on: ${{ matrix.runner }}
+    container: debian:stable
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, arm64]
+        variant: [python, nopy]
+        include:
+          - arch: x86_64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    steps:
+      - name: install system deps
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            curl build-essential pkg-config git ca-certificates \
+            libssl-dev python3 python3-dev nodejs npm
+
+      - uses: actions/checkout@v4
+
+      - name: mark workspace safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: install ui deps
+        run: cd ui && npm ci
+
+      - name: bundle
+        run: |
+          args="--platform linux --arch ${{ matrix.arch }}"
+          [ "${{ matrix.variant }}" = "nopy" ] && args="$args --no-python"
+          ./scripts/bundle-release.sh $args
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flow-linux-${{ matrix.arch }}-${{ matrix.variant }}
+          path: dist/*.tgz

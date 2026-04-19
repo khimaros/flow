@@ -8,13 +8,15 @@
 #
 # usage:
 #   scripts/bundle-release.sh [--platform OS] [--arch ARCH] [--python PYVER] \
-#                             [--target RUST_TARGET] [--python-bin PATH] [--output-dir DIR]
+#                             [--target RUST_TARGET] [--python-bin PATH] [--output-dir DIR] \
+#                             [--no-python]
 #
 # --platform OS label, eg linux/darwin (default: host os via `uname -s`, lowercased)
 # --arch     label used in the tarball name (default: host arch via `uname -m`)
 # --python   python version label, eg 3.12 (default: detected from `python3 --version`)
 # --target   rust target triple to build for (default: host; passed to cargo --target)
-# --python-bin   path to python interpreter to link pyo3 against (default: python3)
+# --python-bin  path to python interpreter to link pyo3 against (default: python3)
+# --no-python   build without pyo3; drops py<ver> suffix from tarball name
 
 set -euo pipefail
 
@@ -27,6 +29,7 @@ PYVER=""
 RUST_TARGET=""
 PYTHON_BIN="python3"
 OUT_DIR="dist"
+NO_PYTHON=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -36,7 +39,8 @@ while [[ $# -gt 0 ]]; do
         --target) RUST_TARGET="$2"; shift 2 ;;
         --python-bin) PYTHON_BIN="$2"; shift 2 ;;
         --output-dir) OUT_DIR="$2"; shift 2 ;;
-        -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
+        --no-python) NO_PYTHON=1; shift ;;
+        -h|--help) sed -n '2,19p' "$0"; exit 0 ;;
         *) echo "unknown arg: $1" >&2; exit 2 ;;
     esac
 done
@@ -44,21 +48,29 @@ done
 VERSION="$(grep -m1 '^version' Cargo.toml | sed -E 's/.*"([^"]+)".*/\1/')"
 [[ -n "$PLATFORM" ]] || PLATFORM="$(uname -s | tr '[:upper:]' '[:lower:]')"
 [[ -n "$ARCH" ]] || ARCH="$(uname -m)"
-if [[ -z "$PYVER" ]]; then
+if [[ "$NO_PYTHON" -eq 0 && -z "$PYVER" ]]; then
     PYVER="$("$PYTHON_BIN" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 fi
 
-NAME="flow-${VERSION}-${PLATFORM}-${ARCH}-py${PYVER}"
+if [[ "$NO_PYTHON" -eq 1 ]]; then
+    NAME="flow-${VERSION}-${PLATFORM}-${ARCH}-nopy"
+else
+    NAME="flow-${VERSION}-${PLATFORM}-${ARCH}-py${PYVER}"
+fi
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 
 echo "==> building ui"
 (cd ui && npm run build)
 
-echo "==> building rust binaries (python=${PYVER}, target=${RUST_TARGET:-host})"
-export PYO3_PYTHON="$PYTHON_BIN"
+echo "==> building rust binaries (python=${PYVER:-off}, target=${RUST_TARGET:-host})"
 CARGO_ARGS=(build --release --workspace)
 [[ -n "$RUST_TARGET" ]] && CARGO_ARGS+=(--target "$RUST_TARGET")
+if [[ "$NO_PYTHON" -eq 1 ]]; then
+    CARGO_ARGS+=(--no-default-features --features typescript)
+else
+    export PYO3_PYTHON="$PYTHON_BIN"
+fi
 cargo "${CARGO_ARGS[@]}"
 
 if [[ -n "$RUST_TARGET" ]]; then
@@ -82,7 +94,8 @@ echo "==> generating .env.example from flow-cli --env-example"
 copy_clean() {
     local dir="$1"
     git ls-files -co --exclude-standard -- "$dir" | while IFS= read -r f; do
-        install -D -m 0644 "$f" "${DEST}/${f}"
+        mkdir -p "${DEST}/$(dirname "$f")"
+        install -m 0644 "$f" "${DEST}/${f}"
     done
 }
 copy_clean workflows
