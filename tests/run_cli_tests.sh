@@ -262,4 +262,72 @@ fi
 rm -f "$SAVE_TMP" "$SAVE_DIR/.state/$(basename "$SAVE_TMP")"
 rmdir "$SAVE_DIR/.state" 2>/dev/null || true
 
+# test 23: dynamic user node — handles/lint resolve dynamic ports
+# from literal code on the node (no upstream state required).
+echo "test 23: dynamic user node (literal code)..."
+OUTPUT=$($CLI_BIN handles test_workflows/dynamic-user-node.json dynamicusernode_aaaaaaaa 2>&1)
+if [[ "$OUTPUT" == *"who"* ]] && [[ "$OUTPUT" == *"greeting"* ]]; then
+    echo "dynamic user node literal handles passed."
+else
+    echo "dynamic user node literal handles failed. Output:"
+    echo "$OUTPUT"
+    exit 1
+fi
+if $CLI_BIN lint test_workflows/dynamic-user-node.json > /dev/null 2>&1; then
+    echo "dynamic user node literal lint passed."
+else
+    echo "dynamic user node literal lint failed. Output:"
+    $CLI_BIN lint test_workflows/dynamic-user-node.json 2>&1
+    exit 1
+fi
+OUTPUT=$($CLI_BIN -f test_workflows/dynamic-user-node.json 2>&1)
+if [[ "$OUTPUT" == *"hello, tester"* ]]; then
+    echo "dynamic user node literal run passed."
+else
+    echo "dynamic user node literal run failed. Output:"
+    echo "$OUTPUT"
+    exit 1
+fi
+
+# test 24: dynamic user node with wired code input — lint should NOT
+# flag the dynamic edges as unknown handles even when no saved state
+# is available (the dynamic spec can't be resolved statically; the
+# linter must skip validation rather than report false positives).
+echo "test 24: dynamic user node (wired, no state)..."
+WIRED_TMP=$(mktemp /tmp/flow_wired_test_XXXXXX.json)
+WIRED_DIR=$(dirname "$WIRED_TMP")
+cp test_workflows/dynamic-user-node-wired.json "$WIRED_TMP"
+if $CLI_BIN lint "$WIRED_TMP" > /dev/null 2>&1; then
+    echo "dynamic user node wired lint (no state) passed."
+else
+    echo "dynamic user node wired lint (no state) failed. Output:"
+    $CLI_BIN lint "$WIRED_TMP" 2>&1
+    rm -f "$WIRED_TMP"
+    exit 1
+fi
+# now run with --save so the upstream Echo's output is persisted; the
+# saved state should let lint/handles resolve the dynamic ports.
+$CLI_BIN -q --save -f "$WIRED_TMP" > /dev/null 2>&1
+OUTPUT=$($CLI_BIN handles "$WIRED_TMP" dynamicusernode_dddddddd 2>&1)
+if [[ "$OUTPUT" == *"who"* ]] && [[ "$OUTPUT" == *"greeting"* ]]; then
+    echo "dynamic user node wired handles (with state) passed."
+else
+    echo "dynamic user node wired handles (with state) failed. Output:"
+    echo "$OUTPUT"
+    rm -f "$WIRED_TMP" "$WIRED_DIR/.state/$(basename "$WIRED_TMP")"
+    rmdir "$WIRED_DIR/.state" 2>/dev/null || true
+    exit 1
+fi
+if $CLI_BIN lint "$WIRED_TMP" > /dev/null 2>&1; then
+    echo "dynamic user node wired lint (with state) passed."
+else
+    echo "dynamic user node wired lint (with state) failed."
+    $CLI_BIN lint "$WIRED_TMP" 2>&1
+    rm -f "$WIRED_TMP" "$WIRED_DIR/.state/$(basename "$WIRED_TMP")"
+    rmdir "$WIRED_DIR/.state" 2>/dev/null || true
+    exit 1
+fi
+rm -f "$WIRED_TMP" "$WIRED_DIR/.state/$(basename "$WIRED_TMP")"
+rmdir "$WIRED_DIR/.state" 2>/dev/null || true
+
 echo "all CLI tests passed!"

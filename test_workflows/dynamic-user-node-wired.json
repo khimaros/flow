@@ -1,0 +1,54 @@
+{
+  "nodes": [
+    {
+      "id": "echo_cccccccc",
+      "type": "Echo",
+      "position": null,
+      "size": null,
+      "inputs": {
+        "message": "fn spec() { #{ name: \"Greet\", title: \"Greet\", category: \"Test\", description: \"\", inputs: [#{ name: \"who\", \"type\": \"string\", \"default\": \"world\" }], outputs: [#{ name: \"greeting\", \"type\": \"string\" }] } }\nfn execute(inputs) { #{ greeting: \"hello, \" + inputs.who } }"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "dynamicusernode_dddddddd",
+      "type": "DynamicUserNode",
+      "position": null,
+      "size": null,
+      "inputs": {
+        "language": "rhai",
+        "who": "wired"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_eeeeeeee",
+      "type": "Echo",
+      "position": null,
+      "size": null,
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-echo_cccccccc-output-dynamicusernode_dddddddd-code",
+      "source": "echo_cccccccc",
+      "sourceHandle": "output",
+      "target": "dynamicusernode_dddddddd",
+      "targetHandle": "code"
+    },
+    {
+      "id": "e-dynamicusernode_dddddddd-greeting-echo_eeeeeeee-message",
+      "source": "dynamicusernode_dddddddd",
+      "sourceHandle": "greeting",
+      "target": "echo_eeeeeeee",
+      "targetHandle": "message"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

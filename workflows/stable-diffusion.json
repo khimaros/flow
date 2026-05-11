@@ -9,7 +9,7 @@
       },
       "size": {
         "width": 420.0,
-        "height": 870.0
+        "height": 1020.0
       },
       "inputs": {
         "api_base": "",
@@ -29,7 +29,7 @@
       "type": "DisplayImage",
       "position": {
         "x": 885.0,
-        "y": 240.0
+        "y": 390.0
       },
       "size": {
         "width": 750.0,
@@ -48,7 +48,7 @@
       },
       "size": {
         "width": 450.0,
-        "height": 870.0
+        "height": 1020.0
       },
       "inputs": {
         "api_base": "",

@@ -567,19 +567,17 @@ async fn get_node_spec(
         StatusCode::NOT_FOUND
     })?;
 
-    // merge: start with saved literals on the workflow node (skipping wired
-    // refs), then overlay any live editor values from the request.
-    let mut resolved: BTreeMap<String, flow_rs::value::Value> = saved_node
-        .map(|n| {
-            n.inputs
-                .iter()
-                .filter_map(|(k, v)| match v {
-                    flow_rs::value::Value::Object(o) if o.contains_key("$node") => None,
-                    _ => Some((k.clone(), v.clone())),
-                })
-                .collect()
-        })
+    // merge: start with saved literals plus inputs resolvable from saved
+    // execution state of upstream nodes, then overlay any live editor values
+    // from the request (which take precedence).
+    let saved_state = workflow
+        .as_ref()
+        .map(|_| Workflow::load_state(&workflow_path))
         .unwrap_or_default();
+    let mut resolved: BTreeMap<String, flow_rs::value::Value> = match (workflow.as_ref(), saved_node) {
+        (Some(wf), Some(n)) => wf.resolve_spec_inputs(n, &saved_state),
+        _ => BTreeMap::new(),
+    };
     for (k, v) in request.inputs {
         let flow_val: flow_rs::value::Value =
             serde_json::from_value(v).unwrap_or(flow_rs::value::Value::Null);
@@ -617,7 +615,7 @@ async fn get_node_spec(
         description: node.description().to_string(),
         inputs,
         outputs,
-        script_source: node.script_source(),
+        script_source: node.dynamic_script_source(&resolved),
         has_dynamic_spec: node.has_dynamic_spec(),
     }))
 }

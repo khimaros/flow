@@ -104,6 +104,40 @@ impl Workflow {
         Some(parent.join(".state").join(filename))
     }
 
+    /// build the "resolved inputs" map used to derive a node's dynamic spec
+    /// (effective_inputs/outputs, dynamic_script_source). merges literal
+    /// inputs on the workflow node with wired inputs resolved from upstream
+    /// nodes' saved state, so dynamic ports can be discovered even when the
+    /// inputs that drive them are wired from another node rather than set
+    /// literally. ports that depend on inputs the saved state doesn't cover
+    /// will simply not appear -- callers needing strict validation must
+    /// account for that.
+    pub fn resolve_spec_inputs(
+        &self,
+        node: &WorkflowNode,
+        state: &ResultMap,
+    ) -> BTreeMap<String, Value> {
+        let mut resolved: BTreeMap<String, Value> = node
+            .inputs
+            .iter()
+            .filter_map(|(k, v)| match v {
+                Value::Object(o) if o.contains_key("$node") => None,
+                _ => Some((k.clone(), v.clone())),
+            })
+            .collect();
+        for e in &self.edges {
+            if e.target != node.id {
+                continue;
+            }
+            if let Some(outputs) = state.get(&e.source) {
+                if let Some(v) = outputs.get(&e.source_handle) {
+                    resolved.insert(e.target_handle.clone(), v.clone());
+                }
+            }
+        }
+        resolved
+    }
+
     /// load saved execution state from the .state/ directory
     pub fn load_state(workflow_path: &Path) -> ResultMap {
         Self::state_path(workflow_path)

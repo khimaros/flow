@@ -352,6 +352,16 @@ pub trait Node: Send + Sync {
         None
     }
 
+    /// get the script source for nodes whose source depends on resolved
+    /// inputs (e.g. DynamicUserNode, whose code is user-supplied). default:
+    /// falls back to the static script_source().
+    fn dynamic_script_source(
+        &self,
+        _resolved_inputs: &BTreeMap<String, Value>,
+    ) -> Option<ScriptSource> {
+        self.script_source()
+    }
+
     /// get dynamic options for a specific input (default: empty vec)
     async fn get_options(
         &self,

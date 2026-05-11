@@ -83,7 +83,7 @@ test.describe("Node Execution and Highlighting", () => {
     await flowPage.runWorkflowAndExpectComplete(true);
 
     const markdownBody = flowPage
-      .getNodeById("displaymarkdown_stream01")
+      .getNodeById("displaymarkdown_81d234a5")
       .locator(".markdown-body");
     await expect(markdownBody).toContainText("hello", { timeout: 10000 });
     await expect(markdownBody).toContainText("stream", { timeout: 10000 });
@@ -99,7 +99,7 @@ test.describe("Node Execution and Highlighting", () => {
     await flowPage.runWorkflowAndExpectComplete(true);
 
     const echoInput = flowPage
-      .getNodeById("echo_stream01")
+      .getNodeById("echo_ff24a910")
       .locator("textarea")
       .first();
     await expect(echoInput).toHaveValue(/hello/, { timeout: 10000 });
@@ -117,11 +117,11 @@ test.describe("Node Execution and Highlighting", () => {
 
     // verify the full chain: Shell Command -> Echo -> Display Markdown
     const echoInput = flowPage
-      .getNodeById("echo_stream01")
+      .getNodeById("echo_ff24a910")
       .locator("textarea")
       .first();
     const markdownBody = flowPage
-      .getNodeById("displaymarkdown_stream01")
+      .getNodeById("displaymarkdown_81d234a5")
       .locator(".markdown-body");
 
     await expect(echoInput).toHaveValue(/hello/, { timeout: 10000 });

@@ -26,7 +26,7 @@
       },
       "size": {
         "width": 390.0,
-        "height": 870.0
+        "height": 1020.0
       },
       "inputs": {
         "api_base": "",
@@ -45,7 +45,7 @@
       "type": "JsonQuery",
       "position": {
         "x": 1320.0,
-        "y": 690.0
+        "y": 840.0
       },
       "size": {
         "width": 300.0,
@@ -66,7 +66,7 @@
       },
       "size": {
         "width": 360.0,
-        "height": 615.0
+        "height": 765.0
       },
       "inputs": {
         "message": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"birth_date\": {\n      \"type\": \"string\",\n      \"format\": \"date\"\n    },\n    \"height_cm\": {\n      \"type\": \"integer\"\n    }\n  },\n  \"required\": [\n    \"name\",\n    \"birth_date\",\n    \"height_cm\"\n  ]\n}"
@@ -79,7 +79,7 @@
       "type": "Echo",
       "position": {
         "x": 1320.0,
-        "y": 1065.0
+        "y": 1215.0
       },
       "size": {
         "width": 300.0,
@@ -98,7 +98,7 @@
       },
       "size": {
         "width": 330.0,
-        "height": 495.0
+        "height": 645.0
       },
       "inputs": {},
       "skipCache": true,
@@ -109,7 +109,7 @@
       "type": "DisplayJson",
       "position": {
         "x": 1005.0,
-        "y": 915.0
+        "y": 1065.0
       },
       "size": {
         "width": 330.0,

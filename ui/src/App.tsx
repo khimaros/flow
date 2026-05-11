@@ -896,7 +896,6 @@ function AppInner() {
         }
         const key = JSON.stringify(liveInputs);
         if (lastSpecKeyRef.current.get(node.id) === key) continue;
-        lastSpecKeyRef.current.set(node.id, key);
 
         try {
           const res = await fetch(
@@ -926,6 +925,11 @@ function AppInner() {
                 : n,
             ),
           );
+          // only record the cache key once the metadata has actually been
+          // applied — otherwise a cancelled effect (common during workflow
+          // load when nodes/state churn) would record the key without
+          // updating data.metadata, permanently blocking the refetch.
+          lastSpecKeyRef.current.set(node.id, key);
           // tell reactflow to recompute handle positions; without this,
           // newly-appeared output handles render but aren't connectable.
           updateNodeInternals(node.id);
@@ -1258,6 +1262,12 @@ function AppInner() {
 
     try {
       setRestoreState("restoring");
+      // wipe the dynamic-spec dedup cache: the new workflow may reuse node
+      // ids whose inputs are unchanged, in which case the cached key would
+      // cause the spec effect to skip the refetch and leave the freshly
+      // remounted nodes with their base metadata (no dynamic ports, no
+      // script_source for the View Source button).
+      lastSpecKeyRef.current.clear();
       const [wfRes, stateRes] = await Promise.all([
         fetch(`/api/workflows/${name}`),
         fetch(`/api/workflows/${name}/state`),

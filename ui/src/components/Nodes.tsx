@@ -86,7 +86,12 @@ export const GenericNode = ({
   const minHeight =
     Math.ceil(calculateNodeMinHeight(meta) / GRID_SIZE) * GRID_SIZE;
 
-  // front face - normal node view
+  // front face - normal node view. when showSource is true, we still render
+  // this structure (so the input/output Handle elements stay mounted and
+  // connected edges remain anchored) but overlay the source code on top of
+  // the controls. handles live outside the content padding box, so they
+  // remain visible alongside the overlay.
+  const showSourceOverlay = showSource && hasSource;
   const frontFace = (
     <NodeContainer
       label={meta.title || meta.name}
@@ -160,58 +165,56 @@ export const GenericNode = ({
           />
         ))}
       </div>
+
+      {/* source code overlay: rendered on top of the front face so the
+          underlying input/output Handle elements stay mounted (and visible
+          at the node edges, since they sit outside the content padding box).
+          the overlay's opaque syntax-highlighter background covers the
+          control visuals beneath it. */}
+      {showSourceOverlay && (
+        <div
+          className="nodrag"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflow: "auto",
+            borderRadius: "4px",
+            fontSize: "11px",
+            lineHeight: "1.4",
+          }}
+        >
+          <SyntaxHighlighter
+            language={languageMap[meta.script_source!.language] || "javascript"}
+            style={isDark ? oneDark : oneLight}
+            customStyle={{
+              margin: 0,
+              padding: "8px",
+              borderRadius: "4px",
+              fontSize: "11px",
+              minHeight: "100%",
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
+            }}
+            codeTagProps={{
+              style: {
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                overflowWrap: "anywhere",
+              },
+            }}
+            wrapLines
+            wrapLongLines
+          >
+            {meta.script_source!.source}
+          </SyntaxHighlighter>
+        </div>
+      )}
     </NodeContainer>
   );
 
-  // back face - source code view
-  const backFace = hasSource ? (
-    <NodeContainer
-      label={meta.title || meta.name}
-      selected={selected}
-      isBypassed={data.isBypassed}
-      onRun={(force) => data.onRun(id, force)}
-      isRunning={data.isRunning}
-      justFinished={data.justFinished}
-      isCached={data.isCached}
-      error={data.error}
-      minHeight={minHeight}
-      hasSource={hasSource}
-      showSource={showSource}
-      onToggleSource={() => data.onToggleSource?.(id)}
-    >
-      <div
-        className="nodrag"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          overflow: "auto",
-          borderRadius: "4px",
-          fontSize: "11px",
-          lineHeight: "1.4",
-        }}
-      >
-        <SyntaxHighlighter
-          language={languageMap[meta.script_source!.language] || "javascript"}
-          style={isDark ? oneDark : oneLight}
-          customStyle={{
-            margin: 0,
-            padding: "8px",
-            borderRadius: "4px",
-            fontSize: "11px",
-            minHeight: "100%",
-          }}
-          wrapLines
-          wrapLongLines
-        >
-          {meta.script_source!.source}
-        </SyntaxHighlighter>
-      </div>
-    </NodeContainer>
-  ) : null;
-
-  // render front or back based on showSource state
-  return showSource && hasSource ? backFace : frontFace;
+  return frontFace;
 };

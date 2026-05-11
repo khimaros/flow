@@ -351,6 +351,7 @@ fn build_edge_context(workflow: &Workflow) -> HashMap<String, (String, String)> 
 fn validate_pipe_handles(
     targets: &[PipeTarget],
     workflow: &Workflow,
+    state: &flow_rs::engine::ResultMap,
     registry: &NodeRegistry,
     direction: &str,
 ) -> anyhow::Result<()> {
@@ -369,18 +370,10 @@ fn validate_pipe_handles(
         if is_io_node {
             continue;
         }
-        // for nodes with dynamic ports (e.g. DynamicUserNode), best-effort
-        // resolution from literal inputs on the workflow node lets us derive
-        // the dynamic ports without running the upstream graph. wired control
-        // inputs simply won't resolve here and dynamic ports will be empty.
-        let resolved_for_spec: BTreeMap<String, Value> = node
-            .inputs
-            .iter()
-            .filter_map(|(k, v)| match v {
-                Value::Object(o) if o.contains_key("$node") => None,
-                _ => Some((k.clone(), v.clone())),
-            })
-            .collect();
+        // for nodes with dynamic ports (e.g. DynamicUserNode) we resolve
+        // inputs that drive the spec from the workflow's saved state when
+        // they're wired rather than set literally, so dynamic ports show up.
+        let resolved_for_spec = workflow.resolve_spec_inputs(node, state);
         let input_specs = flow_rs::node::effective_inputs(&*node_impl, &resolved_for_spec);
         let output_specs = flow_rs::node::effective_outputs(&*node_impl, &resolved_for_spec);
         let input_names: Vec<String> = input_specs.iter().map(|s| s.name.clone()).collect();
@@ -876,14 +869,7 @@ fn run_handles(args: &HandlesArgs) -> anyhow::Result<()> {
     let col_dir = 3;
     for node in &matched {
         let node_impl = registry.create(&node.node_type);
-        let resolved_for_spec: BTreeMap<String, Value> = node
-            .inputs
-            .iter()
-            .filter_map(|(k, v)| match v {
-                Value::Object(o) if o.contains_key("$node") => None,
-                _ => Some((k.clone(), v.clone())),
-            })
-            .collect();
+        let resolved_for_spec = workflow.resolve_spec_inputs(node, &saved_state);
         let input_specs = node_impl
             .as_ref()
             .map(|n| flow_rs::node::effective_inputs(&**n, &resolved_for_spec))
@@ -997,6 +983,7 @@ impl LintReport {
 
 fn lint_one(path: &PathBuf, registry: &NodeRegistry, fix: bool) -> anyhow::Result<LintReport> {
     let mut workflow = Workflow::load(path)?;
+    let saved_state = Workflow::load_state(path);
     let mut report = LintReport::default();
 
     // 1. plan node id renames
@@ -1069,14 +1056,16 @@ fn lint_one(path: &PathBuf, registry: &NodeRegistry, fix: bool) -> anyhow::Resul
                 continue;
             }
         };
-        let resolved: BTreeMap<String, Value> = n
-            .inputs
-            .iter()
-            .filter_map(|(k, v)| match v {
-                Value::Object(o) if o.contains_key("$node") => None,
-                _ => Some((k.clone(), v.clone())),
-            })
-            .collect();
+        let resolved = workflow.resolve_spec_inputs(n, &saved_state);
+        // when a node has dynamic ports but we couldn't resolve the inputs
+        // that drive them (e.g. wired control inputs with no saved state),
+        // we can't tell which ports are valid -- skip dead-input detection
+        // for this node rather than reporting false positives.
+        let dynamic_unresolved =
+            node_impl.has_dynamic_spec() && node_impl.dynamic_spec(&resolved).is_none();
+        if dynamic_unresolved {
+            continue;
+        }
         let input_specs = flow_rs::node::effective_inputs(&*node_impl, &resolved);
         let input_names: HashSet<String> =
             input_specs.iter().map(|s| s.name.clone()).collect();
@@ -1124,45 +1113,41 @@ fn lint_one(path: &PathBuf, registry: &NodeRegistry, fix: bool) -> anyhow::Resul
             continue;
         }
 
-        // check handles against spec
+        // check handles against spec. for nodes with unresolvable dynamic
+        // ports (e.g. DynamicUserNode whose code input is wired but has no
+        // saved state), skip validation rather than report false positives.
         let mut bad_handle = false;
         if let Some(src_node) = nodes_by_id.get(&edge.source) {
             if let Some(impl_) = registry.create(&src_node.node_type) {
-                let resolved: BTreeMap<String, Value> = src_node
-                    .inputs
-                    .iter()
-                    .filter_map(|(k, v)| match v {
-                        Value::Object(o) if o.contains_key("$node") => None,
-                        _ => Some((k.clone(), v.clone())),
-                    })
-                    .collect();
-                let outputs = flow_rs::node::effective_outputs(&*impl_, &resolved);
-                if !outputs.iter().any(|s| s.name == edge.source_handle) {
-                    report.issue(format!(
-                        "edge '{}' references unknown output '{}' on node '{}' ({})",
-                        e.id, edge.source_handle, edge.source, src_node.node_type
-                    ));
-                    bad_handle = true;
+                let resolved = workflow.resolve_spec_inputs(src_node, &saved_state);
+                let dynamic_unresolved =
+                    impl_.has_dynamic_spec() && impl_.dynamic_spec(&resolved).is_none();
+                if !dynamic_unresolved {
+                    let outputs = flow_rs::node::effective_outputs(&*impl_, &resolved);
+                    if !outputs.iter().any(|s| s.name == edge.source_handle) {
+                        report.issue(format!(
+                            "edge '{}' references unknown output '{}' on node '{}' ({})",
+                            e.id, edge.source_handle, edge.source, src_node.node_type
+                        ));
+                        bad_handle = true;
+                    }
                 }
             }
         }
         if let Some(tgt_node) = nodes_by_id.get(&edge.target) {
             if let Some(impl_) = registry.create(&tgt_node.node_type) {
-                let resolved: BTreeMap<String, Value> = tgt_node
-                    .inputs
-                    .iter()
-                    .filter_map(|(k, v)| match v {
-                        Value::Object(o) if o.contains_key("$node") => None,
-                        _ => Some((k.clone(), v.clone())),
-                    })
-                    .collect();
-                let inputs = flow_rs::node::effective_inputs(&*impl_, &resolved);
-                if !inputs.iter().any(|s| s.name == edge.target_handle) {
-                    report.issue(format!(
-                        "edge '{}' references unknown input '{}' on node '{}' ({})",
-                        e.id, edge.target_handle, edge.target, tgt_node.node_type
-                    ));
-                    bad_handle = true;
+                let resolved = workflow.resolve_spec_inputs(tgt_node, &saved_state);
+                let dynamic_unresolved =
+                    impl_.has_dynamic_spec() && impl_.dynamic_spec(&resolved).is_none();
+                if !dynamic_unresolved {
+                    let inputs = flow_rs::node::effective_inputs(&*impl_, &resolved);
+                    if !inputs.iter().any(|s| s.name == edge.target_handle) {
+                        report.issue(format!(
+                            "edge '{}' references unknown input '{}' on node '{}' ({})",
+                            e.id, edge.target_handle, edge.target, tgt_node.node_type
+                        ));
+                        bad_handle = true;
+                    }
                 }
             }
         }
@@ -1366,8 +1351,9 @@ async fn run_workflow(cli: RunArgs) -> anyhow::Result<()> {
     nodes::register_all(&mut registry, cli.quiet);
     let registry = Arc::new(registry);
 
+    let saved_state_for_specs = Workflow::load_state(workflow_file);
     if !cli.stdin_targets.is_empty() {
-        validate_pipe_handles(&stdin_targets, &workflow, &registry, "input")?;
+        validate_pipe_handles(&stdin_targets, &workflow, &saved_state_for_specs, &registry, "input")?;
     }
 
     if cli.force {
@@ -1393,7 +1379,7 @@ async fn run_workflow(cli: RunArgs) -> anyhow::Result<()> {
     };
 
     if !cli.stdout_targets.is_empty() {
-        validate_pipe_handles(&stdout_targets, &workflow, &registry, "output")?;
+        validate_pipe_handles(&stdout_targets, &workflow, &saved_state_for_specs, &registry, "output")?;
     }
 
     let stdout_keys: HashSet<String> = stdout_targets

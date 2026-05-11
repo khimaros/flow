@@ -1,5 +1,5 @@
 use crate::node::{
-    DataType, InputSpec, Node, NodeContext, OutputSpec, SelectOption, UIComponent,
+    DataType, InputSpec, Node, NodeContext, OutputSpec, ScriptSource, SelectOption, UIComponent,
 };
 use crate::nodes::declarative::DeclarativeNode;
 use crate::nodes::script::ScriptDefinedNode;
@@ -120,6 +120,14 @@ impl Node for DynamicUserNode {
         let (code, language) = Self::extract_code_lang(resolved_inputs)?;
         let inner = Self::build_inner(&code, &language).ok()?;
         Some((inner.inputs(), inner.outputs()))
+    }
+
+    fn dynamic_script_source(
+        &self,
+        resolved_inputs: &BTreeMap<String, Value>,
+    ) -> Option<ScriptSource> {
+        let (source, language) = Self::extract_code_lang(resolved_inputs)?;
+        Some(ScriptSource { language, source })
     }
 
     async fn execute(

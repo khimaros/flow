@@ -1,0 +1,27 @@
+{
+  "nodes": [
+    {
+      "id": "dynamicusernode_aaaaaaaa",
+      "type": "DynamicUserNode",
+      "inputs": {
+        "code": "fn spec() { #{ name: \"Greet\", title: \"Greet\", category: \"Test\", description: \"\", inputs: [#{ name: \"who\", \"type\": \"string\", \"default\": \"world\" }], outputs: [#{ name: \"greeting\", \"type\": \"string\" }] } }\nfn execute(inputs) { #{ greeting: \"hello, \" + inputs.who } }",
+        "language": "rhai",
+        "who": "tester"
+      }
+    },
+    {
+      "id": "echo_bbbbbbbb",
+      "type": "Echo",
+      "inputs": {}
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-dynamicusernode_aaaaaaaa-greeting-echo_bbbbbbbb-message",
+      "source": "dynamicusernode_aaaaaaaa",
+      "sourceHandle": "greeting",
+      "target": "echo_bbbbbbbb",
+      "targetHandle": "message"
+    }
+  ]
+}

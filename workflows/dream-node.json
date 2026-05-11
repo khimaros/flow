@@ -101,6 +101,20 @@
       "sourceHandle": "stdout",
       "target": "openai_llm_ec27ece4",
       "targetHandle": "system_prompt"
+    },
+    {
+      "id": "e-echo_84a7e6c0-output-dynamicusernode_32707b25-text",
+      "source": "echo_84a7e6c0",
+      "sourceHandle": "output",
+      "target": "dynamicusernode_32707b25",
+      "targetHandle": "text"
+    },
+    {
+      "id": "e-dynamicusernode_32707b25-reversed-echo_c8faecf1-message",
+      "source": "dynamicusernode_32707b25",
+      "sourceHandle": "reversed",
+      "target": "echo_c8faecf1",
+      "targetHandle": "message"
     }
   ],
   "forceRun": false,
