@@ -1,4 +1,4 @@
-use crate::node::{SelectOption, UIComponent};
+use crate::node::{NodeContext, SelectOption, UIComponent};
 use crate::value::Value;
 use anyhow::{anyhow, Result};
 use serde_json::Value as JsonValue;
@@ -21,6 +21,11 @@ pub struct ScriptContext {
     pub report_progress: Arc<dyn Fn(f32, Option<String>) + Send + Sync>,
     /// callback to emit partial output during streaming execution
     pub emit_partial_output: Arc<dyn Fn(String, Value, Value) + Send + Sync>,
+    /// the parent NodeContext, when execution was kicked off from a Node.
+    /// available to host fns (e.g. `dispatch_node`) that need to invoke other
+    /// nodes with propagated cancellation and partial-output forwarding.
+    /// None in non-node call sites (parse_spec, get_options, tests).
+    pub node_ctx: Option<NodeContext>,
 }
 
 impl ScriptContext {
@@ -33,7 +38,15 @@ impl ScriptContext {
             cancelled,
             report_progress: Arc::new(report_progress),
             emit_partial_output: Arc::new(emit_partial_output),
+            node_ctx: None,
         }
+    }
+
+    /// attach a NodeContext (builder pattern). enables `dispatch_node` in
+    /// the rhai engine to invoke other nodes with proper context forwarding.
+    pub fn with_node_ctx(mut self, node_ctx: NodeContext) -> Self {
+        self.node_ctx = Some(node_ctx);
+        self
     }
 
     /// create a no-op context for testing or when progress isn't needed
@@ -42,6 +55,7 @@ impl ScriptContext {
             cancelled: Arc::new(AtomicBool::new(false)),
             report_progress: Arc::new(|_, _| {}),
             emit_partial_output: Arc::new(|_, _, _| {}),
+            node_ctx: None,
         }
     }
 
@@ -205,6 +219,20 @@ pub(super) fn parse_ui_component(
                 .map(|v| v.as_str().unwrap_or_default().to_string())
                 .collect();
             Ok(UIComponent::DynamicSelect { depends_on })
+        }
+        "dynamic_multi_select" => {
+            // depends_on is optional for multi-select (often used for a fixed
+            // registry-wide list with no per-input dependencies).
+            let depends_on = map
+                .get("depends_on")
+                .and_then(|v| v.as_array())
+                .map(|arr| {
+                    arr.iter()
+                        .map(|v| v.as_str().unwrap_or_default().to_string())
+                        .collect()
+                })
+                .unwrap_or_default();
+            Ok(UIComponent::DynamicMultiSelect { depends_on })
         }
         "list_editor" => Ok(UIComponent::ListEditor {}),
         "audio_recorder" => Ok(UIComponent::AudioRecorder {}),

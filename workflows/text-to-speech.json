@@ -56,7 +56,7 @@
       "bypassed": false
     },
     {
-      "id": "openai_91ae2493",
+      "id": "openai_llm_91ae2493",
       "type": "OpenAI_LLM",
       "position": {
         "x": 465.0,
@@ -86,15 +86,15 @@
       "targetHandle": "audio"
     },
     {
-      "id": "e-echo_696e2f95-output-openai_91ae2493-prompt",
+      "id": "e-echo_696e2f95-output-openai_llm_91ae2493-prompt",
       "source": "echo_696e2f95",
       "sourceHandle": "output",
-      "target": "openai_91ae2493",
+      "target": "openai_llm_91ae2493",
       "targetHandle": "prompt"
     },
     {
-      "id": "e-openai_91ae2493-text-openai_tts_30675f8f-input",
-      "source": "openai_91ae2493",
+      "id": "e-openai_llm_91ae2493-text-openai_tts_30675f8f-input",
+      "source": "openai_llm_91ae2493",
       "sourceHandle": "text",
       "target": "openai_tts_30675f8f",
       "targetHandle": "input"

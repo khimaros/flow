@@ -87,7 +87,9 @@ fn spec() {
             }
         ],
         outputs: [
-            #{ name: "audio", "type": "file", description: "generated audio file" }
+            #{ name: "audio", "type": "file", description: "generated audio file" },
+            #{ name: "usage", "type": "object", description: "openai-style usage (input_tokens, output_tokens)" },
+            #{ name: "timings", "type": "object", description: "llama.cpp-style timings (prompt_n, predicted_n, prompt_ms, predicted_ms, ...)" }
         ]
     };
 }
@@ -111,7 +113,7 @@ fn execute(inputs) {
         voice: inputs.voice,
         input: inputs.input,
         response_format: inputs.response_format,
-        speed: inputs.speed
+        speed: inputs.speed,
     };
 
     if inputs.temperature != () {
@@ -132,28 +134,67 @@ fn execute(inputs) {
 
     let options = #{
         timeout: 1200,
-        retries: 2
+        // accumulate base64 audio fragments live into audio_base64 so the UI
+        // (or future streaming consumers) sees the asset grow as deltas arrive.
+        emit: [
+            #{ event: "speech.audio.delta", path: "/audio", output: "audio_base64" }
+        ]
     };
 
-    // Try api_base first
-    let url = api_base + "/audio/speech";
-    let response = http_request_binary("POST", url, body, headers, options);
+    // sse lets llama-swap see usage/timings and keeps the door open for
+    // progressive playback once the server streams audio chunks. servers
+    // that don't support stream_format fall through to the binary path.
+    let sse_body = body;
+    sse_body.stream_format = "sse";
 
-    // If failed, try upstream fallback: /upstream/{model}/v1/audio/speech
+    let server_base = api_base;
+    if api_base.len >= 3 && api_base.sub_string(api_base.len - 3) == "/v1" {
+        server_base = api_base.sub_string(0, api_base.len - 3);
+    }
+    let upstream_url = server_base + "/upstream/" + inputs.model + "/v1/audio/speech";
+
+    // try SSE on api_base, then SSE on upstream, then binary on api_base,
+    // then binary on upstream. the binary steps let older servers (no
+    // stream_format support) still work.
+    let url = api_base + "/audio/speech";
+    let response = http_request_sse("POST", url, sse_body, headers, options);
     if response.status != 200 {
-        let server_base = api_base;
-        if api_base.len >= 3 && api_base.sub_string(api_base.len - 3) == "/v1" {
-            server_base = api_base.sub_string(0, api_base.len - 3);
-        }
-        let upstream_url = server_base + "/upstream/" + inputs.model + "/v1/audio/speech";
-        let error_body = decode_base64_text(response.body_base64);
-        log("request failed (" + response.status + "): " + error_body + ", trying upstream fallback: " + upstream_url);
-        response = http_request_binary("POST", upstream_url, body, headers, options);
+        log("sse request failed (" + response.status + "): " + to_string(response.body) + ", trying upstream sse: " + upstream_url);
+        response = http_request_sse("POST", upstream_url, sse_body, headers, options);
     }
 
-    if response.status != 200 {
-        let error_body = decode_base64_text(response.body_base64);
-        throw "TTS API Error " + response.status + ": " + error_body;
+    let audio_b64 = "";
+    let usage = #{};
+    let timings = #{};
+
+    if response.status == 200 {
+        // walk events: concat delta audio, capture usage/timings from done.
+        for ev in response.events {
+            if ev.event == "speech.audio.delta" {
+                if ev.data.audio != () {
+                    audio_b64 += ev.data.audio;
+                }
+            } else if ev.event == "speech.audio.done" {
+                if ev.data.usage != () { usage = ev.data.usage; }
+                if ev.data.timings != () { timings = ev.data.timings; }
+            }
+        }
+    } else {
+        // non-streaming fallback: raw audio bytes, base64-encoded.
+        log("sse upstream also failed (" + response.status + "): " + to_string(response.body) + ", falling back to non-streaming binary");
+        let bin_options = #{ timeout: 1200 };
+        let bin_resp = http_request_binary("POST", url, body, headers, bin_options);
+        if bin_resp.status != 200 {
+            bin_resp = http_request_binary("POST", upstream_url, body, headers, bin_options);
+        }
+        if bin_resp.status != 200 {
+            throw "TTS API Error " + bin_resp.status + ": " + decode_base64_text(bin_resp.body_base64);
+        }
+        audio_b64 = bin_resp.body_base64;
+    }
+
+    if audio_b64 == "" {
+        throw "TTS API returned no audio";
     }
 
     // Determine file extension from format
@@ -165,14 +206,16 @@ fn execute(inputs) {
 
     // Save the audio file
     let filename = "tts_" + uuid_v4() + "." + ext;
-    let file_path = save_asset_base64(filename, response.body_base64);
+    let file_path = save_asset_base64(filename, audio_b64);
 
     return #{
         audio: #{
             path: file_path,
             url: "/api/assets/" + filename,
             mime_type: mime_type
-        }
+        },
+        usage: usage,
+        timings: timings
     };
 }
 

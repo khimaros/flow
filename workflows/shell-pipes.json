@@ -12,8 +12,8 @@
         "height": 690.0
       },
       "inputs": {
-        "stdin": "",
-        "command": "du"
+        "command": "du",
+        "stdin": ""
       },
       "skipCache": true,
       "bypassed": false
@@ -156,13 +156,6 @@
       "sourceHandle": "output",
       "target": "templatize_b8a6abab",
       "targetHandle": "context"
-    },
-    {
-      "id": "e-split_1f068586-output-displaylist_0c4a72c6-list",
-      "source": "split_1f068586",
-      "sourceHandle": "output",
-      "target": "displaylist_0c4a72c6",
-      "targetHandle": "list"
     },
     {
       "id": "e-split_1f068586-output-list_73edaa65-list",

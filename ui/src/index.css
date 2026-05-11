@@ -1,5 +1,8 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* default light scheme for native form controls */
+  color-scheme: light;
+  accent-color: #2563eb;
   /* Increased contrast for light mode */
   --bg-color: #f1f5f9;
   /* Slightly darker background to make white panels pop */
@@ -49,6 +52,11 @@
 /* Dark theme variables - used by both explicit dark mode and system preference */
 [data-theme="dark"],
 :root[data-theme="system"] {
+  /* tell the browser to render native form controls (checkboxes,
+     number-input spin buttons, scrollbars) in dark mode */
+  color-scheme: dark;
+  /* tint for native :checked controls (checkboxes, radios) */
+  accent-color: #60a5fa;
   /* Using Zinc/Neutral tones for True Gray feel, less Blue than Slate */
   --bg-color: #18181b;
   --text-color: #f4f4f5;
@@ -88,6 +96,8 @@
 /* System theme only applies dark when system prefers dark */
 @media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
+    color-scheme: light;
+    accent-color: #2563eb;
     /* Reset to light theme variables (inherited from :root) */
     --bg-color: #f1f5f9;
     --text-color: #020617;
@@ -148,6 +158,146 @@
 .json-view-punctuation {
   color: var(--text-color) !important;
   opacity: 0.6;
+}
+
+/* DisplayMarkdown node styling. the wrapper sets container-level colors
+   (--input-bg / --text-color) inline; these rules theme the prose children
+   that react-markdown emits with no class names of their own. */
+.markdown-body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.5;
+}
+
+.markdown-body > :first-child {
+  margin-top: 0;
+}
+.markdown-body > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: var(--text-color);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 14px 0 8px;
+}
+.markdown-body h1 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 4px;
+}
+.markdown-body h2 {
+  font-size: 1.3em;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 3px;
+}
+.markdown-body h3 {
+  font-size: 1.15em;
+}
+.markdown-body h4 {
+  font-size: 1em;
+}
+.markdown-body h5,
+.markdown-body h6 {
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+.markdown-body p {
+  margin: 0 0 8px;
+}
+
+.markdown-body a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+.markdown-body blockquote {
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-left: 3px solid var(--panel-border);
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--panel-border);
+  margin: 12px 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 8px;
+  padding-left: 24px;
+}
+.markdown-body li {
+  margin: 2px 0;
+}
+.markdown-body li > ul,
+.markdown-body li > ol {
+  margin-bottom: 0;
+}
+
+.markdown-body code {
+  font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.markdown-body pre {
+  font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 8px 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.markdown-body pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 0.95em;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--panel-border);
+  padding: 4px 8px;
+  text-align: left;
+}
+.markdown-body th {
+  background: var(--panel-header-bg);
+  font-weight: 600;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Hide React Flow attribution */

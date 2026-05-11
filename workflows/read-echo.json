@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "read_node",
+      "id": "read_b83b042b",
       "type": "Read",
       "position": {
         "x": 0.0,
@@ -16,7 +16,7 @@
       "bypassed": false
     },
     {
-      "id": "echo_node",
+      "id": "echo_b2be1c1f",
       "type": "Echo",
       "position": {
         "x": 285.0,
@@ -33,10 +33,10 @@
   ],
   "edges": [
     {
-      "id": "e-read_node-output-echo_node-message",
-      "source": "read_node",
+      "id": "e-read_b83b042b-output-echo_b2be1c1f-message",
+      "source": "read_b83b042b",
       "sourceHandle": "output",
-      "target": "echo_node",
+      "target": "echo_b2be1c1f",
       "targetHandle": "message"
     }
   ],

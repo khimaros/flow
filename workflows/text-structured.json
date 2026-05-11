@@ -18,7 +18,7 @@
       "bypassed": false
     },
     {
-      "id": "openai_8af36d5b",
+      "id": "openai_llm_8af36d5b",
       "type": "OpenAI_LLM",
       "position": {
         "x": 630.0,
@@ -30,8 +30,8 @@
       },
       "inputs": {
         "api_base": "",
-        "max_tokens": null,
         "api_key": "",
+        "max_tokens": null,
         "model": "",
         "seed": null,
         "system_prompt": "provide details about the subject",
@@ -122,22 +122,22 @@
   ],
   "edges": [
     {
-      "id": "e-echo_27656711-output-openai_8af36d5b-prompt",
+      "id": "e-echo_27656711-output-openai_llm_8af36d5b-prompt",
       "source": "echo_27656711",
       "sourceHandle": "output",
-      "target": "openai_8af36d5b",
+      "target": "openai_llm_8af36d5b",
       "targetHandle": "prompt"
     },
     {
-      "id": "e-echo_62f5460e-output-openai_8af36d5b-json_schema",
+      "id": "e-echo_62f5460e-output-openai_llm_8af36d5b-json_schema",
       "source": "echo_62f5460e",
       "sourceHandle": "output",
-      "target": "openai_8af36d5b",
+      "target": "openai_llm_8af36d5b",
       "targetHandle": "json_schema"
     },
     {
-      "id": "e-openai_8af36d5b-text-jsonquery_d2b8deac-json",
-      "source": "openai_8af36d5b",
+      "id": "e-openai_llm_8af36d5b-text-jsonquery_d2b8deac-json",
+      "source": "openai_llm_8af36d5b",
       "sourceHandle": "text",
       "target": "jsonquery_d2b8deac",
       "targetHandle": "json"
@@ -150,15 +150,15 @@
       "targetHandle": "message"
     },
     {
-      "id": "e-openai_8af36d5b-thinking-echo_d88eb324-message",
-      "source": "openai_8af36d5b",
+      "id": "e-openai_llm_8af36d5b-thinking-echo_d88eb324-message",
+      "source": "openai_llm_8af36d5b",
       "sourceHandle": "thinking",
       "target": "echo_d88eb324",
       "targetHandle": "message"
     },
     {
-      "id": "e-openai_8af36d5b-text-displayjson_71783ca5-json",
-      "source": "openai_8af36d5b",
+      "id": "e-openai_llm_8af36d5b-text-displayjson_71783ca5-json",
+      "source": "openai_llm_8af36d5b",
       "sourceHandle": "text",
       "target": "displayjson_71783ca5",
       "targetHandle": "json"

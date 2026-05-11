@@ -88,7 +88,7 @@ set directly on the node always take priority over environment variables.
 to list all available env vars:
 
 ```bash
-cargo run --bin flow-cli -- --list-env
+cargo run --bin flow-cli -- env
 ```
 
 both `flow-server` and `flow-cli` load a `.env` file from the current
@@ -159,22 +159,34 @@ flow-server \
 ### run a workflow from the CLI
 
 ```bash
-# run a saved workflow
-cargo run --bin flow-cli -- --workflow workflows/shell-pipes.json
+# run a saved workflow (`run` is the default subcommand)
+cargo run --bin flow-cli -- workflows/shell-pipes.json
 
 # pipe stdin into a Read node
-fortune | cargo run --bin flow-cli -- --workflow workflows/read-echo.json
+fortune | cargo run --bin flow-cli -- workflows/read-echo.json
 
 # override an input value at the command line
-cargo run --bin flow-cli -- --workflow workflows/text-to-speech.json \
+cargo run --bin flow-cli -- workflows/text-to-speech.json \
     --set tts_input/text="hello from flow"
 
 # run only one node from a workflow
-cargo run --bin flow-cli -- --workflow workflows/haiku-echo.json \
-    --node openai_llm_xxxx
+cargo run --bin flow-cli -- workflows/haiku-echo.json openai_llm_xxxx
 
 # suppress diagnostic output on stderr (machine-friendly)
-cargo run --bin flow-cli -- --quiet workflows/uuid-echo.json
+cargo run --bin flow-cli -- -q workflows/uuid-echo.json
+
+# inspect a workflow
+cargo run --bin flow-cli -- nodes workflows/haiku-echo.json
+cargo run --bin flow-cli -- handles workflows/haiku-echo.json    # all nodes
+cargo run --bin flow-cli -- handles workflows/haiku-echo.json 'openai_*'
+
+# lint workflows for inconsistencies; --fix to rewrite
+cargo run --bin flow-cli -- lint
+cargo run --bin flow-cli -- lint --fix
+
+# cache management
+cargo run --bin flow-cli -- cache stats          # add `workflows/` for live/stale
+cargo run --bin flow-cli -- cache prune
 
 # route stdin to a specific node input (default: all Read nodes)
 echo "hello" | cargo run --bin flow-cli -- workflows/read-echo.json \

@@ -952,3 +952,115 @@ delay: 200
 HTTP 200
 [Asserts]
 jsonpath "$.status" == "completed"
+
+# 57. DynamicUserNode is registered and flagged for per-instance spec fetching
+GET {{base_url}}/api/nodes
+HTTP 200
+[Asserts]
+jsonpath "$[?(@.name=='DynamicUserNode')]" count == 1
+jsonpath "$[?(@.name=='DynamicUserNode')].has_dynamic_spec" nth 0 == true
+
+# 58. Save a workflow with a DynamicUserNode wrapping inline declarative JSON
+POST {{base_url}}/api/workflows/test_dynamic_user_node
+Content-Type: application/json
+{
+  "nodes": [
+    {
+      "id": "dyn_node",
+      "type": "DynamicUserNode",
+      "position": { "x": 0.0, "y": 0.0 },
+      "size": { "width": 400.0, "height": 400.0 },
+      "inputs": {
+        "language": "declarative",
+        "code": "{\"name\":\"InlineEcho\",\"title\":\"Inline Echo\",\"category\":\"Test\",\"description\":\"\",\"inputs\":[{\"name\":\"text\",\"mapping\":\"echo.message\"}],\"outputs\":[{\"name\":\"result\",\"mapping\":\"echo.output\"}],\"implementation\":{\"nodes\":[{\"id\":\"echo\",\"type\":\"Echo\",\"position\":{\"x\":0,\"y\":0},\"size\":{\"width\":300,\"height\":200},\"inputs\":{},\"skipCache\":false,\"bypassed\":false}],\"edges\":[]}}",
+        "text": "hurl says hello"
+      },
+      "skipCache": true,
+      "bypassed": false
+    }
+  ],
+  "edges": [],
+  "forceRun": false,
+  "targetNodeId": null
+}
+HTTP 200
+[Asserts]
+jsonpath "$.status" == "ok"
+
+# 59. Fetch per-instance spec — dynamic ports should appear alongside the static control inputs
+POST {{base_url}}/api/workflows/test_dynamic_user_node/nodes/dyn_node/spec
+Content-Type: application/json
+{
+  "inputs": {}
+}
+HTTP 200
+[Asserts]
+jsonpath "$.name" == "DynamicUserNode"
+jsonpath "$.has_dynamic_spec" == true
+jsonpath "$.inputs[?(@.name=='code')]" count == 1
+jsonpath "$.inputs[?(@.name=='language')]" count == 1
+jsonpath "$.inputs[?(@.name=='text')]" count == 1
+jsonpath "$.outputs[?(@.name=='result')]" count == 1
+
+# 60. Fetch spec with overridden code from the request body
+# (simulates editor-time spec preview before saving)
+POST {{base_url}}/api/workflows/test_dynamic_user_node/nodes/dyn_node/spec
+Content-Type: application/json
+{
+  "inputs": {
+    "language": "declarative",
+    "code": "{\"name\":\"InlinePair\",\"title\":\"Inline Pair\",\"category\":\"Test\",\"description\":\"\",\"inputs\":[{\"name\":\"alpha\",\"mapping\":\"echo.message\"},{\"name\":\"beta\",\"mapping\":\"echo.message\"}],\"outputs\":[{\"name\":\"gamma\",\"mapping\":\"echo.output\"}],\"implementation\":{\"nodes\":[{\"id\":\"echo\",\"type\":\"Echo\",\"position\":{\"x\":0,\"y\":0},\"size\":{\"width\":300,\"height\":200},\"inputs\":{},\"skipCache\":false,\"bypassed\":false}],\"edges\":[]}}"
+  }
+}
+HTTP 200
+[Asserts]
+jsonpath "$.inputs[?(@.name=='alpha')]" count == 1
+jsonpath "$.inputs[?(@.name=='beta')]" count == 1
+jsonpath "$.outputs[?(@.name=='gamma')]" count == 1
+# 'text' from the saved workflow should NOT appear once the editor overrides code
+jsonpath "$.inputs[?(@.name=='text')]" count == 0
+
+# 61. Run the saved DynamicUserNode workflow end-to-end via the queue
+POST {{base_url}}/api/queue/submit
+Content-Type: application/json
+{
+  "workflow": {
+    "nodes": [
+      {
+        "id": "dyn_node",
+        "type": "DynamicUserNode",
+        "position": { "x": 0.0, "y": 0.0 },
+        "size": { "width": 400.0, "height": 400.0 },
+        "inputs": {
+          "language": "declarative",
+          "code": "{\"name\":\"InlineEcho\",\"title\":\"Inline Echo\",\"category\":\"Test\",\"description\":\"\",\"inputs\":[{\"name\":\"text\",\"mapping\":\"echo.message\"}],\"outputs\":[{\"name\":\"result\",\"mapping\":\"echo.output\"}],\"implementation\":{\"nodes\":[{\"id\":\"echo\",\"type\":\"Echo\",\"position\":{\"x\":0,\"y\":0},\"size\":{\"width\":300,\"height\":200},\"inputs\":{},\"skipCache\":false,\"bypassed\":false}],\"edges\":[]}}",
+          "text": "hurl says hello"
+        },
+        "skipCache": true,
+        "bypassed": false
+      }
+    ],
+    "edges": [],
+    "forceRun": true
+  },
+  "workflow_name": "test_dynamic_user_node"
+}
+HTTP 200
+[Captures]
+dyn_job_id: jsonpath "$.id"
+
+# 62. Wait for dynamic node job to complete
+GET {{base_url}}/api/queue/{{dyn_job_id}}
+[Options]
+retry: 10
+delay: 200
+HTTP 200
+[Asserts]
+jsonpath "$.status" == "completed"
+jsonpath "$.completed_nodes" == 1
+
+# 63. Delete the test workflow
+POST {{base_url}}/api/workflows/test_dynamic_user_node/delete
+HTTP 200
+[Asserts]
+jsonpath "$.status" == "ok"

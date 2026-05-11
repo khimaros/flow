@@ -18,6 +18,7 @@ import ReactFlow, {
   type ReactFlowInstance,
   type OnConnectStartParams,
   type NodeTypes,
+  useUpdateNodeInternals,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
@@ -867,6 +868,79 @@ function AppInner() {
       return () => window.removeEventListener("click", handleGlobalClick);
     }
   }, [showRunMenu]);
+
+  // for nodes whose type advertises has_dynamic_spec, fetch the per-instance
+  // metadata when the values feeding the spec change. the fetched metadata
+  // overrides the node's data.metadata so dynamic ports render alongside the
+  // static control inputs. lastSpecKeyRef prevents refetch loops: we only
+  // call the endpoint when the relevant input values actually changed.
+  const updateNodeInternals = useUpdateNodeInternals();
+  const lastSpecKeyRef = useRef<Map<string, string>>(new Map());
+  useEffect(() => {
+    if (!currentWorkflow) return;
+    let cancelled = false;
+
+    const work = async () => {
+      for (const node of nodes) {
+        const baseMeta = nodeDefs.find((d) => d.name === node.type);
+        if (!baseMeta?.has_dynamic_spec) continue;
+
+        // build the input map we'll send to the spec endpoint: live values
+        // from node.data (which the user is editing) override anything else.
+        const liveInputs: Record<string, unknown> = {};
+        for (const spec of baseMeta.inputs) {
+          const v = (node.data as Record<string, unknown>)[spec.name];
+          if (v !== undefined) {
+            liveInputs[spec.name] = v;
+          }
+        }
+        const key = JSON.stringify(liveInputs);
+        if (lastSpecKeyRef.current.get(node.id) === key) continue;
+        lastSpecKeyRef.current.set(node.id, key);
+
+        try {
+          const res = await fetch(
+            `/api/workflows/${currentWorkflow}/nodes/${node.id}/spec`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                inputs: liveInputs,
+                node_type: node.type,
+              }),
+            },
+          );
+          if (!res.ok) continue;
+          const fetched: NodeMetadata = await res.json();
+          if (cancelled) return;
+          setNodes((nds) =>
+            nds.map((n) =>
+              n.id === node.id
+                ? {
+                    ...n,
+                    data: {
+                      ...n.data,
+                      metadata: fetched,
+                    },
+                  }
+                : n,
+            ),
+          );
+          // tell reactflow to recompute handle positions; without this,
+          // newly-appeared output handles render but aren't connectable.
+          updateNodeInternals(node.id);
+        } catch (e) {
+          console.error(`failed to fetch spec for ${node.id}`, e);
+        }
+      }
+    };
+    // debounce so editor keystrokes don't fire a request per character
+    const handle = setTimeout(work, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [nodes, nodeDefs, currentWorkflow, setNodes, updateNodeInternals]);
 
   useEffect(() => {
     console.log("App Version: Dynamic-Node-System-" + Date.now());

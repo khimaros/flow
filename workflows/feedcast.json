@@ -12,9 +12,9 @@
         "height": 405.0
       },
       "inputs": {
-        "url": "https://news.ycombinator.com/rss",
         "from_date": "1 day ago",
-        "timeout": null
+        "timeout": null,
+        "url": "https://news.ycombinator.com/rss"
       },
       "skipCache": true,
       "bypassed": false
@@ -31,15 +31,15 @@
         "height": 870.0
       },
       "inputs": {
-        "item_input": "url",
-        "item_output": "markdown",
-        "node_type": "FetchArticle",
+        "delay": 20,
         "extra_inputs": "{\"max_length\": 50000}",
         "include_item": true,
+        "item_input": "url",
+        "item_output": "markdown",
         "item_path": "/link",
-        "on_failure": "null",
-        "delay": 20,
-        "limit": 5
+        "limit": 5,
+        "node_type": "FetchArticle",
+        "on_failure": "null"
       },
       "skipCache": false,
       "bypassed": false
@@ -70,12 +70,12 @@
       },
       "size": {
         "width": 465.0,
-        "height": 1155.0
+        "height": 1215.0
       },
       "inputs": {
-        "system_prompt": "Turn the articles and discussions into a natural, 2-3 minute information dense update. Highlight connections and common themes. Do NOT enumerate \"first story, second story\". Do NOT use markdown, sound effects, or any other formatting -- ONLY THE SPOKEN WORD SUMMARY.",
-        "model": "",
         "api_base": "",
+        "model": "",
+        "system_prompt": "Turn the articles and discussions into a natural, 2-3 minute information dense update. Highlight connections and common themes. Do NOT enumerate \"first story, second story\". Do NOT use markdown, sound effects, or any other formatting -- ONLY THE SPOKEN WORD SUMMARY.",
         "temperature": null
       },
       "skipCache": false,
@@ -90,15 +90,15 @@
       },
       "size": {
         "width": 450.0,
-        "height": 840.0
+        "height": 900.0
       },
       "inputs": {
-        "temperature": null,
-        "response_format": "wav",
-        "voice": "",
         "api_base": "",
+        "model": "",
+        "response_format": "wav",
         "speed": null,
-        "model": ""
+        "temperature": null,
+        "voice": ""
       },
       "skipCache": false,
       "bypassed": false
@@ -108,7 +108,7 @@
       "type": "DisplayAudio",
       "position": {
         "x": 2130.0,
-        "y": 1110.0
+        "y": 1170.0
       },
       "size": {
         "width": 450.0,
@@ -134,7 +134,7 @@
       "bypassed": false
     },
     {
-      "id": "loop_comments",
+      "id": "loop_e5c142ba",
       "type": "Loop",
       "position": {
         "x": 795.0,
@@ -145,21 +145,21 @@
         "height": 870.0
       },
       "inputs": {
-        "on_failure": "null",
         "delay": 150,
+        "extra_inputs": "{\"query\": \"//div[@class=\\\"comment\\\"]\"}",
+        "include_item": false,
         "item_input": "url",
+        "item_output": "matches",
         "item_path": "/comments",
         "limit": 5,
         "node_type": "FetchHtmlSelect",
-        "item_output": "matches",
-        "include_item": false,
-        "extra_inputs": "{\"query\": \"//div[@class=\\\"comment\\\"]\"}"
+        "on_failure": "null"
       },
       "skipCache": false,
       "bypassed": false
     },
     {
-      "id": "zip_articles_comments",
+      "id": "zip_23cac857",
       "type": "Zip",
       "position": {
         "x": 1230.0,
@@ -211,29 +211,29 @@
       "targetHandle": "markdown"
     },
     {
-      "id": "e-fetchrss_f8a871f9-items-loop_comments-items",
+      "id": "e-fetchrss_f8a871f9-items-loop_e5c142ba-items",
       "source": "fetchrss_f8a871f9",
       "sourceHandle": "items",
-      "target": "loop_comments",
+      "target": "loop_e5c142ba",
       "targetHandle": "items"
     },
     {
-      "id": "e-loop_4c4aff12-results-zip_articles_comments-a",
+      "id": "e-loop_4c4aff12-results-zip_23cac857-a",
       "source": "loop_4c4aff12",
       "sourceHandle": "results",
-      "target": "zip_articles_comments",
+      "target": "zip_23cac857",
       "targetHandle": "a"
     },
     {
-      "id": "e-loop_comments-results-zip_articles_comments-b",
-      "source": "loop_comments",
+      "id": "e-loop_e5c142ba-results-zip_23cac857-b",
+      "source": "loop_e5c142ba",
       "sourceHandle": "results",
-      "target": "zip_articles_comments",
+      "target": "zip_23cac857",
       "targetHandle": "b"
     },
     {
-      "id": "e-zip_articles_comments-output-templatize_a1b2c3d4-context",
-      "source": "zip_articles_comments",
+      "id": "e-zip_23cac857-output-templatize_a1b2c3d4-context",
+      "source": "zip_23cac857",
       "sourceHandle": "output",
       "target": "templatize_a1b2c3d4",
       "targetHandle": "context"

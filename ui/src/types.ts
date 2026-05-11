@@ -76,6 +76,7 @@ export type UIComponent =
   | { Password: Record<string, never> }
   | { Select: { options: SelectOption[] } }
   | { DynamicSelect: { depends_on: string[] } }
+  | { DynamicMultiSelect: { depends_on: string[] } }
   | { AudioRecorder: Record<string, never> }
   | { ListEditor: Record<string, never> }
   | { Auto: Record<string, never> };
@@ -96,6 +97,11 @@ export type DynamicSelectInputSpec = Omit<InputSpec, "ui_component"> & {
   ui_component: Extract<UIComponent, { DynamicSelect: unknown }>;
 };
 
+// narrowed InputSpec for DynamicMultiSelect inputs only
+export type DynamicMultiSelectInputSpec = Omit<InputSpec, "ui_component"> & {
+  ui_component: Extract<UIComponent, { DynamicMultiSelect: unknown }>;
+};
+
 export interface OutputSpec {
   name: string;
   type: string;
@@ -110,6 +116,9 @@ export interface NodeMetadata {
   inputs: InputSpec[];
   outputs: OutputSpec[];
   script_source?: ScriptSource;
+  /** if true, this node type's ports depend on its input values and the
+   *  frontend should fetch per-instance ports via the spec endpoint */
+  has_dynamic_spec?: boolean;
 }
 
 // helper to create default UI state

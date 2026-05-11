@@ -5,6 +5,7 @@
 #   flow-server, flow-cli        (binaries in root)
 #   workflows/                   (bundled workflows)
 #   user_nodes/                  (bundled user nodes)
+#   docs/scripting/              (user-node authoring docs)
 #
 # usage:
 #   scripts/bundle-release.sh [--platform OS] [--arch ARCH] [--python PYVER] \
@@ -86,8 +87,8 @@ mkdir -p "$DEST"
 install -m 0755 "${BIN_DIR}/flow-server" "${DEST}/flow-server"
 install -m 0755 "${BIN_DIR}/flow-cli"    "${DEST}/flow-cli"
 
-echo "==> generating .env.example from flow-cli --env-example"
-"${DEST}/flow-cli" --env-example > "${DEST}/.env.example"
+echo "==> generating .env.example from flow-cli env --defaults"
+"${DEST}/flow-cli" env --defaults > "${DEST}/.env.example"
 
 # copy only tracked + non-ignored files, so .state/ and other gitignored
 # artifacts don't leak into the tarball
@@ -100,6 +101,7 @@ copy_clean() {
 }
 copy_clean workflows
 copy_clean user_nodes
+copy_clean docs/scripting
 
 mkdir -p "$OUT_DIR"
 TARBALL="${OUT_DIR}/${NAME}.tgz"

@@ -141,6 +141,10 @@ async fn async_main(args: Args) {
             "/api/workflows/{workflow_name}/nodes/{node_id}/options/{input_name}",
             post(get_node_options),
         )
+        .route(
+            "/api/workflows/{workflow_name}/nodes/{node_id}/spec",
+            post(get_node_spec),
+        )
         .nest_service(
             "/api/assets",
             tower_http::services::ServeDir::new(args.data_dir.join("generated_assets")),
@@ -516,6 +520,106 @@ async fn get_node_options(
 
     // 5. Return the options as JSON
     Ok(Json(options))
+}
+
+#[derive(Deserialize)]
+struct GetSpecRequest {
+    #[serde(default)]
+    inputs: BTreeMap<String, Value>,
+    /// optional node type, used as a fallback when the workflow file is not
+    /// (yet) persisted to disk or does not contain the requested node id.
+    /// the editor sends this for unsaved workflows.
+    #[serde(default)]
+    node_type: Option<String>,
+}
+
+async fn get_node_spec(
+    Path((workflow_name, node_id)): Path<(String, String)>,
+    State(state): State<Arc<AppState>>,
+    Json(request): Json<GetSpecRequest>,
+) -> Result<Json<NodeMetadata>, StatusCode> {
+    info!(workflow = %workflow_name, node = %node_id, "fetching node spec");
+    let workflow_name_cleaned = workflow_name
+        .strip_suffix(".json")
+        .unwrap_or(&workflow_name)
+        .to_string();
+
+    let workflow_path = state
+        .data_dir
+        .join("workflows")
+        .join(format!("{}.json", workflow_name_cleaned));
+
+    // try to load the workflow + locate the node instance, but tolerate the
+    // case where the workflow isn't on disk yet (new editor session) by
+    // falling back to the node_type supplied in the request body.
+    let workflow = Workflow::load(&workflow_path).ok();
+    let saved_node = workflow
+        .as_ref()
+        .and_then(|wf| wf.nodes.iter().find(|n| n.id == node_id));
+
+    let node_type = saved_node
+        .map(|n| n.node_type.clone())
+        .or_else(|| request.node_type.clone())
+        .ok_or(StatusCode::BAD_REQUEST)?;
+
+    let node = state.registry.create(&node_type).ok_or_else(|| {
+        tracing::error!("node type not found in registry: {}", node_type);
+        StatusCode::NOT_FOUND
+    })?;
+
+    // merge: start with saved literals on the workflow node (skipping wired
+    // refs), then overlay any live editor values from the request.
+    let mut resolved: BTreeMap<String, flow_rs::value::Value> = saved_node
+        .map(|n| {
+            n.inputs
+                .iter()
+                .filter_map(|(k, v)| match v {
+                    flow_rs::value::Value::Object(o) if o.contains_key("$node") => None,
+                    _ => Some((k.clone(), v.clone())),
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    for (k, v) in request.inputs {
+        let flow_val: flow_rs::value::Value =
+            serde_json::from_value(v).unwrap_or(flow_rs::value::Value::Null);
+        resolved.insert(k, flow_val);
+    }
+
+    // apply env/defaults using the static specs so the inputs needed to derive
+    // dynamic ports are populated.
+    flow_rs::engine::Engine::apply_env_overrides(
+        node.as_ref(),
+        &resolved.clone(),
+        &mut resolved,
+    );
+    for spec in node.inputs() {
+        let needs_default = match resolved.get(&spec.name) {
+            None => true,
+            Some(flow_rs::value::Value::Null) => true,
+            Some(flow_rs::value::Value::String(s)) if s.is_empty() => true,
+            _ => false,
+        };
+        if needs_default {
+            if let Some(default) = &spec.default {
+                resolved.insert(spec.name.clone(), default.clone());
+            }
+        }
+    }
+
+    let inputs = flow_rs::node::effective_inputs(node.as_ref(), &resolved);
+    let outputs = flow_rs::node::effective_outputs(node.as_ref(), &resolved);
+
+    Ok(Json(NodeMetadata {
+        name: node.name().to_string(),
+        title: node.title().to_string(),
+        category: node.category().to_string(),
+        description: node.description().to_string(),
+        inputs,
+        outputs,
+        script_source: node.script_source(),
+        has_dynamic_spec: node.has_dynamic_spec(),
+    }))
 }
 
 // job Queue Endpoints

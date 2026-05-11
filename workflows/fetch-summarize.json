@@ -51,7 +51,7 @@
       "bypassed": false
     },
     {
-      "id": "openai_4a5954d2",
+      "id": "openai_llm_4a5954d2",
       "type": "OpenAI_LLM",
       "position": {
         "x": 810.0,
@@ -62,11 +62,11 @@
         "height": 870.0
       },
       "inputs": {
-        "system_prompt": "summarize the page",
-        "temperature": null,
-        "model": "",
+        "api_base": "",
         "api_key": "",
-        "api_base": ""
+        "model": "",
+        "system_prompt": "summarize the page",
+        "temperature": null
       },
       "skipCache": false,
       "bypassed": false
@@ -115,8 +115,8 @@
         "height": 345.0
       },
       "inputs": {
-        "readability": false,
-        "max_length": null
+        "max_length": null,
+        "readability": false
       },
       "skipCache": false,
       "bypassed": false
@@ -169,15 +169,15 @@
   ],
   "edges": [
     {
-      "id": "e-echo_5ddad5d5-output-openai_4a5954d2-json_schema",
+      "id": "e-echo_5ddad5d5-output-openai_llm_4a5954d2-json_schema",
       "source": "echo_5ddad5d5",
       "sourceHandle": "output",
-      "target": "openai_4a5954d2",
+      "target": "openai_llm_4a5954d2",
       "targetHandle": "json_schema"
     },
     {
-      "id": "e-openai_4a5954d2-text-displayjson_0bfe6a38-json",
-      "source": "openai_4a5954d2",
+      "id": "e-openai_llm_4a5954d2-text-displayjson_0bfe6a38-json",
+      "source": "openai_llm_4a5954d2",
       "sourceHandle": "text",
       "target": "displayjson_0bfe6a38",
       "targetHandle": "json"
@@ -197,10 +197,10 @@
       "targetHandle": "markdown"
     },
     {
-      "id": "e-htmltomarkdown_fe59d1fc-markdown-openai_4a5954d2-prompt",
+      "id": "e-htmltomarkdown_fe59d1fc-markdown-openai_llm_4a5954d2-prompt",
       "source": "htmltomarkdown_fe59d1fc",
       "sourceHandle": "markdown",
-      "target": "openai_4a5954d2",
+      "target": "openai_llm_4a5954d2",
       "targetHandle": "prompt"
     },
     {

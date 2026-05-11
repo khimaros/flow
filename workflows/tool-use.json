@@ -1,0 +1,97 @@
+{
+  "nodes": [
+    {
+      "id": "openai_llm_d4f0bc5a",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": 30.0,
+        "y": -255.0
+      },
+      "size": {
+        "width": 480.0,
+        "height": 1095.0
+      },
+      "inputs": {
+        "model": "",
+        "prompt": "Summarize the articles and comment sections from the top 3 most recent Hacker News stories.",
+        "system_prompt": "You are a research agent. Use the provided tools to gather facts from the live web before answering. Cite the URLs you consulted.",
+        "tools": [
+          "FetchArticle",
+          "FetchHtmlSelect"
+        ]
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "displaymarkdown_0db52f40",
+      "type": "DisplayMarkdown",
+      "position": {
+        "x": 975.0,
+        "y": -255.0
+      },
+      "size": {
+        "width": 570.0,
+        "height": 1095.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "list_c3d15e48",
+      "type": "List",
+      "position": {
+        "x": 495.0,
+        "y": 390.0
+      },
+      "size": {
+        "width": 495.0,
+        "height": 450.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_0d05259e",
+      "type": "Echo",
+      "position": {
+        "x": 495.0,
+        "y": -255.0
+      },
+      "size": {
+        "width": 495.0,
+        "height": 630.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-openai_llm_d4f0bc5a-text-displaymarkdown_0db52f40-markdown",
+      "source": "openai_llm_d4f0bc5a",
+      "sourceHandle": "text",
+      "target": "displaymarkdown_0db52f40",
+      "targetHandle": "markdown"
+    },
+    {
+      "id": "e-openai_llm_d4f0bc5a-thinking-echo_0d05259e-message",
+      "source": "openai_llm_d4f0bc5a",
+      "sourceHandle": "thinking",
+      "target": "echo_0d05259e",
+      "targetHandle": "message"
+    },
+    {
+      "id": "e-openai_llm_d4f0bc5a-messages-list_c3d15e48-list",
+      "source": "openai_llm_d4f0bc5a",
+      "sourceHandle": "messages",
+      "target": "list_c3d15e48",
+      "targetHandle": "list"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

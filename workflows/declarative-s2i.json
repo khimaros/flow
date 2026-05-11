@@ -12,13 +12,13 @@
         "height": 600.0
       },
       "inputs": {
-        "steps": null,
-        "stt_model": "",
-        "tti_model": "",
-        "language": "",
         "api_base": "",
         "api_key": "",
-        "llm_model": ""
+        "language": "",
+        "llm_model": "",
+        "steps": null,
+        "stt_model": "",
+        "tti_model": ""
       },
       "skipCache": false,
       "bypassed": false

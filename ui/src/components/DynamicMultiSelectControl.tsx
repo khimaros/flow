@@ -2,24 +2,24 @@ import React, { useMemo, useRef, useState } from "react";
 import type { Node, Edge } from "reactflow";
 import { useDynamicOptions } from "../hooks/useDynamicOptions";
 import { DynamicOptionsPopup } from "./DynamicOptionsPopup";
-import type { DynamicSelectInputSpec } from "../types";
+import type { DynamicMultiSelectInputSpec } from "../types";
 
-interface DynamicSelectControlProps {
-  input: DynamicSelectInputSpec;
+interface DynamicMultiSelectControlProps {
+  input: DynamicMultiSelectInputSpec;
   nodeId: string;
   workflowName: string | null;
   allNodeData: Record<string, unknown>;
   onChange: (field: string, value: unknown) => void;
   disabled: boolean;
-  value: string;
+  value: string[];
   onFocus: () => void;
   getNodes: () => Node[];
   getEdges: () => Edge[];
-  envBadge?: { visible: boolean; active: boolean; envVar?: string };
-  placeholder?: string;
 }
 
-export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
+export const DynamicMultiSelectControl: React.FC<
+  DynamicMultiSelectControlProps
+> = ({
   input,
   nodeId,
   workflowName,
@@ -30,8 +30,6 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
   onFocus,
   getNodes,
   getEdges,
-  envBadge,
-  placeholder,
 }) => {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -40,17 +38,15 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
     workflowName,
     nodeId,
     inputName: input.name,
-    dependsOn: input.ui_component.DynamicSelect.depends_on,
+    dependsOn: input.ui_component.DynamicMultiSelect.depends_on,
     allNodeData,
     getNodes,
     getEdges,
   });
 
-  const selectedSet = useMemo(
-    () => new Set(value ? [value] : []),
-    [value],
-  );
+  const selectedSet = useMemo(() => new Set(value ?? []), [value]);
 
+  // auto-fetch on first open if no cached options
   const handleToggleOpen = () => {
     setOpen((prev) => {
       const next = !prev;
@@ -62,11 +58,23 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
   };
 
   const handlePick = (optValue: string) => {
-    onChange(input.name, optValue);
+    const next = new Set(selectedSet);
+    if (next.has(optValue)) next.delete(optValue);
+    else next.add(optValue);
+    // preserve registry order
+    const ordered = options.map((o) => o.value).filter((v) => next.has(v));
+    Array.from(next).forEach((v) => {
+      if (!ordered.includes(v)) ordered.push(v);
+    });
+    onChange(input.name, ordered);
   };
 
-  const triggerText = value || placeholder || "";
-  const isPlaceholder = !value;
+  const summary = (() => {
+    const sel = value ?? [];
+    if (sel.length === 0) return "select tools…";
+    if (sel.length <= 2) return sel.join(", ");
+    return `${sel.slice(0, 2).join(", ")} (+${sel.length - 2})`;
+  })();
 
   return (
     <div
@@ -85,11 +93,7 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
         className="nodrag"
         disabled={disabled}
         onClick={handleToggleOpen}
-        title={
-          envBadge?.active
-            ? `Default from environment variable ${envBadge.envVar}`
-            : value || undefined
-        }
+        title={(value ?? []).join(", ")}
         style={{
           flex: 1,
           minWidth: 0,
@@ -100,11 +104,12 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
           textAlign: "left",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: "6px",
           cursor: disabled ? "default" : "pointer",
           overflow: "hidden",
           background: "var(--input-bg)",
-          color: isPlaceholder ? "var(--type-any)" : "var(--input-text)",
+          color: "var(--input-text)",
           border: "1px solid var(--input-border)",
           borderRadius: "3px",
         }}
@@ -116,49 +121,14 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            color:
+              (value ?? []).length === 0
+                ? "var(--type-any)"
+                : "var(--input-text)",
           }}
         >
-          {triggerText || "select…"}
+          {summary}
         </span>
-        {value && !disabled && (
-          <span
-            role="button"
-            aria-label="clear"
-            title="clear"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChange(input.name, "");
-            }}
-            style={{
-              flexShrink: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 14,
-              height: 14,
-              borderRadius: "50%",
-              opacity: 0.5,
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.5")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
-          </span>
-        )}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="10"
@@ -177,23 +147,6 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
         >
           <path d="m6 9 6 6 6-6" />
         </svg>
-        {envBadge?.visible && (
-          <span
-            style={{
-              flexShrink: 0,
-              fontSize: "9px",
-              fontWeight: "bold",
-              padding: "2px 5px",
-              borderRadius: "3px",
-              background: "#4a90e2",
-              color: "white",
-              letterSpacing: "0.5px",
-              opacity: envBadge.active ? 1 : 0.35,
-            }}
-          >
-            ENV
-          </span>
-        )}
       </button>
 
       <button
@@ -232,10 +185,9 @@ export const DynamicSelectControl: React.FC<DynamicSelectControlProps> = ({
         options={options}
         loading={loading}
         error={error}
-        mode="single"
+        mode="multi"
         selectedValues={selectedSet}
         onPick={handlePick}
-        onAcceptSearchText={(text) => onChange(input.name, text)}
       />
     </div>
   );

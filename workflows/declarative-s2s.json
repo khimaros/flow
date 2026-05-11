@@ -12,12 +12,11 @@
         "height": 750.0
       },
       "inputs": {
-        "llm_model": "",
         "api_base": "",
-        "tts_voice": "",
-        "command": "",
+        "api_key": "",
+        "llm_model": "",
         "tts_model": "",
-        "api_key": ""
+        "tts_voice": ""
       },
       "skipCache": false,
       "bypassed": false

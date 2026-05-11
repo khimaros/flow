@@ -1,6 +1,7 @@
 pub mod common;
 pub mod declarative;
 pub mod display;
+pub mod dynamic_user_node;
 pub mod http;
 pub mod json;
 pub mod list;
@@ -40,6 +41,7 @@ pub fn register_all(registry: &mut NodeRegistry, quiet: bool) {
     registry.register("ListToJson", || Box::new(string::ListToJsonNode));
     registry.register("RegexpExtract", || Box::new(string::RegexpExtractNode));
     registry.register("Loop", || Box::new(loop_node::LoopNode));
+    registry.register("DynamicUserNode", || Box::new(dynamic_user_node::DynamicUserNode));
     registry.register("Flatten", || Box::new(list::FlattenNode));
     registry.register("Zip", || Box::new(list::ZipNode));
 

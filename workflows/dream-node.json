@@ -1,0 +1,108 @@
+{
+  "nodes": [
+    {
+      "id": "dynamicusernode_32707b25",
+      "type": "DynamicUserNode",
+      "position": {
+        "x": 360.0,
+        "y": 435.0
+      },
+      "size": {
+        "width": 405.0,
+        "height": 675.0
+      },
+      "inputs": {
+        "language": "py"
+      },
+      "skipCache": true,
+      "bypassed": false
+    },
+    {
+      "id": "openai_llm_ec27ece4",
+      "type": "OpenAI_LLM",
+      "position": {
+        "x": -360.0,
+        "y": 0.0
+      },
+      "size": {
+        "width": 450.0,
+        "height": 1110.0
+      },
+      "inputs": {
+        "prompt": "write a DynamicUserNode to reverse a string. input (text: string — the input string to reverse), output (reversed: string — the input with its characters in reverse order). write just the code with no fences or prose."
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_84a7e6c0",
+      "type": "Echo",
+      "position": {
+        "x": 75.0,
+        "y": 900.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {
+        "message": "hello, world!"
+      },
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "echo_c8faecf1",
+      "type": "Echo",
+      "position": {
+        "x": 750.0,
+        "y": 900.0
+      },
+      "size": {
+        "width": 300.0,
+        "height": 210.0
+      },
+      "inputs": {},
+      "skipCache": false,
+      "bypassed": false
+    },
+    {
+      "id": "shellcommand_000f5059",
+      "type": "ShellCommand",
+      "position": {
+        "x": -705.0,
+        "y": 0.0
+      },
+      "size": {
+        "width": 360.0,
+        "height": 480.0
+      },
+      "inputs": {
+        "args": [
+          "cat",
+          "./docs/scripting/python.md"
+        ]
+      },
+      "skipCache": false,
+      "bypassed": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-openai_llm_ec27ece4-text-dynamicusernode_32707b25-code",
+      "source": "openai_llm_ec27ece4",
+      "sourceHandle": "text",
+      "target": "dynamicusernode_32707b25",
+      "targetHandle": "code"
+    },
+    {
+      "id": "e-shellcommand_000f5059-stdout-openai_llm_ec27ece4-system_prompt",
+      "source": "shellcommand_000f5059",
+      "sourceHandle": "stdout",
+      "target": "openai_llm_ec27ece4",
+      "targetHandle": "system_prompt"
+    }
+  ],
+  "forceRun": false,
+  "targetNodeId": null
+}

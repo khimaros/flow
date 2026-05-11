@@ -96,6 +96,118 @@ fn extract_rhai_error_details(err: &EvalAltResult) -> (String, String) {
     }
 }
 
+/// build a fresh node registry on demand. mirrors LoopNode::fresh_registry —
+/// a directory scan of user_nodes/ runs each time, which is fine for tool-call
+/// cadence (LLM round-trips dominate) and avoids stale caches.
+fn fresh_node_registry() -> crate::engine::NodeRegistry {
+    let mut registry = crate::engine::NodeRegistry::new();
+    crate::nodes::register_all(&mut registry, true);
+    registry
+}
+
+/// map a NodeMetadata into an OpenAI tools-API entry derived from its
+/// InputSpec list. centralized here so other agent scripts can reuse it.
+fn build_openai_tool_def(meta: &crate::node::NodeMetadata) -> JsonValue {
+    let mut properties = serde_json::Map::new();
+    let mut required: Vec<JsonValue> = Vec::new();
+    for input in &meta.inputs {
+        let mut prop = serde_json::Map::new();
+        let type_str = match input.r#type {
+            crate::node::DataType::String | crate::node::DataType::File => "string",
+            crate::node::DataType::Integer => "integer",
+            crate::node::DataType::Float => "number",
+            crate::node::DataType::Boolean => "boolean",
+            crate::node::DataType::List => "array",
+            crate::node::DataType::Object => "object",
+            crate::node::DataType::Any => "string",
+        };
+        prop.insert("type".into(), JsonValue::String(type_str.into()));
+        if matches!(input.r#type, crate::node::DataType::List) {
+            // OpenAI requires `items` for array params; default to string.
+            prop.insert("items".into(), serde_json::json!({ "type": "string" }));
+        }
+        if let Some(desc) = &input.description {
+            prop.insert("description".into(), JsonValue::String(desc.clone()));
+        }
+        properties.insert(input.name.clone(), JsonValue::Object(prop));
+        if input.required {
+            required.push(JsonValue::String(input.name.clone()));
+        }
+    }
+    serde_json::json!({
+        "type": "function",
+        "function": {
+            "name": meta.name,
+            "description": meta.description,
+            "parameters": {
+                "type": "object",
+                "properties": properties,
+                "required": required,
+            }
+        }
+    })
+}
+
+/// register registry-introspection host fns: list_nodes, node_spec,
+/// node_to_openai_tool. these don't need a NodeContext, so they're available
+/// on both base (parse_spec/get_options) and execution engines.
+fn register_registry_introspection_fns(engine: &mut Engine) {
+    engine.register_fn(
+        "list_nodes",
+        || -> Result<Dynamic, Box<EvalAltResult>> {
+            let registry = fresh_node_registry();
+            let metas = registry.list_metadata();
+            let summaries: Vec<JsonValue> = metas
+                .iter()
+                .map(|m| {
+                    serde_json::json!({
+                        "name": m.name,
+                        "title": m.title,
+                        "category": m.category,
+                        "description": m.description,
+                    })
+                })
+                .collect();
+            let json = JsonValue::Array(summaries);
+            let dyn_val: Dynamic =
+                ::rhai::serde::to_dynamic(&json).map_err(|e| e.to_string())?;
+            Ok(dyn_val)
+        },
+    );
+
+    engine.register_fn(
+        "node_spec",
+        |name: ImmutableString| -> Result<Dynamic, Box<EvalAltResult>> {
+            let registry = fresh_node_registry();
+            let metas = registry.list_metadata();
+            let meta = metas
+                .iter()
+                .find(|m| m.name == name.as_str())
+                .ok_or_else(|| format!("node_spec: unknown node type '{}'", name))?;
+            let json = serde_json::to_value(meta)
+                .map_err(|e| format!("node_spec: failed to serialize: {}", e))?;
+            let dyn_val: Dynamic =
+                ::rhai::serde::to_dynamic(&json).map_err(|e| e.to_string())?;
+            Ok(dyn_val)
+        },
+    );
+
+    engine.register_fn(
+        "node_to_openai_tool",
+        |name: ImmutableString| -> Result<Dynamic, Box<EvalAltResult>> {
+            let registry = fresh_node_registry();
+            let metas = registry.list_metadata();
+            let meta = metas.iter().find(|m| m.name == name.as_str()).ok_or_else(
+                || format!("node_to_openai_tool: unknown node type '{}'", name),
+            )?;
+            let json = build_openai_tool_def(meta);
+            let dyn_val: Dynamic =
+                ::rhai::serde::to_dynamic(&json).map_err(|e| e.to_string())?;
+            Ok(dyn_val)
+        },
+    );
+}
+
 pub struct RhaiEngine;
 
 impl Default for RhaiEngine {
@@ -334,7 +446,8 @@ impl RhaiEngine {
             },
         );
 
-        // HTTP request with binary response (returns base64-encoded body)
+        // HTTP request with binary response (returns base64-encoded body).
+        // used as a non-streaming fallback for servers that don't support SSE.
         let http_bin_cancelled = cancelled.clone();
         module.set_native_fn(
             "http_request_binary",
@@ -594,6 +707,12 @@ impl RhaiEngine {
         );
 
         engine.register_global_module(module.into());
+
+        // registry-introspection fns are available on both engines so that
+        // get_options (base engine) can call list_nodes()/node_spec() to build
+        // dynamic option lists.
+        register_registry_introspection_fns(&mut engine);
+
         engine
     }
 
@@ -655,34 +774,84 @@ impl RhaiEngine {
             },
         );
 
+        // emit_output_value(output_name, accumulated) — emit a structured
+        // (non-string) partial output value (map, array, etc). use when the
+        // output is shaped like an array of objects (e.g. tool_calls) and the
+        // string-streaming `emit_output` would coerce items into a single
+        // concatenated string. caller passes the current accumulated value;
+        // delta is set to the same value (consumers that need true deltas
+        // should keep using `emit_output`).
+        let emit_val_fn = ctx.emit_partial_output.clone();
+        engine.register_fn(
+            "emit_output_value",
+            move |output_name: ImmutableString, accumulated: Dynamic|
+                  -> Result<(), Box<EvalAltResult>> {
+                let json: JsonValue =
+                    ::rhai::serde::from_dynamic(&accumulated).map_err(|e| e.to_string())?;
+                let val: crate::value::Value =
+                    serde_json::from_value(json).unwrap_or(crate::value::Value::Null);
+                emit_val_fn(output_name.to_string(), val.clone(), val);
+                Ok(())
+            },
+        );
+
         // register sleep(ms) for testing and pacing
         engine.register_fn("sleep", |ms: i64| {
             std::thread::sleep(std::time::Duration::from_millis(ms as u64));
         });
 
-        // streaming HTTP request that parses SSE and emits partial outputs
-        let stream_emit_fn = ctx.emit_partial_output.clone();
-        let stream_cancelled = ctx.cancelled.clone();
+        // generic SSE request. parses server-sent events into an events array
+        // ({event, data}); optional emit specs in options drive live partial
+        // output emission (each spec = {event, path, output}). host holds no
+        // protocol-specific knowledge — callers shape their own handling.
+        let sse_emit_fn = ctx.emit_partial_output.clone();
+        let sse_cancelled = ctx.cancelled.clone();
         engine.register_fn(
-            "http_request_streaming",
+            "http_request_sse",
             move |method: ImmutableString,
                   url: ImmutableString,
                   body: Map,
                   headers: Map,
                   options: Map|
                   -> Result<Dynamic, Box<::rhai::EvalAltResult>> {
-                let output_name = options
-                    .get("output_name")
-                    .and_then(|v| v.clone().into_string().ok())
-                    .unwrap_or_else(|| "text".into());
-
                 let timeout_secs = options
                     .get("timeout")
                     .and_then(|v| v.as_int().ok().map(|i| i as u64))
                     .unwrap_or(600);
 
+                struct EmitSpec {
+                    event: String,
+                    path: String,
+                    output: String,
+                }
+                let emit_specs: Vec<EmitSpec> = options
+                    .get("emit")
+                    .and_then(|v| v.clone().try_cast::<::rhai::Array>())
+                    .map(|arr| {
+                        arr.into_iter()
+                            .filter_map(|d| {
+                                let m = d.try_cast::<Map>()?;
+                                let event = m
+                                    .get("event")
+                                    .and_then(|v| v.clone().into_string().ok())?;
+                                let path = m
+                                    .get("path")
+                                    .and_then(|v| v.clone().into_string().ok())?;
+                                let output = m
+                                    .get("output")
+                                    .and_then(|v| v.clone().into_string().ok())?;
+                                Some(EmitSpec {
+                                    event,
+                                    path,
+                                    output,
+                                })
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default();
+
                 let client = reqwest::blocking::Client::builder()
-                    .timeout(std::time::Duration::from_secs(timeout_secs))
+                    .timeout(Duration::from_secs(timeout_secs))
                     .build()
                     .map_err(|e| format!("failed to create HTTP client: {}", e))?;
 
@@ -691,7 +860,7 @@ impl RhaiEngine {
                     "GET" => client.get(url.as_str()),
                     _ => {
                         return Err(format!(
-                            "http_request_streaming: unsupported method {}",
+                            "http_request_sse: unsupported method {}",
                             method
                         )
                         .into())
@@ -711,7 +880,7 @@ impl RhaiEngine {
                 }
 
                 let response = request.send().map_err(|e| {
-                    format!("streaming request to '{}' failed: {}", url, error_chain(&e))
+                    format!("sse request to '{}' failed: {}", url, error_chain(&e))
                 })?;
 
                 let status = response.status().as_u16();
@@ -729,93 +898,145 @@ impl RhaiEngine {
                     return Ok(Dynamic::from(result));
                 }
 
-                // read SSE stream line by line
                 let reader = std::io::BufRead::lines(std::io::BufReader::new(response));
-                let mut accumulated_content = String::new();
-                let mut accumulated_thinking = String::new();
-                let mut usage_val: Option<JsonValue> = None;
+                let mut events: Vec<JsonValue> = Vec::new();
+                let mut accumulated: std::collections::HashMap<String, String> =
+                    std::collections::HashMap::new();
+                let mut current_event: Option<String> = None;
+                let mut data_buffer = String::new();
+                let mut terminated = false;
 
-                for line_result in reader {
-                    if stream_cancelled.load(Ordering::Relaxed) {
-                        break;
-                    }
-
-                    let line =
-                        line_result.map_err(|e| format!("error reading SSE stream: {}", e))?;
-
-                    if !line.starts_with("data: ") {
-                        continue;
-                    }
-
-                    let data = &line[6..];
-                    if data == "[DONE]" {
-                        break;
-                    }
-
-                    if let Ok(chunk) = serde_json::from_str::<JsonValue>(data) {
-                        // extract delta content from OpenAI format
-                        if let Some(choices) = chunk.get("choices").and_then(|c| c.as_array()) {
-                            if let Some(choice) = choices.first() {
-                                if let Some(delta) = choice.get("delta") {
-                                    if let Some(content) =
-                                        delta.get("content").and_then(|c| c.as_str())
-                                    {
-                                        accumulated_content.push_str(content);
-                                        stream_emit_fn(
-                                            output_name.to_string(),
-                                            crate::value::Value::String(content.to_string()),
-                                            crate::value::Value::String(
-                                                accumulated_content.clone(),
-                                            ),
-                                        );
-                                    }
-                                    if let Some(reasoning) =
-                                        delta.get("reasoning_content").and_then(|c| c.as_str())
-                                    {
-                                        accumulated_thinking.push_str(reasoning);
-                                        stream_emit_fn(
-                                            "thinking".to_string(),
-                                            crate::value::Value::String(reasoning.to_string()),
-                                            crate::value::Value::String(
-                                                accumulated_thinking.clone(),
-                                            ),
-                                        );
-                                    }
+                // dispatch inlined at two sites (per-blank-line and end-of-stream flush)
+                // since mutable-capture closures here fight the borrow checker.
+                macro_rules! dispatch {
+                    () => {
+                        if !data_buffer.is_empty() || current_event.is_some() {
+                            let event_name =
+                                current_event.take().unwrap_or_else(|| "message".to_string());
+                            let data_value = if data_buffer.is_empty() {
+                                JsonValue::Null
+                            } else {
+                                serde_json::from_str::<JsonValue>(&data_buffer).unwrap_or_else(
+                                    |_| JsonValue::String(std::mem::take(&mut data_buffer)),
+                                )
+                            };
+                            data_buffer.clear();
+                            for spec in &emit_specs {
+                                if spec.event != event_name {
+                                    continue;
+                                }
+                                if let Some(v) = data_value
+                                    .pointer(&spec.path)
+                                    .and_then(|v| v.as_str())
+                                {
+                                    let entry =
+                                        accumulated.entry(spec.output.clone()).or_default();
+                                    entry.push_str(v);
+                                    sse_emit_fn(
+                                        spec.output.clone(),
+                                        crate::value::Value::String(v.to_string()),
+                                        crate::value::Value::String(entry.clone()),
+                                    );
                                 }
                             }
+                            events.push(serde_json::json!({
+                                "event": event_name,
+                                "data": data_value,
+                            }));
                         }
-                        // capture usage from the final chunk
-                        if let Some(usage) = chunk.get("usage") {
-                            if !usage.is_null() {
-                                usage_val = Some(usage.clone());
-                            }
-                        }
-                    }
+                    };
                 }
 
-                // build result matching non-streaming OpenAI response shape
-                let mut body_map = Map::new();
-                let choice_message = serde_json::json!({
-                    "message": {
-                        "content": accumulated_content,
-                        "reasoning_content": accumulated_thinking,
+                for line_result in reader {
+                    if sse_cancelled.load(Ordering::Relaxed) {
+                        break;
                     }
-                });
-                let choices_dynamic =
-                    ::rhai::serde::to_dynamic(serde_json::json!([choice_message]))
+                    let line =
+                        line_result.map_err(|e| format!("error reading SSE stream: {}", e))?;
+                    if line.is_empty() {
+                        dispatch!();
+                        if terminated {
+                            break;
+                        }
+                        continue;
+                    }
+                    if let Some(rest) = line.strip_prefix("event: ") {
+                        current_event = Some(rest.to_string());
+                    } else if let Some(rest) = line.strip_prefix("data: ") {
+                        if rest == "[DONE]" {
+                            // openai sentinel: flush any in-flight event, then exit.
+                            terminated = true;
+                            continue;
+                        }
+                        if !data_buffer.is_empty() {
+                            data_buffer.push('\n');
+                        }
+                        data_buffer.push_str(rest);
+                    }
+                    // other SSE fields (id, retry, comments) ignored per spec.
+                }
+                dispatch!();
+
+                let events_dynamic =
+                    ::rhai::serde::to_dynamic(serde_json::Value::Array(events))
                         .map_err(|e| e.to_string())?;
-                body_map.insert("choices".into(), choices_dynamic);
-
-                if let Some(usage) = usage_val {
-                    let usage_dynamic =
-                        ::rhai::serde::to_dynamic(&usage).map_err(|e| e.to_string())?;
-                    body_map.insert("usage".into(), usage_dynamic);
-                }
-
                 let mut result = Map::new();
                 result.insert("status".into(), Dynamic::from(status as i64));
-                result.insert("body".into(), Dynamic::from(body_map));
+                result.insert("events".into(), events_dynamic);
                 Ok(Dynamic::from(result))
+            },
+        );
+
+        // dispatch_node(name, inputs) -> map. invokes another node by name,
+        // forwarding cancellation and partial-output emission through the
+        // parent NodeContext. errors propagate as rhai exceptions.
+        let dispatch_node_ctx = ctx.node_ctx.clone();
+        engine.register_fn(
+            "dispatch_node",
+            move |name: ImmutableString, inputs: Map|
+                  -> Result<Dynamic, Box<EvalAltResult>> {
+                let node_ctx = dispatch_node_ctx.clone().ok_or_else(|| {
+                    "dispatch_node: no NodeContext available (called outside node execution?)"
+                        .to_string()
+                })?;
+                let registry = fresh_node_registry();
+                let node = registry.create(name.as_str()).ok_or_else(|| {
+                    format!("dispatch_node: unknown node type '{}'", name)
+                })?;
+
+                let json_inputs: JsonValue =
+                    ::rhai::serde::from_dynamic(&Dynamic::from(inputs))
+                        .map_err(|e| e.to_string())?;
+                let node_inputs: std::collections::BTreeMap<String, crate::value::Value> =
+                    match json_inputs {
+                        JsonValue::Object(obj) => obj
+                            .into_iter()
+                            .map(|(k, v)| {
+                                let val: crate::value::Value =
+                                    serde_json::from_value(v).unwrap_or(crate::value::Value::Null);
+                                (k, val)
+                            })
+                            .collect(),
+                        _ => {
+                            return Err(
+                                "dispatch_node: inputs must be a map/object".into(),
+                            )
+                        }
+                    };
+
+                let handle = tokio::runtime::Handle::current();
+                let dispatch_name = name.to_string();
+                let outputs = handle
+                    .block_on(async move { node.execute(node_inputs, node_ctx).await })
+                    .map_err(|e| {
+                        format!("dispatch_node('{}') failed: {:#}", dispatch_name, e)
+                    })?;
+
+                let json_out = serde_json::to_value(&outputs)
+                    .map_err(|e| format!("dispatch_node: failed to serialize outputs: {}", e))?;
+                let dyn_out: Dynamic = ::rhai::serde::to_dynamic(&json_out)
+                    .map_err(|e| format!("dispatch_node: failed to convert outputs: {}", e))?;
+                Ok(dyn_out)
             },
         );
 

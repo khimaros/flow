@@ -182,21 +182,25 @@ impl Node for ScriptDefinedNode {
         let cancelled = ctx.cancelled_flag();
         let po_tx = ctx.partial_output_tx();
         let ctx_clone = ctx.clone();
-        let script_ctx = Arc::new(ScriptContext::new(
-            cancelled,
-            move |progress, message| {
-                ctx_clone.report_progress(progress, message);
-            },
-            move |output_name, delta, accumulated| {
-                if let Some(tx) = &po_tx {
-                    let _ = tx.try_send(crate::node::PartialOutputUpdate {
-                        output_name,
-                        delta,
-                        accumulated,
-                    });
-                }
-            },
-        ));
+        let node_ctx_for_dispatch = ctx.clone();
+        let script_ctx = Arc::new(
+            ScriptContext::new(
+                cancelled,
+                move |progress, message| {
+                    ctx_clone.report_progress(progress, message);
+                },
+                move |output_name, delta, accumulated| {
+                    if let Some(tx) = &po_tx {
+                        let _ = tx.try_send(crate::node::PartialOutputUpdate {
+                            output_name,
+                            delta,
+                            accumulated,
+                        });
+                    }
+                },
+            )
+            .with_node_ctx(node_ctx_for_dispatch),
+        );
 
         // execute on a blocking thread and race it against the cancellation
         // token. if the job is cancelled, we return immediately — the blocking

@@ -139,6 +139,12 @@ pub enum UIComponent {
     DynamicSelect {
         depends_on: Vec<String>,
     },
+    /// like DynamicSelect, but for `list`-typed inputs. renders as a
+    /// checkbox/chip multi-select; value is a list of selected strings.
+    /// options are fetched via get_options() — same mechanism as DynamicSelect.
+    DynamicMultiSelect {
+        depends_on: Vec<String>,
+    },
     Number {},
     Checkbox {},
     BooleanSelect {},
@@ -253,6 +259,45 @@ pub struct NodeMetadata {
     pub outputs: Vec<OutputSpec>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub script_source: Option<ScriptSource>,
+    /// when true, the frontend should fetch per-instance ports via the
+    /// /api/workflows/{name}/nodes/{id}/spec endpoint after the user supplies
+    /// values for this node's control inputs, because additional ports are
+    /// derived from those inputs at runtime.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub has_dynamic_spec: bool,
+}
+
+/// returns the effective input specs for a node given its currently-resolved
+/// inputs: the static inputs() followed by any dynamic inputs derived by the
+/// node's dynamic_spec() (None for nodes with static-only ports).
+pub fn effective_inputs(node: &dyn Node, resolved: &BTreeMap<String, Value>) -> Vec<InputSpec> {
+    let mut specs = node.inputs();
+    if let Some((dyn_in, _)) = node.dynamic_spec(resolved) {
+        let existing: std::collections::HashSet<String> =
+            specs.iter().map(|s| s.name.clone()).collect();
+        for s in dyn_in {
+            if !existing.contains(&s.name) {
+                specs.push(s);
+            }
+        }
+    }
+    specs
+}
+
+/// returns the effective output specs for a node given its currently-resolved
+/// inputs.
+pub fn effective_outputs(node: &dyn Node, resolved: &BTreeMap<String, Value>) -> Vec<OutputSpec> {
+    let mut specs = node.outputs();
+    if let Some((_, dyn_out)) = node.dynamic_spec(resolved) {
+        let existing: std::collections::HashSet<String> =
+            specs.iter().map(|s| s.name.clone()).collect();
+        for s in dyn_out {
+            if !existing.contains(&s.name) {
+                specs.push(s);
+            }
+        }
+    }
+    specs
 }
 
 #[async_trait]
@@ -276,6 +321,26 @@ pub trait Node: Send + Sync {
 
     /// expected outputs and their types
     fn outputs(&self) -> Vec<OutputSpec>;
+
+    /// for nodes whose ports depend on their resolved input values (e.g. a
+    /// node that derives its ports by parsing a user-supplied script), return
+    /// the dynamic input/output specs given the currently-resolved inputs.
+    /// the returned inputs/outputs REPLACE the ones from inputs()/outputs()
+    /// after the base (control) inputs are preserved by the caller.
+    /// default: None (node has static ports).
+    fn dynamic_spec(
+        &self,
+        _resolved_inputs: &BTreeMap<String, Value>,
+    ) -> Option<(Vec<InputSpec>, Vec<OutputSpec>)> {
+        None
+    }
+
+    /// hint to surface in NodeMetadata so the frontend knows this node type
+    /// may expose additional ports beyond inputs()/outputs(), and should fetch
+    /// per-instance specs via the spec endpoint.
+    fn has_dynamic_spec(&self) -> bool {
+        false
+    }
 
     /// whether this node passes streaming inputs directly to outputs
     fn is_stream_passthrough(&self) -> bool {

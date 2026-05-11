@@ -123,6 +123,7 @@ export const GenericNode = ({
             connected={data.inputs?.[input.name]?.connected}
             required={input.required}
             description={input.description}
+            compactRow={"DynamicMultiSelect" in input.ui_component}
           >
             {/* Cast data to satisfy RenderInputData if needed */}
             {renderInputControl(input, data, id)}

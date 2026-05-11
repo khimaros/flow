@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "shell_node",
+      "id": "shellcommand_0efbfe92",
       "type": "ShellCommand",
       "position": {
         "x": 0.0,
@@ -20,7 +20,7 @@
       "bypassed": false
     },
     {
-      "id": "echo_node",
+      "id": "echo_b2be1c1f",
       "type": "Echo",
       "position": {
         "x": 285.0,
@@ -37,10 +37,10 @@
   ],
   "edges": [
     {
-      "id": "e-shell_node-stdout-echo_node-message",
-      "source": "shell_node",
+      "id": "e-shellcommand_0efbfe92-stdout-echo_b2be1c1f-message",
+      "source": "shellcommand_0efbfe92",
       "sourceHandle": "stdout",
-      "target": "echo_node",
+      "target": "echo_b2be1c1f",
       "targetHandle": "message"
     }
   ],

@@ -9,7 +9,7 @@
       },
       "size": {
         "width": 420.0,
-        "height": 855.0
+        "height": 900.0
       },
       "inputs": {
         "api_base": "",
@@ -28,7 +28,7 @@
       "type": "DisplayAudio",
       "position": {
         "x": 795.0,
-        "y": 30.0
+        "y": 75.0
       },
       "size": {
         "width": 300.0,
@@ -47,7 +47,7 @@
       },
       "size": {
         "width": 420.0,
-        "height": 855.0
+        "height": 900.0
       },
       "inputs": {
         "model": ""
@@ -96,7 +96,7 @@
       },
       "size": {
         "width": 360.0,
-        "height": 855.0
+        "height": 900.0
       },
       "inputs": {},
       "skipCache": false,
@@ -132,7 +132,7 @@
         "height": 210.0
       },
       "inputs": {
-        "message": "an 80 year old man with a gravelly southern drawl"
+        "message": "an 80 year old man with a thick southern drawl"
       },
       "skipCache": false,
       "bypassed": false
@@ -142,11 +142,11 @@
       "type": "OpenAI_TTS",
       "position": {
         "x": -360.0,
-        "y": 345.0
+        "y": 390.0
       },
       "size": {
         "width": 360.0,
-        "height": 855.0
+        "height": 900.0
       },
       "inputs": {
         "model": "qwen3-tts-1.7b-voicedesign:Q8_0",
@@ -160,7 +160,7 @@
       "type": "DisplayAudio",
       "position": {
         "x": -360.0,
-        "y": 1215.0
+        "y": 1305.0
       },
       "size": {
         "width": 360.0,
@@ -175,7 +175,7 @@
       "type": "Echo",
       "position": {
         "x": -645.0,
-        "y": 345.0
+        "y": 390.0
       },
       "size": {
         "width": 300.0,
@@ -192,11 +192,11 @@
       "type": "OpenAI_Voice_Design",
       "position": {
         "x": -15.0,
-        "y": 345.0
+        "y": 390.0
       },
       "size": {
         "width": 420.0,
-        "height": 855.0
+        "height": 900.0
       },
       "inputs": {},
       "skipCache": false,
@@ -207,11 +207,11 @@
       "type": "OpenAI_TTS",
       "position": {
         "x": 390.0,
-        "y": 345.0
+        "y": 390.0
       },
       "size": {
         "width": 420.0,
-        "height": 855.0
+        "height": 900.0
       },
       "inputs": {
         "input": "I just love spending time on the farm.",
@@ -226,7 +226,7 @@
       "type": "DisplayAudio",
       "position": {
         "x": 795.0,
-        "y": 900.0
+        "y": 990.0
       },
       "size": {
         "width": 300.0,

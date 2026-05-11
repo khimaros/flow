@@ -68,7 +68,7 @@
 [x] improve HTTP request error messages to include root cause
 [x] streaming partial output propagation through DAG (Phase 1: emit + UI)
 [x] streaming partial output propagation through DAG (Phase 2: passthrough propagation)
-[x] streaming HTTP (SSE) function for Rhai (http_request_streaming)
+[x] streaming HTTP (SSE) function for Rhai (http_request_sse)
 [x] update OpenAI LLM node to use streaming HTTP
 [x] centralized env var resolution for all node types (user value > env > default)
 [x] auto-convention FLOW_<NODE>_<INPUT> env vars for all inputs

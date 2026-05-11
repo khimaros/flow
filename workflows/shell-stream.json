@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "shellcommand_stream01",
+      "id": "shellcommand_bea13751",
       "type": "ShellCommand",
       "position": {
         "x": 150.0,
@@ -16,14 +16,14 @@
           "-c",
           "for w in hello world stream; do echo \"$w\"; sleep 0.15; done"
         ],
-        "stdin": "",
-        "command": "bash"
+        "command": "bash",
+        "stdin": ""
       },
       "skipCache": true,
       "bypassed": false
     },
     {
-      "id": "echo_stream01",
+      "id": "echo_ff24a910",
       "type": "Echo",
       "position": {
         "x": 435.0,
@@ -38,7 +38,7 @@
       "bypassed": false
     },
     {
-      "id": "displaymarkdown_stream01",
+      "id": "displaymarkdown_81d234a5",
       "type": "DisplayMarkdown",
       "position": {
         "x": 435.0,
@@ -55,17 +55,17 @@
   ],
   "edges": [
     {
-      "id": "e-shellcommand_stream01-stdout-echo_stream01-message",
-      "source": "shellcommand_stream01",
+      "id": "e-shellcommand_bea13751-stdout-echo_ff24a910-message",
+      "source": "shellcommand_bea13751",
       "sourceHandle": "stdout",
-      "target": "echo_stream01",
+      "target": "echo_ff24a910",
       "targetHandle": "message"
     },
     {
-      "id": "e-echo_stream01-output-displaymarkdown_stream01-markdown",
-      "source": "echo_stream01",
+      "id": "e-echo_ff24a910-output-displaymarkdown_81d234a5-markdown",
+      "source": "echo_ff24a910",
       "sourceHandle": "output",
-      "target": "displaymarkdown_stream01",
+      "target": "displaymarkdown_81d234a5",
       "targetHandle": "markdown"
     }
   ],

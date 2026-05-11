@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "stable_diffusion_835b2b79",
+      "id": "openai_tti_835b2b79",
       "type": "OpenAI_TTI",
       "position": {
         "x": 480.0,
@@ -12,20 +12,20 @@
         "height": 870.0
       },
       "inputs": {
-        "negative_prompt": "",
-        "cfg_scale": null,
         "api_base": "",
-        "width": null,
-        "steps": null,
-        "height": null,
         "api_key": "",
-        "model": ""
+        "cfg_scale": null,
+        "height": null,
+        "model": "",
+        "negative_prompt": "",
+        "steps": null,
+        "width": null
       },
       "skipCache": false,
       "bypassed": false
     },
     {
-      "id": "display_image_e2785813",
+      "id": "displayimage_e2785813",
       "type": "DisplayImage",
       "position": {
         "x": 885.0,
@@ -40,7 +40,7 @@
       "bypassed": false
     },
     {
-      "id": "openai_759600ba",
+      "id": "openai_llm_759600ba",
       "type": "OpenAI_LLM",
       "position": {
         "x": 45.0,
@@ -51,11 +51,11 @@
         "height": 870.0
       },
       "inputs": {
-        "system_prompt": "Generate a detailed prompt for use with diffusion based text to image generators such as Stable Diffusion, Z-Image Turbo, or Qwen Image. Elaborate creatively on aspects that are ambiguous. Output ONLY the enhanced prompt.",
-        "temperature": null,
+        "api_base": "",
         "api_key": "",
         "model": "",
-        "api_base": ""
+        "system_prompt": "Generate a detailed prompt for use with diffusion based text to image generators such as Stable Diffusion, Z-Image Turbo, or Qwen Image. Elaborate creatively on aspects that are ambiguous. Output ONLY the enhanced prompt.",
+        "temperature": null
       },
       "skipCache": false,
       "bypassed": false
@@ -89,8 +89,8 @@
         "height": 240.0
       },
       "inputs": {
-        "min": 10000000,
-        "max": 99999999
+        "max": 99999999,
+        "min": 10000000
       },
       "skipCache": false,
       "bypassed": false
@@ -98,38 +98,38 @@
   ],
   "edges": [
     {
-      "id": "e-stable_diffusion_835b2b79-image-display_image_e2785813-image",
-      "source": "stable_diffusion_835b2b79",
+      "id": "e-openai_tti_835b2b79-image-displayimage_e2785813-image",
+      "source": "openai_tti_835b2b79",
       "sourceHandle": "image",
-      "target": "display_image_e2785813",
+      "target": "displayimage_e2785813",
       "targetHandle": "image"
     },
     {
-      "id": "e-openai_759600ba-text-stable_diffusion_835b2b79-prompt",
-      "source": "openai_759600ba",
+      "id": "e-openai_llm_759600ba-text-openai_tti_835b2b79-prompt",
+      "source": "openai_llm_759600ba",
       "sourceHandle": "text",
-      "target": "stable_diffusion_835b2b79",
+      "target": "openai_tti_835b2b79",
       "targetHandle": "prompt"
     },
     {
-      "id": "e-randominteger_68cd0b58-output-openai_759600ba-seed",
+      "id": "e-randominteger_68cd0b58-output-openai_llm_759600ba-seed",
       "source": "randominteger_68cd0b58",
       "sourceHandle": "output",
-      "target": "openai_759600ba",
+      "target": "openai_llm_759600ba",
       "targetHandle": "seed"
     },
     {
-      "id": "e-randominteger_68cd0b58-output-stable_diffusion_835b2b79-seed",
+      "id": "e-randominteger_68cd0b58-output-openai_tti_835b2b79-seed",
       "source": "randominteger_68cd0b58",
       "sourceHandle": "output",
-      "target": "stable_diffusion_835b2b79",
+      "target": "openai_tti_835b2b79",
       "targetHandle": "seed"
     },
     {
-      "id": "e-echo_d80e7d92-output-openai_759600ba-prompt",
+      "id": "e-echo_d80e7d92-output-openai_llm_759600ba-prompt",
       "source": "echo_d80e7d92",
       "sourceHandle": "output",
-      "target": "openai_759600ba",
+      "target": "openai_llm_759600ba",
       "targetHandle": "prompt"
     }
   ],

@@ -1,4 +1,5 @@
 import { DynamicSelectControl } from "./DynamicSelectControl";
+import { DynamicMultiSelectControl } from "./DynamicMultiSelectControl";
 import { AudioRecorderControl } from "./AudioRecorderControl";
 import { ListEditorControl } from "./ListEditorControl";
 import type { InputSpec, UIComponent } from "../types";
@@ -103,6 +104,45 @@ export const renderInputControl = (
       </div>
     );
   };
+
+  if ("DynamicMultiSelect" in input.ui_component) {
+    // accept either an array, a stringified JSON array, or empty/null
+    let arrValue: string[] = [];
+    if (Array.isArray(rawValue)) {
+      arrValue = (rawValue as unknown[]).filter(
+        (v): v is string => typeof v === "string",
+      );
+    } else if (typeof rawValue === "string" && rawValue.trim().length > 0) {
+      try {
+        const parsed = JSON.parse(rawValue);
+        if (Array.isArray(parsed)) {
+          arrValue = parsed.filter(
+            (v: unknown): v is string => typeof v === "string",
+          );
+        }
+      } catch {
+        // ignore — treat as empty selection
+      }
+    }
+    return (
+      <DynamicMultiSelectControl
+        input={
+          input as InputSpec & {
+            ui_component: { DynamicMultiSelect: { depends_on: string[] } };
+          }
+        }
+        nodeId={nodeId}
+        workflowName={data.workflowName}
+        allNodeData={data as Record<string, unknown>}
+        onChange={data.onChange}
+        disabled={!!disabled}
+        value={arrValue}
+        onFocus={handleFocus}
+        getNodes={data.getNodes}
+        getEdges={data.getEdges}
+      />
+    );
+  }
 
   if ("DynamicSelect" in input.ui_component) {
     // use raw value so the default shows as placeholder, not as filled text

@@ -15,7 +15,7 @@ echo "help command passed."
 
 # test 2: List nodes
 echo "test 2: List nodes..."
-OUTPUT=$($CLI_BIN --list-nodes workflows/uuid-echo.json 2>&1)
+OUTPUT=$($CLI_BIN nodes workflows/uuid-echo.json 2>&1)
 if [[ "$OUTPUT" == *"echo_3fb69f92"* ]]; then
     echo "list nodes passed."
 else
@@ -101,28 +101,28 @@ else
     exit 1
 fi
 
-# test 10: --list-handles flag (exact and glob)
-echo "test 10: --list-handles flag..."
-OUTPUT=$($CLI_BIN --list-handles echo_3fb69f92 workflows/uuid-echo.json 2>&1)
+# test 10: handles subcommand (exact and glob, default '*')
+echo "test 10: handles subcommand..."
+OUTPUT=$($CLI_BIN handles workflows/uuid-echo.json echo_3fb69f92 2>&1)
 if [[ "$OUTPUT" == *"message"* ]] && [[ "$OUTPUT" == *"| in"* ]] && [[ "$OUTPUT" == *"| out"* ]]; then
-    echo "--list-handles (exact) passed."
+    echo "handles (exact) passed."
 else
-    echo "--list-handles (exact) failed. Output:"
+    echo "handles (exact) failed. Output:"
     echo "$OUTPUT"
     exit 1
 fi
-OUTPUT=$($CLI_BIN --list-handles '*' workflows/uuid-echo.json 2>&1)
+OUTPUT=$($CLI_BIN handles workflows/uuid-echo.json 2>&1)
 if [[ "$OUTPUT" == *"echo_3fb69f92"* ]] && [[ "$OUTPUT" == *"uuid_2f99f484"* ]] && [[ "$OUTPUT" == *"| in"* ]] && [[ "$OUTPUT" == *"| out"* ]]; then
-    echo "--list-handles (glob) passed."
+    echo "handles (default pattern) passed."
 else
-    echo "--list-handles (glob) failed. Output:"
+    echo "handles (default pattern) failed. Output:"
     echo "$OUTPUT"
     exit 1
 fi
 
 # test 11: --set flag to override node input values
 echo "test 11: --set flag override..."
-OUTPUT=$($CLI_BIN -q --set read_node/input=set_override_value workflows/read-echo.json)
+OUTPUT=$($CLI_BIN -q --set read_b83b042b/input=set_override_value workflows/read-echo.json)
 if [[ "$OUTPUT" == "set_override_value" ]]; then
     echo "--set override passed."
 else
@@ -133,7 +133,7 @@ fi
 
 # test 12: --set flag with multiple overrides
 echo "test 12: --set flag multiple overrides..."
-OUTPUT=$($CLI_BIN -q --set read_node/input=multi_test -f workflows/read-echo.json)
+OUTPUT=$($CLI_BIN -q --set read_b83b042b/input=multi_test -f workflows/read-echo.json)
 if [[ "$OUTPUT" == "multi_test" ]]; then
     echo "--set multiple passed."
 else
@@ -144,7 +144,7 @@ fi
 
 # test 13: --set flag with JSON array
 echo "test 13: --set flag with JSON array..."
-OUTPUT=$($CLI_BIN -v -f --set 'read_node/input=["a","b","c"]' workflows/read-echo.json 2>&1)
+OUTPUT=$($CLI_BIN -v -f --set 'read_b83b042b/input=["a","b","c"]' workflows/read-echo.json 2>&1)
 if [[ "$OUTPUT" == *'Array([String("a"), String("b"), String("c")])'* ]]; then
     echo "--set JSON array passed."
 else
@@ -155,7 +155,7 @@ fi
 
 # test 14: --set with JSON number
 echo "test 14: --set flag with JSON number..."
-OUTPUT=$($CLI_BIN -v -f --set 'read_node/input=42' workflows/read-echo.json 2>&1)
+OUTPUT=$($CLI_BIN -v -f --set 'read_b83b042b/input=42' workflows/read-echo.json 2>&1)
 if [[ "$OUTPUT" == *'Integer(42)'* ]]; then
     echo "--set JSON number passed."
 else
@@ -166,7 +166,7 @@ fi
 
 # test 15: --set flag with JSON boolean
 echo "test 15: --set flag with JSON boolean..."
-OUTPUT=$($CLI_BIN -v -f --set 'read_node/input=true' workflows/read-echo.json 2>&1)
+OUTPUT=$($CLI_BIN -v -f --set 'read_b83b042b/input=true' workflows/read-echo.json 2>&1)
 if [[ "$OUTPUT" == *'Boolean(true)'* ]]; then
     echo "--set JSON boolean passed."
 else
@@ -177,7 +177,7 @@ fi
 
 # test 16: --stdin flag routes to specific node
 echo "test 16: --stdin flag..."
-OUTPUT=$(echo "stdin_flag_test" | $CLI_BIN -q --stdin read_node/input workflows/read-echo.json)
+OUTPUT=$(echo "stdin_flag_test" | $CLI_BIN -q --stdin read_b83b042b/input workflows/read-echo.json)
 if [[ "$OUTPUT" == "stdin_flag_test" ]]; then
     echo "--stdin flag passed."
 else
@@ -188,7 +188,7 @@ fi
 
 # test 17: --stdout flag routes specific output
 echo "test 17: --stdout flag..."
-OUTPUT=$($CLI_BIN -q --set read_node/input=stdout_test --stdout echo_node/output workflows/read-echo.json)
+OUTPUT=$($CLI_BIN -q --set read_b83b042b/input=stdout_test --stdout echo_b2be1c1f/output workflows/read-echo.json)
 if [[ "$OUTPUT" == "stdout_test" ]]; then
     echo "--stdout flag passed."
 else
@@ -199,7 +199,7 @@ fi
 
 # test 18: --set takes precedence over --stdin
 echo "test 18: --set overrides --stdin..."
-OUTPUT=$(echo "from_stdin" | $CLI_BIN -q --set read_node/input=from_set --stdin read_node/input workflows/read-echo.json 2>test18_stderr.tmp)
+OUTPUT=$(echo "from_stdin" | $CLI_BIN -q --set read_b83b042b/input=from_set --stdin read_b83b042b/input workflows/read-echo.json 2>test18_stderr.tmp)
 STDERR=$(cat test18_stderr.tmp)
 rm -f test18_stderr.tmp
 if [[ "$OUTPUT" == "from_set" ]] && [[ "$STDERR" == *"skipping --stdin target"* ]]; then
@@ -235,7 +235,7 @@ fi
 echo "test 21: --save flag..."
 SAVE_TMP=$(mktemp /tmp/flow_save_test_XXXXXX.json)
 cp workflows/read-echo.json "$SAVE_TMP"
-$CLI_BIN -q --save --set read_node/input=saved_value "$SAVE_TMP"
+$CLI_BIN -q --save --set read_b83b042b/input=saved_value "$SAVE_TMP"
 if grep -q '"saved_value"' "$SAVE_TMP"; then
     echo "--save flag passed."
 else
@@ -245,17 +245,17 @@ else
 fi
 rm -f "$SAVE_TMP"
 
-# test 22: --list-handles shows saved state output values
-echo "test 22: --list-handles shows saved state..."
+# test 22: handles shows saved state output values
+echo "test 22: handles shows saved state..."
 SAVE_TMP=$(mktemp /tmp/flow_save_test_XXXXXX.json)
 SAVE_DIR=$(dirname "$SAVE_TMP")
 cp workflows/read-echo.json "$SAVE_TMP"
-$CLI_BIN -q --save --set read_node/input=state_test_value "$SAVE_TMP"
-OUTPUT=$($CLI_BIN --list-handles echo_node "$SAVE_TMP" 2>&1)
+$CLI_BIN -q --save --set read_b83b042b/input=state_test_value "$SAVE_TMP"
+OUTPUT=$($CLI_BIN handles "$SAVE_TMP" echo_b2be1c1f 2>&1)
 if [[ "$OUTPUT" == *"state_test_value"* ]]; then
-    echo "--list-handles saved state passed."
+    echo "handles saved state passed."
 else
-    echo "--list-handles saved state failed. Output:"
+    echo "handles saved state failed. Output:"
     echo "$OUTPUT"
     exit 1
 fi

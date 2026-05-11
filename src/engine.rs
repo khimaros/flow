@@ -106,6 +106,7 @@ impl NodeRegistry {
                 inputs,
                 outputs: instance.outputs(),
                 script_source: instance.script_source(),
+                has_dynamic_spec: instance.has_dynamic_spec(),
             });
         }
         metadata.sort_by(|a, b| a.name.cmp(&b.name));
@@ -628,9 +629,24 @@ impl Engine {
         node_id: &str,
     ) -> Result<BTreeMap<String, Value>> {
         let mut resolved_inputs = Self::resolve_inputs(ctx, &node_instance.inputs).await?;
-        Self::apply_env_overrides(node_impl, &node_instance.inputs, &mut resolved_inputs);
-        Self::apply_defaults(node_impl, &mut resolved_inputs);
-        Self::validate_required_inputs(node_impl, node_id, &resolved_inputs)?;
+
+        // first pass: apply env/defaults using the static input specs so that
+        // any inputs needed to derive dynamic ports (e.g. code/language on a
+        // DynamicUserNode) are populated before dynamic_spec() is consulted.
+        let static_specs = node_impl.inputs();
+        Self::apply_env_overrides_for(node_impl.name(), &static_specs, &node_instance.inputs, &mut resolved_inputs);
+        Self::apply_defaults_for(&static_specs, &mut resolved_inputs);
+
+        // compute the effective spec list, which may now include dynamic ports
+        // resolved from the (partially) populated inputs.
+        let effective_specs = crate::node::effective_inputs(node_impl, &resolved_inputs);
+
+        // second pass: env/defaults over dynamic-only additions are picked up
+        // here. iterations over static specs are idempotent.
+        Self::apply_env_overrides_for(node_impl.name(), &effective_specs, &node_instance.inputs, &mut resolved_inputs);
+        Self::apply_defaults_for(&effective_specs, &mut resolved_inputs);
+
+        Self::validate_required_inputs_for(&effective_specs, node_id, &resolved_inputs)?;
         Ok(resolved_inputs)
     }
 
@@ -641,8 +657,17 @@ impl Engine {
         original_inputs: &BTreeMap<String, Value>,
         resolved_inputs: &mut BTreeMap<String, Value>,
     ) {
-        let node_type = node_impl.name();
-        for spec in node_impl.inputs() {
+        let specs = node_impl.inputs();
+        Self::apply_env_overrides_for(node_impl.name(), &specs, original_inputs, resolved_inputs);
+    }
+
+    fn apply_env_overrides_for(
+        node_type: &str,
+        specs: &[crate::node::InputSpec],
+        original_inputs: &BTreeMap<String, Value>,
+        resolved_inputs: &mut BTreeMap<String, Value>,
+    ) {
+        for spec in specs {
             // skip inputs fed by edge connections
             if let Some(Value::Object(obj)) = original_inputs.get(&spec.name) {
                 if obj.contains_key("$node") {
@@ -656,7 +681,7 @@ impl Engine {
                 Some(Value::String(_)) => {} // empty string, fall through
                 Some(_) => continue, // non-string non-null value present
             }
-            let (_env_name, env_val) = crate::node::resolve_env_for_input(node_type, &spec);
+            let (_env_name, env_val) = crate::node::resolve_env_for_input(node_type, spec);
             if let Some(val) = env_val {
                 let typed = Self::coerce_env_value(&val, &spec.r#type);
                 resolved_inputs.insert(spec.name.clone(), typed);
@@ -665,11 +690,20 @@ impl Engine {
     }
 
     /// fill missing or empty inputs with spec defaults
+    #[allow(dead_code)]
     fn apply_defaults(
         node_impl: &dyn Node,
         resolved_inputs: &mut BTreeMap<String, Value>,
     ) {
-        for spec in node_impl.inputs() {
+        let specs = node_impl.inputs();
+        Self::apply_defaults_for(&specs, resolved_inputs);
+    }
+
+    fn apply_defaults_for(
+        specs: &[crate::node::InputSpec],
+        resolved_inputs: &mut BTreeMap<String, Value>,
+    ) {
+        for spec in specs {
             let needs_default = match resolved_inputs.get(&spec.name) {
                 None => true,
                 Some(Value::Null) => true,
@@ -771,12 +805,22 @@ impl Engine {
         Ok(resolved)
     }
 
+    #[allow(dead_code)]
     fn validate_required_inputs(
         node: &dyn Node,
         node_id: &str,
         resolved_inputs: &BTreeMap<String, Value>,
     ) -> Result<()> {
-        for input_spec in node.inputs() {
+        let specs = node.inputs();
+        Self::validate_required_inputs_for(&specs, node_id, resolved_inputs)
+    }
+
+    fn validate_required_inputs_for(
+        specs: &[crate::node::InputSpec],
+        node_id: &str,
+        resolved_inputs: &BTreeMap<String, Value>,
+    ) -> Result<()> {
+        for input_spec in specs {
             if input_spec.required {
                 let val = resolved_inputs.get(&input_spec.name);
                 match val {

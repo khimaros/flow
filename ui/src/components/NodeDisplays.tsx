@@ -339,38 +339,10 @@ export const DisplayMarkdownNode = ({ data }: { data: NodeData }) => {
         boxSizing: "border-box",
       }}
     >
-      <ReactMarkdown
-        components={{
-          img: (props) => (
-            <img {...props} style={{ maxWidth: "100%", height: "auto" }} />
-          ),
-          pre: (props) => (
-            <pre
-              {...props}
-              style={{
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-all",
-                backgroundColor: "rgba(127, 127, 127, 0.1)",
-                padding: "8px",
-                borderRadius: "4px",
-              }}
-            />
-          ),
-          code: (props) => (
-            <code
-              {...props}
-              style={{
-                backgroundColor: "rgba(127, 127, 127, 0.1)",
-                padding: "2px 4px",
-                borderRadius: "3px",
-                fontSize: "85%",
-              }}
-            />
-          ),
-        }}
-      >
-        {markdownContent}
-      </ReactMarkdown>
+      {/* prose styling lives in index.css under `.markdown-body` so it tracks
+          the theme variables (--text-color, --panel-bg, etc) and the app's
+          fonts. component overrides here are intentionally minimal. */}
+      <ReactMarkdown>{markdownContent}</ReactMarkdown>
     </div>
   );
 };

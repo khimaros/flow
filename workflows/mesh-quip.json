@@ -12,14 +12,14 @@
         "height": 240.0
       },
       "inputs": {
-        "min": 10000000,
-        "max": 99999999
+        "max": 99999999,
+        "min": 10000000
       },
       "skipCache": true,
       "bypassed": false
     },
     {
-      "id": "openai_488c510c",
+      "id": "openai_llm_488c510c",
       "type": "OpenAI_LLM",
       "position": {
         "x": 510.0,
@@ -30,12 +30,12 @@
         "height": 870.0
       },
       "inputs": {
-        "api_key": "",
-        "temperature": null,
-        "model": "",
         "api_base": "",
+        "api_key": "",
+        "model": "",
         "prompt": "the rust programming language",
-        "system_prompt": "provide a quip based on the content of the prompt. answer only with the quip."
+        "system_prompt": "provide a quip based on the content of the prompt. answer only with the quip.",
+        "temperature": null
       },
       "skipCache": false,
       "bypassed": false
@@ -114,10 +114,10 @@
         "height": 480.0
       },
       "inputs": {
+        "channel": 0,
         "connection_type": "serial",
         "target_device": "/dev/ttyACM0",
-        "userid": "!9ef8fcb2",
-        "channel": 0
+        "userid": "!9ef8fcb2"
       },
       "skipCache": true,
       "bypassed": false
@@ -125,22 +125,22 @@
   ],
   "edges": [
     {
-      "id": "e-randominteger_1aeda6ed-output-openai_488c510c-seed",
+      "id": "e-randominteger_1aeda6ed-output-openai_llm_488c510c-seed",
       "source": "randominteger_1aeda6ed",
       "sourceHandle": "output",
-      "target": "openai_488c510c",
+      "target": "openai_llm_488c510c",
       "targetHandle": "seed"
     },
     {
-      "id": "e-openai_488c510c-text-echo_ea94350d-message",
-      "source": "openai_488c510c",
+      "id": "e-openai_llm_488c510c-text-echo_ea94350d-message",
+      "source": "openai_llm_488c510c",
       "sourceHandle": "text",
       "target": "echo_ea94350d",
       "targetHandle": "message"
     },
     {
-      "id": "e-openai_488c510c-usage-jsonquery_40bdcf37-json",
-      "source": "openai_488c510c",
+      "id": "e-openai_llm_488c510c-usage-jsonquery_40bdcf37-json",
+      "source": "openai_llm_488c510c",
       "sourceHandle": "usage",
       "target": "jsonquery_40bdcf37",
       "targetHandle": "json"
@@ -153,15 +153,15 @@
       "targetHandle": "message"
     },
     {
-      "id": "e-openai_488c510c-thinking-echo_f0264d1b-message",
-      "source": "openai_488c510c",
+      "id": "e-openai_llm_488c510c-thinking-echo_f0264d1b-message",
+      "source": "openai_llm_488c510c",
       "sourceHandle": "thinking",
       "target": "echo_f0264d1b",
       "targetHandle": "message"
     },
     {
-      "id": "e-openai_488c510c-text-meshtasticsend_4584ff58-message",
-      "source": "openai_488c510c",
+      "id": "e-openai_llm_488c510c-text-meshtasticsend_4584ff58-message",
+      "source": "openai_llm_488c510c",
       "sourceHandle": "text",
       "target": "meshtasticsend_4584ff58",
       "targetHandle": "message"

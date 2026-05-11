@@ -208,6 +208,7 @@ export const InputField = ({
   connected,
   required,
   description,
+  compactRow = false,
 }: {
   label: string;
   children: React.ReactNode;
@@ -216,12 +217,16 @@ export const InputField = ({
   connected?: boolean;
   required?: boolean;
   description?: string;
+  /** when true, suppresses the default flex-fill behavior for list/textarea
+   *  rows. used by compact list controls (e.g. DynamicMultiSelect dropdown)
+   *  that should render at intrinsic height instead of stretching. */
+  compactRow?: boolean;
 }) => {
   const color = `var(--type-${type})`;
   // check if children should flex to fill available space
   const isTextArea =
     React.isValidElement(children) && children.type === "textarea";
-  const shouldFlex = isTextArea || type === "list";
+  const shouldFlex = !compactRow && (isTextArea || type === "list");
 
   return (
     <div
