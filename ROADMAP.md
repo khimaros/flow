@@ -1,9 +1,13 @@
 # ROADMAP
 
 ```
+[@] create a UIComponent::Auto which renders the right thing based on the Value type
 [ ] screenshots and screencast of builtin workflows in README
+[ ] advanced section in nodes or collapse/expand individual inputs
+[ ] Node dependency doctor (eg. install dependencies, or popup)
 [ ] single command npx or cargo install
-[ ] allow renaming nodes in the webui
+[ ] right click -> collapse/expand
+[ ] right click -> rename nodes
 [ ] use /upstream/<model>/props endpoint for OAI nodes if available
 [ ] ability to mark nodes as "continue on failure" or "Run Workflow (continue)"
 [ ] job queue as overlay instead of sidebar
@@ -11,12 +15,7 @@
 [ ] meshtastic send node error handling
 [ ] tabbed interface for workflows
 [ ] merge input/output handle border with highlight border?
-[ ] allow configure default value for node type input
-[ ] advanced section in nodes or collapse/expand individual inputs
-[ ] Node dependency doctor (eg. install dependencies, or popup)
 [ ] custom triggers: date/time, message received, etc.
-[ ] right click -> collapse/expand
-[ ] right click -> rename nodes
 [ ] workflow side panel show hidden files
 [ ] undo / ctrl-z
 [ ] terminal output bottom panel
@@ -26,11 +25,11 @@
 [ ] move to a subprocess architecture for nodes -- each node in a separate process
 [ ] consider richer data types (secret, audio, etc.) to reduce ui_component overrides
 [ ] flow-remote: cli that executes workflows on a running flow-server
+[ ] automagic command line tool node (flags as inputs)
 
 [~] tauri app for linux
-[~] create a UIComponent::Auto which renders the right thing based on the Value type
-[~] automagic command line tool node (flags as inputs)
 
+[x] allow configure default value for node type input
 [x] github actions workflow to build macos release tarballs (arm64 + intel)
 [x] consistency pass on node/input/output descriptions
 [x] flow-cli --env-example flag emitting .env-style output with per-var descriptions
