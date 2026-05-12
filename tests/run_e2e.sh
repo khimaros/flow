@@ -102,7 +102,7 @@ STREAM_RESPONSE=$(curl -s -X POST "$BASE_URL/api/queue/submit" \
             "type": "ShellCommand",
             "position": {"x": 0, "y": 0},
             "size": {"width": 300, "height": 300},
-            "inputs": {"command": "bash", "args": ["-c", "for w in aaa bbb ccc; do echo $w; sleep 0.1; done"]},
+            "inputs": {"command": "for w in aaa bbb ccc; do echo $w; sleep 0.1; done"},
             "skipCache": true,
             "bypassed": false
         }],

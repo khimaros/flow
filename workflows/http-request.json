@@ -12,8 +12,8 @@
         "height": 255.0
       },
       "inputs": {
-        "url": "https://dummyjson.com/test",
-        "method": "GET"
+        "method": "GET",
+        "url": "https://dummyjson.com/test"
       },
       "skipCache": true,
       "bypassed": false

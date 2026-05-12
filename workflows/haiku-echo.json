@@ -27,7 +27,7 @@
       },
       "size": {
         "width": 390.0,
-        "height": 870.0
+        "height": 1020.0
       },
       "inputs": {
         "api_base": "",
@@ -47,43 +47,11 @@
       "type": "Echo",
       "position": {
         "x": 855.0,
-        "y": 555.0
+        "y": 705.0
       },
       "size": {
         "width": 375.0,
         "height": 345.0
-      },
-      "inputs": {},
-      "skipCache": true,
-      "bypassed": false
-    },
-    {
-      "id": "jsonquery_40bdcf37",
-      "type": "JsonQuery",
-      "position": {
-        "x": 1215.0,
-        "y": 330.0
-      },
-      "size": {
-        "width": 345.0,
-        "height": 345.0
-      },
-      "inputs": {
-        "path": "/completion_tokens"
-      },
-      "skipCache": false,
-      "bypassed": false
-    },
-    {
-      "id": "echo_43c2867b",
-      "type": "Echo",
-      "position": {
-        "x": 1215.0,
-        "y": 690.0
-      },
-      "size": {
-        "width": 345.0,
-        "height": 210.0
       },
       "inputs": {},
       "skipCache": true,
@@ -98,7 +66,7 @@
       },
       "size": {
         "width": 375.0,
-        "height": 510.0
+        "height": 660.0
       },
       "inputs": {},
       "skipCache": false,
@@ -118,20 +86,6 @@
       "source": "openai_llm_488c510c",
       "sourceHandle": "text",
       "target": "echo_ea94350d",
-      "targetHandle": "message"
-    },
-    {
-      "id": "e-openai_llm_488c510c-usage-jsonquery_40bdcf37-json",
-      "source": "openai_llm_488c510c",
-      "sourceHandle": "usage",
-      "target": "jsonquery_40bdcf37",
-      "targetHandle": "json"
-    },
-    {
-      "id": "e-jsonquery_40bdcf37-result-echo_43c2867b-message",
-      "source": "jsonquery_40bdcf37",
-      "sourceHandle": "result",
-      "target": "echo_43c2867b",
       "targetHandle": "message"
     },
     {

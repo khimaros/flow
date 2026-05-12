@@ -160,6 +160,12 @@
   opacity: 0.6;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: var(--type-any);
+  opacity: 1;
+}
+
 /* DisplayMarkdown node styling. the wrapper sets container-level colors
    (--input-bg / --text-color) inline; these rules theme the prose children
    that react-markdown emits with no class names of their own. */

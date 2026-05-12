@@ -12,7 +12,6 @@
         "height": 690.0
       },
       "inputs": {
-        "command": "du",
         "stdin": ""
       },
       "skipCache": true,
@@ -30,8 +29,10 @@
         "height": 690.0
       },
       "inputs": {
-        "args": "[\"-nbr\"]",
-        "command": "sort"
+        "argv": [
+          "sort",
+          "-nbr"
+        ]
       },
       "skipCache": false,
       "bypassed": false
@@ -48,7 +49,7 @@
         "height": 405.0
       },
       "inputs": {
-        "template": "[\n  \"-s\"{% for path in values %},\n  \"{{ path }}/*\"{% endfor %}\n]"
+        "template": "[\n  \"du\",\n  \"-s\"{% for path in values %},\n  \"{{ path }}/*\"{% endfor %}\n]"
       },
       "skipCache": false,
       "bypassed": false
@@ -62,7 +63,7 @@
       },
       "size": {
         "width": 330.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {
         "list": [
@@ -117,11 +118,11 @@
         "height": 690.0
       },
       "inputs": {
-        "args": [
+        "argv": [
+          "head",
           "-n",
           "1000"
-        ],
-        "command": "head"
+        ]
       },
       "skipCache": false,
       "bypassed": false
@@ -179,11 +180,11 @@
       "targetHandle": "text"
     },
     {
-      "id": "e-templatize_b8a6abab-output-shellcommand_22f908b2-args",
+      "id": "e-templatize_b8a6abab-output-shellcommand_22f908b2-argv",
       "source": "templatize_b8a6abab",
       "sourceHandle": "output",
       "target": "shellcommand_22f908b2",
-      "targetHandle": "args"
+      "targetHandle": "argv"
     },
     {
       "id": "e-templatize_b8a6abab-output-echo_adb3c6b5-message",

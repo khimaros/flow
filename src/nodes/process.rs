@@ -24,7 +24,7 @@ impl Node for ShellCommandNode {
     }
 
     fn description(&self) -> &str {
-        "Execute a shell command"
+        "Execute a shell command line (via `<shell> -c`, default sh) or run a program directly with explicit argv. Provide exactly one of `command` or `argv`."
     }
 
     fn inputs(&self) -> Vec<InputSpec> {
@@ -32,22 +32,44 @@ impl Node for ShellCommandNode {
             InputSpec {
                 name: "command".to_string(),
                 r#type: DataType::String,
-                ui_component: UIComponent::Auto {},
+                ui_component: UIComponent::TextArea {},
                 default: None,
                 required: false,
                 description: Some(
-                    "command to execute (e.g., 'echo')".to_string(),
+                    "shell command line, run via the chosen `shell` with `-c` (default \
+                     `sh`). Pipes, redirects, quoting, globs, and env-expansion all \
+                     work (e.g., \"du -sh * | sort -h\"). Mutually exclusive with \
+                     `argv` — set exactly one."
+                        .to_string(),
                 ),
                 ..Default::default()
             },
             InputSpec {
-                name: "args".to_string(),
+                name: "shell".to_string(),
+                r#type: DataType::String,
+                ui_component: UIComponent::Auto {},
+                default: Some(Value::String("sh".to_string())),
+                required: false,
+                description: Some(
+                    "shell binary used to interpret `command` (default `sh`). Only \
+                     applies when `command` is set; ignored when `argv` is used."
+                        .to_string(),
+                ),
+                ..Default::default()
+            },
+            InputSpec {
+                name: "argv".to_string(),
                 r#type: DataType::List,
                 ui_component: UIComponent::Auto {},
                 default: Some(Value::String("".to_string())),
                 required: false,
                 description: Some(
-                    "arguments for the command (first arg used as command if command is empty)"
+                    "explicit argument vector for direct execution (no shell). First \
+                     element is the program, rest are its arguments — e.g., \
+                     [\"ls\", \"-l\", \"/tmp\"]. No shell metacharacter interpretation: \
+                     pipes, redirects, quoting and env-expansion are NOT interpreted. \
+                     Use `command` if you need any of those. Mutually exclusive with \
+                     `command` — set exactly one."
                         .to_string(),
                 ),
                 ..Default::default()
@@ -89,13 +111,20 @@ impl Node for ShellCommandNode {
         inputs: BTreeMap<String, Value>,
         ctx: NodeContext,
     ) -> Result<BTreeMap<String, Value>> {
-        let cmd_input = inputs
+        let command_input = inputs
             .get("command")
             .and_then(|v| v.as_str())
             .filter(|s| !s.trim().is_empty());
 
-        // handle args input as array, JSON string, or plain string
-        let explicit_args: Vec<String> = match inputs.get("args") {
+        let shell_bin = inputs
+            .get("shell")
+            .and_then(|v| v.as_str())
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+            .unwrap_or("sh")
+            .to_string();
+
+        let argv: Vec<String> = match inputs.get("argv") {
             Some(Value::Array(arr)) => arr
                 .iter()
                 .filter_map(|x| match x {
@@ -106,39 +135,31 @@ impl Node for ShellCommandNode {
                 })
                 .collect(),
             Some(Value::String(s)) if !s.is_empty() => {
-                // try parsing as JSON array first (from ListEditor)
+                // ListEditor serializes to a JSON-encoded string
                 if let Ok(parsed) = serde_json::from_str::<Vec<String>>(s) {
                     parsed.into_iter().filter(|x| !x.is_empty()).collect()
                 } else {
-                    // treat as single argument
                     vec![s.clone()]
                 }
             }
             _ => vec![],
         };
 
-        // determine command and arguments
-        let (cmd, args) = if let Some(cmd_str) = cmd_input {
-            if explicit_args.is_empty() {
-                // legacy behavior: split command string
-                let parts: Vec<&str> = cmd_str.split_whitespace().collect();
-                if parts.is_empty() {
-                    return Err(anyhow!("empty command"));
-                }
-                let cmd = parts[0];
-                let args: Vec<String> = parts[1..].iter().map(|s| s.to_string()).collect();
-                (cmd.to_string(), expand_glob_args(args))
-            } else {
-                // command + Explicit Args
-                (cmd_str.to_string(), expand_glob_args(explicit_args))
+        let (cmd, args) = match (command_input, argv.is_empty()) {
+            (Some(s), true) => (shell_bin, vec!["-c".to_string(), s.to_string()]),
+            (None, false) => {
+                let mut it = argv.into_iter();
+                let cmd = it.next().expect("argv non-empty");
+                (cmd, expand_glob_args(it.collect()))
             }
-        } else if !explicit_args.is_empty() {
-            // no command input, treat first arg as command
-            let cmd = explicit_args[0].clone();
-            let args = explicit_args[1..].to_vec();
-            (cmd, expand_glob_args(args))
-        } else {
-            return Err(anyhow!("either 'command' or 'args' must be provided"));
+            (Some(_), false) => {
+                return Err(anyhow!(
+                    "`command` and `argv` are mutually exclusive — set exactly one"
+                ))
+            }
+            (None, true) => {
+                return Err(anyhow!("either `command` or `argv` must be provided"))
+            }
         };
 
         // get stdin input if provided

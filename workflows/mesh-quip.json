@@ -15,7 +15,7 @@
         "max": 99999999,
         "min": 10000000
       },
-      "skipCache": true,
+      "skipCache": false,
       "bypassed": false
     },
     {
@@ -27,7 +27,7 @@
       },
       "size": {
         "width": 390.0,
-        "height": 870.0
+        "height": 1020.0
       },
       "inputs": {
         "api_base": "",
@@ -45,43 +45,11 @@
       "type": "Echo",
       "position": {
         "x": 885.0,
-        "y": 420.0
+        "y": 570.0
       },
       "size": {
         "width": 375.0,
         "height": 225.0
-      },
-      "inputs": {},
-      "skipCache": true,
-      "bypassed": false
-    },
-    {
-      "id": "jsonquery_40bdcf37",
-      "type": "JsonQuery",
-      "position": {
-        "x": 885.0,
-        "y": 660.0
-      },
-      "size": {
-        "width": 375.0,
-        "height": 270.0
-      },
-      "inputs": {
-        "path": "/completion_tokens"
-      },
-      "skipCache": false,
-      "bypassed": false
-    },
-    {
-      "id": "echo_43c2867b",
-      "type": "Echo",
-      "position": {
-        "x": 1245.0,
-        "y": 720.0
-      },
-      "size": {
-        "width": 360.0,
-        "height": 210.0
       },
       "inputs": {},
       "skipCache": true,
@@ -96,7 +64,7 @@
       },
       "size": {
         "width": 375.0,
-        "height": 345.0
+        "height": 495.0
       },
       "inputs": {},
       "skipCache": true,
@@ -107,11 +75,11 @@
       "type": "MeshtasticSend",
       "position": {
         "x": 1245.0,
-        "y": 225.0
+        "y": 60.0
       },
       "size": {
         "width": 360.0,
-        "height": 480.0
+        "height": 495.0
       },
       "inputs": {
         "channel": 0,
@@ -136,20 +104,6 @@
       "source": "openai_llm_488c510c",
       "sourceHandle": "text",
       "target": "echo_ea94350d",
-      "targetHandle": "message"
-    },
-    {
-      "id": "e-openai_llm_488c510c-usage-jsonquery_40bdcf37-json",
-      "source": "openai_llm_488c510c",
-      "sourceHandle": "usage",
-      "target": "jsonquery_40bdcf37",
-      "targetHandle": "json"
-    },
-    {
-      "id": "e-jsonquery_40bdcf37-result-echo_43c2867b-message",
-      "source": "jsonquery_40bdcf37",
-      "sourceHandle": "result",
-      "target": "echo_43c2867b",
       "targetHandle": "message"
     },
     {

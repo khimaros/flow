@@ -29,8 +29,8 @@
       "mapping": "openai_llm_node.system_prompt"
     },
     {
-      "name": "args",
-      "mapping": "shell_command_node.args"
+      "name": "argv",
+      "mapping": "shell_command_node.argv"
     }
   ],
   "outputs": [

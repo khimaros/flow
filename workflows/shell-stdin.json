@@ -9,10 +9,9 @@
       },
       "size": {
         "width": 300.0,
-        "height": 465.0
+        "height": 570.0
       },
       "inputs": {
-        "args": "",
         "command": "cat",
         "stdin": "hello, world!"
       },

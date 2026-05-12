@@ -29,7 +29,7 @@
         "y": 270.0
       },
       "size": {
-        "width": 300.0,
+        "width": 330.0,
         "height": 300.0
       },
       "inputs": {},
@@ -60,7 +60,7 @@
       },
       "size": {
         "width": 300.0,
-        "height": 585.0
+        "height": 600.0
       },
       "inputs": {
         "template": "Generate a summary in paragraph form about this command's output: `{{ values | join(sep=' ') }}`. Do not use markdown. Prefer high level descriptions over specific paths or version numbers."
@@ -97,7 +97,7 @@
       },
       "size": {
         "width": 300.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {},
       "skipCache": false,
@@ -127,11 +127,11 @@
       "targetHandle": "system_prompt"
     },
     {
-      "id": "e-list_9aac413a-list-shelltospeech_7f80b27c-args",
+      "id": "e-list_9aac413a-list-shelltospeech_7f80b27c-argv",
       "source": "list_9aac413a",
       "sourceHandle": "list",
       "target": "shelltospeech_7f80b27c",
-      "targetHandle": "args"
+      "targetHandle": "argv"
     },
     {
       "id": "e-list_9aac413a-list-listtojson_95dc055a-list",

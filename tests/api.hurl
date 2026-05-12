@@ -207,8 +207,7 @@ Content-Type: application/json
           "height": 315.0
         },
         "inputs": {
-          "command": "sleep",
-          "args": "5"
+          "argv": ["sleep", "5"]
         },
         "skipCache": true,
         "bypassed": false
@@ -255,8 +254,7 @@ Content-Type: application/json
         "position": { "x": 0, "y": 0 },
         "size": { "width": 100, "height": 100 },
         "inputs": {
-          "command": "sleep",
-          "args": "0.1"
+          "argv": ["sleep", "0.1"]
         },
         "skipCache": true,
         "bypassed": true
@@ -296,8 +294,8 @@ Content-Type: application/json
         "position": { "x": 0, "y": 0 },
         "size": { "width": 100, "height": 100 },
         "inputs": {
-          "command": "bash",
-          "args": ["-c", "echo $RANDOM > {{data_dir}}/generated_assets/cache_test.txt"]
+          "command": "echo $RANDOM > {{data_dir}}/generated_assets/cache_test.txt",
+          "shell": "bash"
         },
         "skipCache": false,
         "bypassed": false
@@ -341,8 +339,8 @@ Content-Type: application/json
         "position": { "x": 0, "y": 0 },
         "size": { "width": 100, "height": 100 },
         "inputs": {
-          "command": "bash",
-          "args": ["-c", "echo $RANDOM > {{data_dir}}/generated_assets/cache_test.txt"]
+          "command": "echo $RANDOM > {{data_dir}}/generated_assets/cache_test.txt",
+          "shell": "bash"
         },
         "skipCache": false,
         "bypassed": false
@@ -384,8 +382,8 @@ Content-Type: application/json
         "position": { "x": 0, "y": 0 },
         "size": { "width": 100, "height": 100 },
         "inputs": {
-          "command": "bash",
-          "args": ["-c", "echo $RANDOM > {{data_dir}}/generated_assets/cache_test.txt"]
+          "command": "echo $RANDOM > {{data_dir}}/generated_assets/cache_test.txt",
+          "shell": "bash"
         },
         "skipCache": false,
         "bypassed": false
@@ -663,8 +661,7 @@ Content-Type: application/json
         "position": {"x": 0.0, "y": 0.0},
         "size": {"width": 300.0, "height": 300.0},
         "inputs": {
-          "command": "ls",
-          "args": "{{data_dir}}/generated_assets/*.txt"
+          "argv": ["ls", "{{data_dir}}/generated_assets/*.txt"]
         },
         "skipCache": true,
         "bypassed": false
@@ -789,8 +786,7 @@ Content-Type: application/json
         "position": {"x": 0.0, "y": 0.0},
         "size": {"width": 300.0, "height": 300.0},
         "inputs": {
-          "command": "bash",
-          "args": ["-c", "for w in hello world; do echo $w; sleep 0.05; done"]
+          "command": "for w in hello world; do echo $w; sleep 0.05; done"
         },
         "skipCache": true,
         "bypassed": false
@@ -830,8 +826,7 @@ Content-Type: application/json
         "position": {"x": 0.0, "y": 0.0},
         "size": {"width": 300.0, "height": 300.0},
         "inputs": {
-          "command": "bash",
-          "args": ["-c", "for w in foo bar; do echo $w; sleep 0.05; done"]
+          "command": "for w in foo bar; do echo $w; sleep 0.05; done"
         },
         "skipCache": true,
         "bypassed": false

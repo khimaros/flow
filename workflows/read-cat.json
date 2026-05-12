@@ -9,10 +9,9 @@
       },
       "size": {
         "width": 330.0,
-        "height": 465.0
+        "height": 570.0
       },
       "inputs": {
-        "command": "cat",
         "stdin": ""
       },
       "skipCache": true,
@@ -58,11 +57,11 @@
       "targetHandle": "message"
     },
     {
-      "id": "e-read_ee077ef5-output-shellcommand_b9124e3f-args",
+      "id": "e-read_ee077ef5-output-shellcommand_b9124e3f-command",
       "source": "read_ee077ef5",
       "sourceHandle": "output",
       "target": "shellcommand_b9124e3f",
-      "targetHandle": "args"
+      "targetHandle": "command"
     }
   ],
   "forceRun": false,

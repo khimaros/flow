@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { createPortal } from "react-dom";
 import { useViewport } from "reactflow";
 import type { SelectOption } from "../types";
@@ -71,9 +78,18 @@ export const DynamicOptionsPopup: React.FC<DynamicOptionsPopupProps> = ({
     setPopupRect({ top: r.bottom + 2, left: r.left, width: r.width });
   }, [triggerRef]);
 
+  // measure synchronously before paint so the popup never shows at a stale
+  // position from the previous open.
+  useLayoutEffect(() => {
+    if (!open) {
+      setPopupRect(null);
+      return;
+    }
+    updatePopupRect();
+  }, [open, updatePopupRect, viewport.x, viewport.y, viewport.zoom]);
+
   useEffect(() => {
     if (!open) return;
-    updatePopupRect();
     const onResize = () => updatePopupRect();
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onResize, true);

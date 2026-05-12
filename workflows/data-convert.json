@@ -5,11 +5,11 @@
       "type": "ListToJson",
       "position": {
         "x": 30.0,
-        "y": 255.0
+        "y": 240.0
       },
       "size": {
         "width": 300.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {},
       "skipCache": false,
@@ -20,11 +20,11 @@
       "type": "DisplayJson",
       "position": {
         "x": 315.0,
-        "y": 255.0
+        "y": 240.0
       },
       "size": {
         "width": 330.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {},
       "skipCache": false,
@@ -35,11 +35,11 @@
       "type": "Split",
       "position": {
         "x": -540.0,
-        "y": 255.0
+        "y": 240.0
       },
       "size": {
         "width": 300.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {
         "separator": ":",
@@ -53,11 +53,11 @@
       "type": "List",
       "position": {
         "x": -255.0,
-        "y": 255.0
+        "y": 240.0
       },
       "size": {
         "width": 300.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {},
       "skipCache": false,

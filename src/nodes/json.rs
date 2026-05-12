@@ -1,6 +1,6 @@
 use crate::node::{DataType, InputSpec, Node, NodeContext, OutputSpec, UIComponent};
 use crate::value::Value;
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use async_trait::async_trait;
 use std::collections::BTreeMap;
 
@@ -75,7 +75,9 @@ impl Node for JsonQueryNode {
             }
         }
 
-        let result_val = serde_val.pointer(path).unwrap_or(&serde_json::Value::Null);
+        let result_val = serde_val
+            .pointer(path)
+            .ok_or_else(|| anyhow!("json pointer '{}' did not match", path))?;
 
         // convert back to internal Value
         let result: Value = serde_json::from_value(result_val.clone())?;

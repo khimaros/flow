@@ -12,11 +12,8 @@
         "height": 465.0
       },
       "inputs": {
-        "args": [
-          "2"
-        ],
         "stdin": "",
-        "command": "sleep"
+        "command": "sleep 2"
       },
       "skipCache": true,
       "bypassed": false

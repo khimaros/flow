@@ -4,19 +4,15 @@
       "id": "shellcommand_bea13751",
       "type": "ShellCommand",
       "position": {
-        "x": 150.0,
+        "x": 120.0,
         "y": 150.0
       },
       "size": {
-        "width": 300.0,
-        "height": 555.0
+        "width": 330.0,
+        "height": 570.0
       },
       "inputs": {
-        "args": [
-          "-c",
-          "for w in hello world stream; do echo \"$w\"; sleep 0.15; done"
-        ],
-        "command": "bash",
+        "command": "for w in hello world stream; do\n    echo \"$w\"\n    sleep 0.15\ndone",
         "stdin": ""
       },
       "skipCache": true,

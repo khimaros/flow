@@ -9,11 +9,10 @@
       },
       "size": {
         "width": 330.0,
-        "height": 465.0
+        "height": 570.0
       },
       "inputs": {
         "command": "false",
-        "args": "",
         "stdin": ""
       },
       "skipCache": false,

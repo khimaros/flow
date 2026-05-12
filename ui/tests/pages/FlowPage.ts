@@ -1539,7 +1539,8 @@ export class FlowPage {
    * Configure a Shell Command node with command and args.
    */
   async configureShellCommand(command: string, args: string) {
-    await this.fillNodeInputs("Shell Command", [command, args]);
+    const line = args ? `${command} ${args}` : command;
+    await this.fillNodeInputs("Shell Command", [line]);
   }
 
   /**

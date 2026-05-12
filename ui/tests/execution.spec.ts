@@ -133,13 +133,7 @@ test.describe("Node Execution and Highlighting", () => {
   test("force-running one node preserves in-progress state of another", async () => {
     // start a slow node so it's still running when we queue another job
     await flowPage.addNode("Shell Command");
-    const shellNode = flowPage.getNode("Shell Command");
-    // command field
-    await shellNode.locator('input[type="text"]').first().fill("sleep");
-    // args field (list editor) — type into "add item..." and Enter to append
-    const addItem = shellNode.locator('input[placeholder="add item..."]');
-    await addItem.fill("10");
-    await addItem.press("Enter");
+    await flowPage.configureShellCommand("sleep", "10");
     await flowPage.runNode("Shell Command");
 
     const shell = flowPage.getNode("Shell Command");

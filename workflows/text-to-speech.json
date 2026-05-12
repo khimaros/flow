@@ -14,11 +14,11 @@
       "inputs": {
         "api_base": "",
         "api_key": "",
-        "model": "fish-s2-pro:Q8_0",
+        "model": "",
         "response_format": "wav",
         "speed": null,
         "temperature": null,
-        "voice": "uncle_fu"
+        "voice": ""
       },
       "skipCache": false,
       "bypassed": false

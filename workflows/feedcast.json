@@ -28,7 +28,7 @@
       },
       "size": {
         "width": 450.0,
-        "height": 870.0
+        "height": 900.0
       },
       "inputs": {
         "delay": 20,
@@ -49,11 +49,11 @@
       "type": "Templatize",
       "position": {
         "x": 1230.0,
-        "y": 705.0
+        "y": 750.0
       },
       "size": {
         "width": 465.0,
-        "height": 300.0
+        "height": 405.0
       },
       "inputs": {
         "template": "{% for entry in input %}\n## {{ entry.a.item.title }}\n\n{{ entry.a.output }}\n{% if entry.b %}\n\n### Discussion\n{% for comment in entry.b | slice(end=10) %}\n- {{ comment | truncate(length=500) }}\n{% endfor %}\n{% endif %}\n\n{% endfor %}"
@@ -123,11 +123,11 @@
       "type": "DisplayMarkdown",
       "position": {
         "x": 1230.0,
-        "y": 1020.0
+        "y": 1170.0
       },
       "size": {
         "width": 465.0,
-        "height": 990.0
+        "height": 900.0
       },
       "inputs": {},
       "skipCache": false,
@@ -138,11 +138,11 @@
       "type": "Loop",
       "position": {
         "x": 795.0,
-        "y": 1140.0
+        "y": 1170.0
       },
       "size": {
         "width": 450.0,
-        "height": 870.0
+        "height": 900.0
       },
       "inputs": {
         "delay": 150,
@@ -167,7 +167,7 @@
       },
       "size": {
         "width": 465.0,
-        "height": 435.0
+        "height": 480.0
       },
       "inputs": {},
       "skipCache": false,

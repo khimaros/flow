@@ -75,10 +75,10 @@
       },
       "size": {
         "width": 360.0,
-        "height": 480.0
+        "height": 705.0
       },
       "inputs": {
-        "args": [
+        "argv": [
           "cat",
           "./docs/scripting/python.md"
         ]

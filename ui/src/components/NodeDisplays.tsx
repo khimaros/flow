@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   JsonView,
   darkStyles,
@@ -342,7 +343,7 @@ export const DisplayMarkdownNode = ({ data }: { data: NodeData }) => {
       {/* prose styling lives in index.css under `.markdown-body` so it tracks
           the theme variables (--text-color, --panel-bg, etc) and the app's
           fonts. component overrides here are intentionally minimal. */}
-      <ReactMarkdown>{markdownContent}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownContent}</ReactMarkdown>
     </div>
   );
 };

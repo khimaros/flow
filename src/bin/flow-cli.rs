@@ -6,7 +6,7 @@ use flow_rs::value::Value;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::io::{IsTerminal, Read};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::mpsc;
 use tokio_util::sync::CancellationToken;
@@ -981,7 +981,7 @@ impl LintReport {
     }
 }
 
-fn lint_one(path: &PathBuf, registry: &NodeRegistry, fix: bool) -> anyhow::Result<LintReport> {
+fn lint_one(path: &Path, registry: &NodeRegistry, fix: bool) -> anyhow::Result<LintReport> {
     let mut workflow = Workflow::load(path)?;
     let saved_state = Workflow::load_state(path);
     let mut report = LintReport::default();

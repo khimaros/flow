@@ -65,6 +65,12 @@ fn spec() {
                 description: "random seed"
             },
             #{
+                name: "max_turns",
+                "type": "integer",
+                "default": 10,
+                description: "maximum conversation turns (0 = unlimited)"
+            },
+            #{
                 name: "max_tokens",
                 "type": "integer",
                 description: "maximum tokens to generate"
@@ -73,12 +79,6 @@ fn spec() {
                 name: "thinking_budget_tokens",
                 "type": "integer",
                 description: "max thinking tokens for reasoning models"
-            },
-            #{
-                name: "max_turns",
-                "type": "integer",
-                "default": 10,
-                description: "maximum conversation turns (0 = unlimited)"
             }
         ],
         outputs: [
@@ -359,11 +359,7 @@ fn execute(inputs) {
         if !unlimited_turns {
             budget -= 1;
             if budget < 0 {
-                // exhausted: surface this turn's content/thinking and stop.
-                final_content = turn.content;
-                final_thinking = turn.thinking;
-                log("openai_llm: max_turns exhausted after " + iteration + " turn(s); returning partial answer");
-                break;
+                throw "openai_llm: max_turns (" + max_t + ") exhausted after " + iteration + " turn(s) with " + total_tool_calls + " tool call(s); model still requesting tools. raise `max_turns` (0 = unlimited) or simplify the task.";
             }
         }
 

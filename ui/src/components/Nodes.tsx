@@ -83,8 +83,15 @@ export const GenericNode = ({
   };
 
   const GRID_SIZE = 15;
+  const connectedInputs = Object.fromEntries(
+    Object.entries(data.inputs ?? {}).map(([name, s]) => [
+      name,
+      !!s?.connected,
+    ]),
+  );
   const minHeight =
-    Math.ceil(calculateNodeMinHeight(meta) / GRID_SIZE) * GRID_SIZE;
+    Math.ceil(calculateNodeMinHeight(meta, connectedInputs) / GRID_SIZE) *
+    GRID_SIZE;
 
   // front face - normal node view. when showSource is true, we still render
   // this structure (so the input/output Handle elements stay mounted and

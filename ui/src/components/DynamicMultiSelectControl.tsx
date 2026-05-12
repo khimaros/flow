@@ -71,7 +71,7 @@ export const DynamicMultiSelectControl: React.FC<
 
   const summary = (() => {
     const sel = value ?? [];
-    if (sel.length === 0) return "select tools…";
+    if (sel.length === 0) return "no tools enabled";
     if (sel.length <= 2) return sel.join(", ");
     return `${sel.slice(0, 2).join(", ")} (+${sel.length - 2})`;
   })();
@@ -129,6 +129,45 @@ export const DynamicMultiSelectControl: React.FC<
         >
           {summary}
         </span>
+        {(value ?? []).length > 0 && !disabled && (
+          <span
+            role="button"
+            aria-label="clear"
+            title="clear"
+            onClick={(e) => {
+              e.stopPropagation();
+              onChange(input.name, []);
+            }}
+            style={{
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 14,
+              height: 14,
+              borderRadius: "50%",
+              opacity: 0.5,
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.5")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </span>
+        )}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="10"

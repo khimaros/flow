@@ -9,10 +9,9 @@
       },
       "size": {
         "width": 300.0,
-        "height": 465.0
+        "height": 570.0
       },
       "inputs": {
-        "command": "",
         "stdin": ""
       },
       "skipCache": true,
@@ -99,7 +98,7 @@
       },
       "size": {
         "width": 300.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {
         "list": [
@@ -115,11 +114,11 @@
       "type": "ListToJson",
       "position": {
         "x": -105.0,
-        "y": 360.0
+        "y": 375.0
       },
       "size": {
         "width": 300.0,
-        "height": 270.0
+        "height": 285.0
       },
       "inputs": {},
       "skipCache": false,
@@ -130,11 +129,11 @@
       "type": "Templatize",
       "position": {
         "x": 180.0,
-        "y": 555.0
+        "y": 660.0
       },
       "size": {
         "width": 300.0,
-        "height": 540.0
+        "height": 435.0
       },
       "inputs": {
         "template": "Generate a summary in paragraph form about this command's output: `{{ values | join(sep=' ') }}`. Do not use markdown. Prefer high level descriptions over specific paths or version numbers."
@@ -188,11 +187,11 @@
       "targetHandle": "audio"
     },
     {
-      "id": "e-list_da0efa5b-list-shellcommand_b9124e3f-args",
+      "id": "e-list_da0efa5b-list-shellcommand_b9124e3f-argv",
       "source": "list_da0efa5b",
       "sourceHandle": "list",
       "target": "shellcommand_b9124e3f",
-      "targetHandle": "args"
+      "targetHandle": "argv"
     },
     {
       "id": "e-list_da0efa5b-list-listtojson_e106a506-list",
