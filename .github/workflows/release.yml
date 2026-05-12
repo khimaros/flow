@@ -10,12 +10,12 @@ env:
 
 jobs:
   build-macos:
-    name: build macos (${{ matrix.arch }}, ${{ matrix.variant }})
+    name: build macos (${{ matrix.arch }}, ${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
         arch: [arm64, x86_64]
-        variant: [python, nopy]
+        python: ['3.11', '3.12', '3.13', 'nopy']
         include:
           - arch: arm64
             runner: macos-latest
@@ -34,9 +34,9 @@ jobs:
           cache-dependency-path: ui/package-lock.json
 
       - uses: actions/setup-python@v5
-        if: matrix.variant == 'python'
+        if: matrix.python != 'nopy'
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python }}
 
       - name: install ui deps
         run: cd ui && npm ci
@@ -44,23 +44,23 @@ jobs:
       - name: bundle
         run: |
           args="--platform darwin --arch ${{ matrix.arch }}"
-          [ "${{ matrix.variant }}" = "nopy" ] && args="$args --no-python"
+          [ "${{ matrix.python }}" = "nopy" ] && args="$args --no-python"
           ./scripts/bundle-release.sh $args
 
       - uses: actions/upload-artifact@v4
         with:
-          name: flow-macos-${{ matrix.arch }}-${{ matrix.variant }}
+          name: flow-macos-${{ matrix.arch }}-${{ matrix.python }}
           path: dist/*.tgz
 
   build-linux:
-    name: build linux (${{ matrix.arch }}, ${{ matrix.variant }})
+    name: build linux (${{ matrix.arch }}, ${{ matrix.python }})
     runs-on: ${{ matrix.runner }}
-    container: debian:stable
+    container: ${{ matrix.python == 'nopy' && 'debian:trixie' || format('python:{0}-trixie', matrix.python) }}
     strategy:
       fail-fast: false
       matrix:
         arch: [x86_64, arm64]
-        variant: [python, nopy]
+        python: ['3.11', '3.12', '3.13', 'nopy']
         include:
           - arch: x86_64
             runner: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             curl build-essential pkg-config git ca-certificates \
-            libssl-dev python3 python3-dev nodejs npm
+            libssl-dev nodejs npm
 
       - uses: actions/checkout@v4
 
@@ -87,10 +87,27 @@ jobs:
       - name: bundle
         run: |
           args="--platform linux --arch ${{ matrix.arch }}"
-          [ "${{ matrix.variant }}" = "nopy" ] && args="$args --no-python"
+          [ "${{ matrix.python }}" = "nopy" ] && args="$args --no-python"
           ./scripts/bundle-release.sh $args
 
       - uses: actions/upload-artifact@v4
         with:
-          name: flow-linux-${{ matrix.arch }}-${{ matrix.variant }}
+          name: flow-linux-${{ matrix.arch }}-${{ matrix.python }}
           path: dist/*.tgz
+
+  publish:
+    name: publish release
+    needs: [build-macos, build-linux]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.tgz

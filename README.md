@@ -14,6 +14,39 @@ you exactly what every step produced.
 
 ![screenshot](docs/screenshot.png)
 
+## getting started
+
+grab a prebuilt release for your platform from the
+[releases page](https://github.com/khimaros/flow/releases/latest), extract,
+and run:
+
+```bash
+tar xzf flow-*-<platform>-<arch>-py*.tgz
+cd flow-*/
+./flow-server
+```
+
+then open <http://127.0.0.1:3000>. binaries are published for linux and
+macos on x86_64 and arm64, in `py<ver>` (with python user-node support)
+and `nopy` variants.
+
+to point flow at a local or remote openai-compatible LLM:
+
+```bash
+OPENAI_API_BASE=http://localhost:8080/v1 ./flow-server
+```
+
+each `py<ver>` build is linked against a specific cpython minor version.
+flow embeds the interpreter and links against `libpython<ver>` at
+startup, so the minor version must match what's available on your
+system — a `py3.12` build will fail to start on a host that only has
+python 3.13 installed. pick the build matching your system's
+`python3 --version`, install a matching python, or use the `nopy`
+release, which drops `.py` user-node support entirely and has no python
+runtime dependency.
+
+prefer to build from source? jump to [building from source](#building-from-source).
+
 ## highlights
 
 - **local-first, single binary.** `flow-server` is a self-contained rust
@@ -111,7 +144,7 @@ OPENAI_API_BASE=http://localhost:8080/v1 make start
 OPENAI_API_BASE=https://api.openai.com/v1 OPENAI_API_KEY=sk-... make start
 ```
 
-## installation
+## building from source
 
 ### prerequisites
 
