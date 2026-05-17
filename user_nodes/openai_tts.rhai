@@ -290,16 +290,23 @@ fn get_options(input_name, inputs) {
             headers["Authorization"] = "Bearer " + inputs.api_key;
         }
 
-        // Try api_base first
-        let url = api_base + "/audio/voices";
+        // Try api_base with ?model= first (llama-swap requires it),
+        // then api_base without it (servers that don't expect the param),
+        // then /upstream/{model}/v1/audio/voices (bypasses llama-swap routing).
+        let url = api_base + "/audio/voices?model=" + model;
         log("fetching voices from: " + url);
         let response = http_request("GET", url, #{}, headers, #{});
 
         if response.status != 200 {
-            // Try upstream fallback: /upstream/{model}/v1/audio/voices
-            let url2 = server_base + "/upstream/" + model + "/v1/audio/voices";
-            log("request failed (" + response.status + "), trying upstream fallback: " + url2);
+            let url2 = api_base + "/audio/voices";
+            log("request failed (" + response.status + "), trying without model param: " + url2);
             response = http_request("GET", url2, #{}, headers, #{});
+        }
+
+        if response.status != 200 {
+            let url3 = server_base + "/upstream/" + model + "/v1/audio/voices";
+            log("request failed (" + response.status + "), trying upstream fallback: " + url3);
+            response = http_request("GET", url3, #{}, headers, #{});
 
             if response.status != 200 {
                 log("voice fetch failed: " + response.status);
